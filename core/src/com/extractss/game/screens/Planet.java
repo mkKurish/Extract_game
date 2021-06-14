@@ -436,10 +436,10 @@ public class Planet implements MyScreen {
         if (building == null) {
             if (System.currentTimeMillis() - lastMeteorFellTime >= maxMeteorFellTime && !meteorIsActive) {
                 Random random = new Random();
-                meteorBuildingI = random.nextInt(NUMBER_OF_ROWS - 1);
-                meteorBuildingJ = random.nextInt(NUMBER_OF_COLUMNS - 1);
-                meteorSpeedX = (APP_WIDTH - (startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingJ)) / 50;
-                meteorSpeedY = (APP_HEIGHT - (startFieldPosY + (SIDE_OF_FIELD + 4) * meteorBuildingI)) / 50;
+                meteorBuildingI = random.nextInt(NUMBER_OF_ROWS - 2);
+                meteorBuildingJ = random.nextInt(NUMBER_OF_COLUMNS - 2);
+                meteorSpeedX = (APP_WIDTH - (startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI)) / 50;
+                meteorSpeedY = (APP_HEIGHT - (startFieldPosY + (SIDE_OF_FIELD + 4) * meteorBuildingJ)) / 50;
                 lastMeteorFellTime = System.currentTimeMillis();
                 meteorFallingTime = System.currentTimeMillis();
                 for (int i = 0; i < buildingsOnFields.get(currentPlanet).size(); i++) {
@@ -571,7 +571,8 @@ public class Planet implements MyScreen {
                 meteorY -= meteorSpeedY;
                 meteorFallingTime = System.currentTimeMillis();
             }
-            if (meteorX > startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingJ - SIDE_OF_FIELD / 5 && meteorX < startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingJ + SIDE_OF_FIELD / 5) {
+            if (meteorX > startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI - SIDE_OF_FIELD / 6f &&
+                    meteorX < startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI + SIDE_OF_FIELD / 6f) {
                 if (currMeteorBuilding != null) {
                     if (isBuildingUnderDefense(currMeteorBuilding)) {
                         defenseSound.play(user.getSoundsVolume());
@@ -594,12 +595,14 @@ public class Planet implements MyScreen {
                     }
                     meteorX = APP_WIDTH;
                     meteorY = APP_HEIGHT;
+                    currMeteorBuilding = null;
                     meteorIsActive = false;
                 }
             }
             if (meteorY < 0) {
                 meteorX = APP_WIDTH;
                 meteorY = APP_HEIGHT;
+                currMeteorBuilding = null;
                 meteorIsActive = false;
             }
             batch.draw(meteorTexture, meteorX, meteorY, SIDE_OF_FIELD, SIDE_OF_FIELD);
@@ -692,7 +695,7 @@ public class Planet implements MyScreen {
                 }
                 break;
             case 3:
-                sys.setScreen(screenManager.getSelectingPlanetScreen());
+                if (!meteorIsActive) sys.setScreen(screenManager.getSelectingPlanetScreen());
                 break;
         }
     }

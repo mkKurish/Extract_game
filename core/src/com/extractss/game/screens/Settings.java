@@ -62,8 +62,8 @@ public class Settings implements MyScreen {
     private static float menuTextY;
     private static float resetTextX;
     private static float resetTextY;
-//    private static float kingModeX;
-//    private static float kingModeY;
+    private static float kingModeX;
+    private static float kingModeY;
     private static float progressbarsX;
     private static float progressbarsHigh;
     private static float progressbarsWidth;
@@ -87,16 +87,16 @@ public class Settings implements MyScreen {
         myButtons.add(new MyButtons(APP_WIDTH / 10, BUTTON_WIDTH, BUTTONS_VOID, BUTTON_HEIGHT));
         myButtons.add(new MyButtons(APP_WIDTH / 5, 3 * APP_WIDTH / 5,
                 BUTTONS_VOID * 2 + 3 * BUTTON_HEIGHT / 2, BUTTON_HEIGHT / 2));
-//        myButtons.add(new MyButtons(APP_WIDTH / 10, BUTTON_WIDTH,
-//                APP_HEIGHT - 2 * BUTTON_HEIGHT, BUTTON_HEIGHT));
+        myButtons.add(new MyButtons(APP_WIDTH / 10, BUTTON_WIDTH,
+                APP_HEIGHT - 2 * BUTTON_HEIGHT, BUTTON_HEIGHT));
         myButton = myButtons.get(0);
 
         menuTextX = APP_WIDTH / 2 - "menu".length() * 11 * Constants.SCALEXY_NEW;
         menuTextY = myButtons.get(0).getY1() + BUTTON_HEIGHT / 2 + bitmapFont.getCapHeight() / 2;
         resetTextX = APP_WIDTH / 2 - "reset".length() * 11 * SMALLER_SCALE;
         resetTextY = myButtons.get(1).getY1() + myButtons.get(1).getHeight() / 2 + bitmapFontSmall.getCapHeight() / 2;
-//        kingModeX = APP_WIDTH / 2 - "have fun".length() * 11 * Constants.SCALEXY_NEW;
-//        kingModeY = myButtons.get(2).getY1() + myButtons.get(2).getHeight() / 2 + bitmapFont.getCapHeight() / 2;
+        kingModeX = APP_WIDTH / 2 - "have fun".length() * 11 * Constants.SCALEXY_NEW;
+        kingModeY = myButtons.get(2).getY1() + myButtons.get(2).getHeight() / 2 + bitmapFont.getCapHeight() / 2;
 
         soundAndMusicTextureX = APP_WIDTH / 20;
         soundAndMusicTextureSideSize = bitmapFont.getCapHeight() * 2;
@@ -278,7 +278,7 @@ public class Settings implements MyScreen {
 
         bitmapFont.draw(batch, "menu", menuTextX, menuTextY);
         bitmapFontReversedColorSmall.draw(batch, "reset", resetTextX, resetTextY);
-//        bitmapFont.draw(batch, "have fun", kingModeX, kingModeY);
+        bitmapFont.draw(batch, "have fun", kingModeX, kingModeY);
         /*
         "king mode" нужен для презентации всех сторон игры! В релизе эта функция будет отсутствовать.
          */
@@ -325,15 +325,15 @@ public class Settings implements MyScreen {
             case 1:
                 miniWindowActivated();
                 break;
-//            case 2:
-//                /*
-//                "king mode" нужен для презентации всех сторон игры! В релизе эта функция будет отсутствовать.
-//                 */
-//                user.setMoney(999999);
-//                user.setMetal(999999);
-//                user.setEnergy(999999);
-//                lastMeteorFellTime = maxMeteorFellTime;
-//                break;
+            case 2:
+                /*
+                "king mode" нужен для презентации всех сторон игры! В релизе эта функция будет отсутствовать.
+                 */
+                user.setMoney(999999);
+                user.setMetal(999999);
+                user.setEnergy(999999);
+                lastMeteorFellTime = maxMeteorFellTime;
+                break;
         }
     }
 }

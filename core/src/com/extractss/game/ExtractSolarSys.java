@@ -131,7 +131,7 @@ public class ExtractSolarSys extends Game {
 
     public void showNonRewardedAd() {
         if (adsController != null) {
-            adsController.showRewardedVideo(-1, 0, null);
+            adsController.showInitializeNonRewardedVideo();
         }
     }
 

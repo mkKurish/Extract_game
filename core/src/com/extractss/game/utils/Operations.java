@@ -302,27 +302,21 @@ public class Operations {
         for (int k = 0; k < buildingsOnFields.get(currentPlanet).size(); k++) {
             buildingForCycle = buildingsOnFields.get(currentPlanet).get(k);
 
-            for (int i = buildingOnField.getI() - 1; i <= buildingOnField.getI() + 1; i++) {
-                if (buildingForCycle.getI() == i) {
-                    for (int j = buildingOnField.getJ() - 1; j <= buildingOnField.getJ() + 1; j++) {
+            if (buildingForCycle.getBuilding().getName().equals("defender")) {
 
-                        if (buildingForCycle.getJ() == j &&
-                                buildingForCycle.getBuilding().getBuildingLvl() == 2 &&
-                                buildingForCycle.getBuilding().getName().equals("defender") ||
+                if (buildingForCycle.getI() >= buildingOnField.getI() - 1 &&
+                        buildingForCycle.getI() <= buildingOnField.getI() + 1) {
 
-                                buildingForCycle.getJ() == buildingOnField.getJ() &&
-                                        buildingForCycle.getBuilding().getName().equals("defender") ||
+                    if (buildingForCycle.getJ() >= buildingOnField.getJ() - 1 &&
+                            buildingForCycle.getJ() <= buildingOnField.getJ() + 1) {
 
-                                buildingForCycle.getI() == buildingOnField.getI() &&
-                                        buildingForCycle.getJ() == j &&
-                                        buildingForCycle.getBuilding().getName().equals("defender")) {
-                            return true;
-                        }
+                        if (buildingForCycle.getBuilding().getBuildingLvl() == 1 ||
+                                buildingForCycle.getI() == buildingOnField.getI() ||
+                                buildingForCycle.getJ() == buildingOnField.getJ()) return true;
 
                     }
                 }
             }
-
         }
         return false;
     }
