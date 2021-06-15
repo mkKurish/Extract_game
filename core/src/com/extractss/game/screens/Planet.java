@@ -436,8 +436,8 @@ public class Planet implements MyScreen {
         if (building == null) {
             if (System.currentTimeMillis() - lastMeteorFellTime >= maxMeteorFellTime && !meteorIsActive) {
                 Random random = new Random();
-                meteorBuildingI = random.nextInt(NUMBER_OF_ROWS - 2);
-                meteorBuildingJ = random.nextInt(NUMBER_OF_COLUMNS - 2);
+                meteorBuildingI = random.nextInt(NUMBER_OF_COLUMNS);
+                meteorBuildingJ = random.nextInt(NUMBER_OF_ROWS);
                 meteorSpeedX = (APP_WIDTH - (startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI)) / 50;
                 meteorSpeedY = (APP_HEIGHT - (startFieldPosY + (SIDE_OF_FIELD + 4) * meteorBuildingJ)) / 50;
                 lastMeteorFellTime = System.currentTimeMillis();
