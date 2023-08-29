@@ -7,18 +7,18 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.extractss.game.SimpleClasses.User;
 import com.extractss.game.utils.AdsController;
-import com.google.android.gms.ads.AdRequest;
+/*import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;*/
 
-public class AndroidLauncher extends AndroidApplication implements AdsController, RewardedVideoAdListener {
+public class AndroidLauncher extends AndroidApplication implements AdsController { // , RewardedVideoAdListener
     User user;
     int typeRes;
     int rewardValue;
 
-    private RewardedVideoAd rewardedVideoAd;
+    //private RewardedVideoAd rewardedVideoAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +26,8 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         initialize(new ExtractSolarSys(this), config);
 
-        rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
-        rewardedVideoAd.setRewardedVideoAdListener(this);
+        //rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        //rewardedVideoAd.setRewardedVideoAdListener(this);
     }
 
     @Override
@@ -38,10 +38,10 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(rewardedVideoAd.isLoaded()){
+/*                if(rewardedVideoAd.isLoaded()){
                     rewardedVideoAd.show();
                 }
-                else loadRewardedVideoAd();
+                else loadRewardedVideoAd();*/
             }
         });
     }
@@ -54,41 +54,41 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(rewardedVideoAd.isLoaded()){
+/*                if(rewardedVideoAd.isLoaded()){
                     rewardedVideoAd.show();
                 }
-                else loadRewardedVideoAd();
+                else loadRewardedVideoAd();*/
             }
         });
     }
 
     @Override
     public void loadRewardedVideoAd() {
-        rewardedVideoAd.loadAd("ca-app-pub-6468301349850125/3728648718",
-                new AdRequest.Builder().build());
+/*        rewardedVideoAd.loadAd("ca-app-pub-6468301349850125/3728648718",
+                new AdRequest.Builder().build());*/
     }
 
-    @Override
+//    @Override
     public void onRewardedVideoAdLoaded() {
     }
 
-    @Override
+//    @Override
     public void onRewardedVideoAdOpened() {
 
     }
 
-    @Override
+//    @Override
     public void onRewardedVideoStarted() {
 
     }
 
-    @Override
+//    @Override
     public void onRewardedVideoAdClosed() {
         loadRewardedVideoAd();
     }
 
-    @Override
-    public void onRewarded(RewardItem rewardItem) {
+//    @Override
+/*    public void onRewarded(RewardItem rewardItem) {
         switch (typeRes) {
             case 0:
                 user.setMoney(user.getMoney() + rewardValue);
@@ -100,19 +100,19 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
                 user.setEnergy(user.getEnergy() + rewardValue);
                 break;
         }
-    }
+    }*/
 
-    @Override
+//    @Override
     public void onRewardedVideoAdLeftApplication() {
 
     }
 
-    @Override
+//    @Override
     public void onRewardedVideoAdFailedToLoad(int i) {
 
     }
 
-    @Override
+//    @Override
     public void onRewardedVideoCompleted() {
 
     }

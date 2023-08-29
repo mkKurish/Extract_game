@@ -30,20 +30,7 @@ import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
-public class MainScreen implements MyScreen {
-    ExtractSolarSys sys;
-    User user;
-
-    private Batch batch;
-
-    private ArrayList<MyButtons> myButtons;
-    private MyButtons myButton;
-
-    private float touchedX;
-    private float touchedY;
-    private long lastTouchTime = 0;
-    private long lastAnimationTime;
-    private int curScreenAnimation = 0;
+public class MainScreen extends BasicScreen {
     private static float aspectRatioLogo;
     private static float aspectRatioReal;
     private static float remainingSpaceY;
@@ -125,11 +112,6 @@ public class MainScreen implements MyScreen {
     }
 
     @Override
-    public void show() {
-
-    }
-
-    @Override
     public void render(float delta) {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl20.glClearColor(0, 0, 0, 1);
@@ -207,22 +189,6 @@ public class MainScreen implements MyScreen {
         bitmapFont.draw(batch, "shop", shopTextX, shopTextY);
 
         batch.end();
-    }
-
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
     }
 
     @Override

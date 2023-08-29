@@ -27,22 +27,7 @@ import static com.extractss.game.utils.Operations.disposeAllResources;
 import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
-public class MiniWindowResetConfirmation implements MyScreen {
-    ExtractSolarSys sys;
-    User user;
-
-    private Batch batch;
-
-    private ArrayList<MyButtons> myButtons;
-    private MyButtons myButton;
-
-    private long lastAnimationTime;
-    private int curScreenAnimation = 0;
-
-    private float touchedX;
-    private float touchedY;
-    private long lastTouchTime = 0;
-
+public class MiniWindowResetConfirmation extends BasicScreen {
     private static float titleX;
     private static float titleY;
 
@@ -81,11 +66,6 @@ public class MiniWindowResetConfirmation implements MyScreen {
         confirmY = myButtons.get(1).getY1() + BUTTON_HEIGHT / 2 + bitmapFont.getCapHeight() / 2;
         noX = APP_WIDTH / 2 - "no".length() * 11 * SCALEXY_NEW;
         noY = myButtons.get(0).getY1() + myButtons.get(0).getHeight() / 2 + bitmapFont.getCapHeight() / 2;
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -161,21 +141,6 @@ public class MiniWindowResetConfirmation implements MyScreen {
         bitmapFont.draw(batch, "no!", noX, noY);
 
         batch.end();
-    }
-
-    @Override
-    public void resize(int i, int i1) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
     }
 
     @Override

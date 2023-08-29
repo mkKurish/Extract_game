@@ -2,7 +2,7 @@ package com.extractss.game.ClassesForLists;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class ItemResearch {
+public class ItemResearch extends BasicListItem {
 
     private String name;
     private Texture picture;
@@ -10,13 +10,6 @@ public class ItemResearch {
     private int costMoney;
     private int costMetal;
     private int costEnergy;
-
-    private int inventLvl;
-
-    public float y;
-    /*
-    Данная переменная 'y' нужна для визуального создания списка на экране исследований.
-     */
 
     public ItemResearch(String name, Texture picture, int costMoney, int costMetal, int costEnergy,
                         int inventLvl, float y) {

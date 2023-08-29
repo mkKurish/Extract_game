@@ -9,7 +9,7 @@ import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
 public class Constants {
     public static int NUMBER_OF_ROWS = 7;
     public static int NUMBER_OF_COLUMNS = 5;
-    public static float LEFT_INDENT;
+    public static float SIDE_INDENT;
     public static int MAX_INCREMENT_TIME_ALLOWED = 86400;
     public static float APP_WIDTH;
     public static float APP_HEIGHT;
@@ -52,26 +52,26 @@ public class Constants {
         if (SCALEY_NEW_ORIGINAL > SCALEX_NEW_ORIGINAL) SCALEXY_NEW = SCALEX_NEW_ORIGINAL;
         else SCALEXY_NEW = SCALEY_NEW_ORIGINAL;
 
-        LEFT_INDENT = APP_WIDTH / 15f;
+        SIDE_INDENT = APP_WIDTH / 15f;
 
         bitmapFontSmall.getData().setScale(SMALLER_SCALE);
         bitmapFont.getData().setScale(SCALEXY_NEW, SCALEXY_NEW);
         bitmapFontReversedColorSmall.getData().setScale(SMALLER_SCALE);
 
         LIST_ELEMENT_HEIGHT = 8 * bitmapFontSmall.getCapHeight();
-        LIST_WIDTH = APP_WIDTH - 2 * LEFT_INDENT;
+        LIST_WIDTH = APP_WIDTH - 2 * SIDE_INDENT;
         LIST_HEIGHT = APP_HEIGHT - 2 * BUTTON_HEIGHT - 2 * bitmapFontSmall.getCapHeight();
         HEIGHT_FOR_RESOURCES = APP_HEIGHT - BUTTON_HEIGHT;
         LIST_SHOP_ELEMENT_HEIGHT = 4 * bitmapFontSmall.getCapHeight();
         Y_RESOURCES_TABLE = LIST_HEIGHT + BUTTON_HEIGHT + 1;
         HEIGHT_RESOURCES_TABLE = APP_HEIGHT - BUTTON_HEIGHT - Y_RESOURCES_TABLE;
 
-        KNOB_WIDTH = LEFT_INDENT;
-        KNOB_X = LEFT_INDENT + LIST_WIDTH;
+        KNOB_WIDTH = SIDE_INDENT * 2;
+        KNOB_X = LIST_WIDTH;
 
-        LIST_ELEMENT_PIC_X = LEFT_INDENT + LIST_ELEMENT_HEIGHT / 10f;
+        LIST_ELEMENT_PIC_X = SIDE_INDENT + LIST_ELEMENT_HEIGHT / 10f;
         LIST_ELEMENT_PIC_SIZE = 8 * LIST_ELEMENT_HEIGHT / 10;
-        LIST_ELEMENT_TITLE_X_CENTER = LEFT_INDENT + 9 * LIST_ELEMENT_HEIGHT / 10 +
+        LIST_ELEMENT_TITLE_X_CENTER = SIDE_INDENT + 9 * LIST_ELEMENT_HEIGHT / 10 +
                 (LIST_WIDTH - 9 * LIST_ELEMENT_HEIGHT / 10) / 2f;
 
         BOTTOM_BUTTONS_TEXT_Y = BUTTON_HEIGHT / 2 + bitmapFont.getCapHeight() / 2;

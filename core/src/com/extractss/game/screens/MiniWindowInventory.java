@@ -33,71 +33,10 @@ import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
-public class MiniWindowInventory implements MyScreen {
-    ExtractSolarSys sys;
-    User user;
-    Building building;
+public class MiniWindowInventory extends BasicBuildingMiniWindow {
 
     private float buildingY;
     private BuildingsInInventory item;
-
-    private Batch batch;
-
-    private ArrayList<MyButtons> myButtons;
-    private MyButtons myButton;
-
-    private Texture texture;
-
-    private TextureRegion picTextureRegion;
-
-    private long lastAnimationTime;
-    private int curScreenAnimation = 0;
-
-    private float touchedX;
-    private float touchedY;
-    private long lastTouchTime = 0;
-
-    private static float titleX;
-    private static float titleY;
-
-    private static float frameX;
-    private static float frameWidth;
-    private static float frameY;
-    private static float frameHigh;
-
-    private static float firstResourceYMoney;
-    private static float firstResourceYMetal;
-    private static float firstResourceYEnergy;
-    private static float firstResourcePicYMoney;
-    private static float firstResourcePicYMetal;
-    private static float firstResourcePicYEnergy;
-
-    private static float inventLvlBuildingY;
-    private static float inventLvlBuildingPicY;
-
-    private static float secondResourceYMoney;
-    private static float secondResourceYMetal;
-    private static float secondResourceYEnergy;
-    private static float secondResourcePicYMoney;
-    private static float secondResourcePicYMetal;
-    private static float secondResourcePicYEnergy;
-
-    private static float resourceHighWidth;
-    private static float resourceX;
-    private static float resourcePicX;
-
-    private static float costY;
-
-    private static float productivityY;
-
-    private static float picX;
-    private static float picY;
-    private static float picWidth;
-    private static float picHigh;
-
-    private static float cancelX;
-    private static float cancelY;
-
     private static float useX;
     private static float useY;
 
@@ -164,12 +103,6 @@ public class MiniWindowInventory implements MyScreen {
         secondResourceYEnergy = secondResourcePicYEnergy + bitmapFont.getCapHeight();
 
         resourceHighWidth = bitmapFont.getCapHeight();
-    }
-
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -277,21 +210,6 @@ public class MiniWindowInventory implements MyScreen {
         bitmapFont.draw(batch, "use", useX, useY);
 
         batch.end();
-    }
-
-    @Override
-    public void resize(int i, int i1) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
     }
 
     @Override

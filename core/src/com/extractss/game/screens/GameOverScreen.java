@@ -22,31 +22,18 @@ import static com.extractss.game.utils.Constants.APP_HEIGHT;
 import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BOTTOM_BUTTONS_TEXT_Y;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
-import static com.extractss.game.utils.Constants.LEFT_INDENT;
+import static com.extractss.game.utils.Constants.SIDE_INDENT;
 import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Constants.SCALEX_NEW_ORIGINAL;
 import static com.extractss.game.utils.Constants.SCALEY_NEW_ORIGINAL;
 import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
-public class GameOverScreen implements MyScreen {
-    ExtractSolarSys sys;
-    User user;
-
-    private Batch batch;
-
-    private ArrayList<MyButtons> myButtons;
-    private MyButtons myButton;
+public class GameOverScreen extends BasicScreen {
 
     private static String title;
 
     private static Texture pic;
-
-    private float touchedX;
-    private float touchedY;
-    private long lastTouchTime = 0;
-    private long lastAnimationTime;
-    private int curScreenAnimation = 0;
     private static float titleX;
     private static float titleY;
     private static float okX;
@@ -64,7 +51,7 @@ public class GameOverScreen implements MyScreen {
         myButtons.add(new MyButtons(0, APP_WIDTH, 0, BUTTON_HEIGHT));
         myButton = myButtons.get(0);
 
-        titleX = LEFT_INDENT / 2;
+        titleX = SIDE_INDENT / 2;
         titleY = APP_HEIGHT - bitmapFont.getCapHeight();
 
         okX = APP_WIDTH / 2f - "ok".length() * 11 * SCALEXY_NEW;
@@ -73,7 +60,7 @@ public class GameOverScreen implements MyScreen {
                 "you passed the game.";
 
         if (SCALEX_NEW_ORIGINAL > SCALEY_NEW_ORIGINAL + 1) {
-            picSize = APP_WIDTH - LEFT_INDENT * 8;
+            picSize = APP_WIDTH - SIDE_INDENT * 8;
         } else {
             picSize = APP_HEIGHT - BUTTON_HEIGHT * 5 - bitmapFont.getCapHeight() * 3;
         }
@@ -81,11 +68,6 @@ public class GameOverScreen implements MyScreen {
         picY = APP_HEIGHT / 2 - picSize / 2;
 
         pic = new Texture(Gdx.files.internal("buildings\\rocket.png"));
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -162,21 +144,6 @@ public class GameOverScreen implements MyScreen {
         bitmapFont.draw(batch, "ok", okX, BOTTOM_BUTTONS_TEXT_Y);
 
         batch.end();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
     }
 
     @Override

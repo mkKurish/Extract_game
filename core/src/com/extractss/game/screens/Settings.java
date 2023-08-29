@@ -42,21 +42,7 @@ import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
-public class Settings implements MyScreen {
-
-    private ExtractSolarSys sys;
-    private User user;
-
-    private Batch batch;
-
-    private ArrayList<MyButtons> myButtons;
-    private MyButtons myButton;
-
-    private float touchedX = -1;
-    private float touchedY = -1;
-    private long lastTouchTime = 0;
-    private long lastAnimationTime;
-    private int curScreenAnimation = 0;
+public class Settings extends BasicScreen {
     private static long lastIconsTouchTime = 0;
     private static float menuTextX;
     private static float menuTextY;
@@ -80,6 +66,9 @@ public class Settings implements MyScreen {
     public Settings(ExtractSolarSys sys, User user) {
         this.sys = sys;
         this.user = user;
+
+        touchedX = -1;
+        touchedY = -1;
 
         batch = new SpriteBatch();
 
@@ -120,11 +109,6 @@ public class Settings implements MyScreen {
             musicProgressbarKnobWidth = progressbarsWidth * user.getMusicVolume();
         else musicProgressbarKnobWidth = progressbarsWidth * 0.5f;
         lastAnimationTime = System.currentTimeMillis();
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -283,21 +267,6 @@ public class Settings implements MyScreen {
         "king mode" нужен для презентации всех сторон игры! В релизе эта функция будет отсутствовать.
          */
         batch.end();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
     }
 
     @Override

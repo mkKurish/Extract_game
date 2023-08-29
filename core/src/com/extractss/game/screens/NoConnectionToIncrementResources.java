@@ -34,22 +34,7 @@ import static com.extractss.game.utils.Constants.MAX_INCREMENT_TIME_ALLOWED;
 import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Operations.isInPlace;
 
-public class NoConnectionToIncrementResources implements MyScreen {
-    ExtractSolarSys sys;
-    User user;
-
-    private Batch batch;
-
-    private ArrayList<MyButtons> myButtons;
-    private MyButtons myButton;
-
-    private long lastAnimationTime;
-    private int curScreenAnimation = 0;
-
-    private float touchedX;
-    private float touchedY;
-    private long lastTouchTime = 0;
-
+public class NoConnectionToIncrementResources extends BasicScreen {
     private static float frameX;
     private static float frameWidth;
     private static float frameY;
@@ -111,12 +96,6 @@ public class NoConnectionToIncrementResources implements MyScreen {
         energyTextY = titleY - bitmapFontSmall.getCapHeight() * 13;
         resourcePicSize = bitmapFontSmall.getCapHeight();
         resourceTextX = resourceTextureX + resourcePicSize;
-    }
-
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -216,21 +195,6 @@ public class NoConnectionToIncrementResources implements MyScreen {
         bitmapFont.draw(batch, "accept", acceptX, acceptY);
 
         batch.end();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
     }
 
     @Override

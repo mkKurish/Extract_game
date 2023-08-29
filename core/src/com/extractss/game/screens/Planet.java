@@ -19,7 +19,6 @@ import com.extractss.game.utils.IncrementResourcesTimeCheck;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static com.extractss.game.ExtractSolarSys.backFieldAtlas;
 import static com.extractss.game.ExtractSolarSys.backgroundsOther;
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
@@ -65,7 +64,7 @@ import static com.extractss.game.utils.Constants.APP_HEIGHT;
 import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BOTTOM_BUTTONS_TEXT_Y;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
-import static com.extractss.game.utils.Constants.LEFT_INDENT;
+import static com.extractss.game.utils.Constants.SIDE_INDENT;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.NUMBER_OF_COLUMNS;
 import static com.extractss.game.utils.Constants.NUMBER_OF_ROWS;
@@ -78,28 +77,15 @@ import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
-public class Planet implements MyScreen {
-    ExtractSolarSys sys;
-    User user;
+public class Planet extends BasicScreen {
     Building building;
-
-    private ArrayList<MyButtons> myButtons;
-    private MyButtons myButton;
-
     private BuildingsOnField currBuilding;
     private BuildingsInInventory inventoryItem;
     private BuildingsOnField currMeteorBuilding;
 
     TextureRegion textureRegion;
 
-    private Batch batch;
-
-    private float touchedX;
-    private float touchedY;
-    private long lastTouchTime = 0;
-    private long lastAnimationTime;
-    private int curScreenAnimation = 0;
-    private static float startFieldPosX;
+    private static float startFieldPosX = 0;
     private static float startFieldPosY;
     private static float productivityLabelY;
     private static float productivityLabelHigh;
@@ -188,19 +174,16 @@ public class Planet implements MyScreen {
         Делаем адаптивный размер поля.
          */
         if (SCALEY_NEW_ORIGINAL > SCALEX_NEW_ORIGINAL) {
-            SIDE_OF_FIELD = (APP_WIDTH - LEFT_INDENT * 3 - 4 * NUMBER_OF_COLUMNS) / (float) NUMBER_OF_COLUMNS;
+            SIDE_OF_FIELD = APP_WIDTH / (float) NUMBER_OF_COLUMNS;
         } else {
-            SIDE_OF_FIELD = (productivityLabelY - BUTTON_HEIGHT * 1.02f - 4 * NUMBER_OF_ROWS) / (float) NUMBER_OF_ROWS;
+            SIDE_OF_FIELD = (productivityLabelY - BUTTON_HEIGHT) / (float) NUMBER_OF_ROWS;
         }
-        startFieldPosX = APP_WIDTH / 2 - (SIDE_OF_FIELD + 4) * NUMBER_OF_COLUMNS / 2f + 4;
-        startFieldPosY = (productivityLabelY - BUTTON_HEIGHT) / 2 + BUTTON_HEIGHT -
-                (SIDE_OF_FIELD + 4) * NUMBER_OF_ROWS / 2f + 1;
+
+        startFieldPosY = BUTTON_HEIGHT;
 
         myButtons = new ArrayList<>();
         myButtons.add(new MyButtons(0, APP_WIDTH / 2, 0, BUTTON_HEIGHT));
         myButtons.add(new MyButtons(APP_WIDTH / 2, APP_WIDTH / 2, 0, BUTTON_HEIGHT));
-        myButtons.add(new MyButtons(0, startFieldPosX - 1, BUTTON_HEIGHT,
-                productivityLabelY - BUTTON_HEIGHT));
         myButton = myButtons.get(0);
 
         // Так как в обычном режиме мы будем отображать не надпись "productivity",
@@ -208,9 +191,11 @@ public class Planet implements MyScreen {
         // исходя из названия кнопки.
         productivityTitleX = APP_WIDTH / 2 - "change planet".length() * 11 * bitmapFontSmall.getScaleX();
         productivityTitleY = APP_HEIGHT - bitmapFontSmall.getCapHeight() * 0.9f;
-        productivityResourcePicX = LEFT_INDENT;
+        productivityResourcePicX = SIDE_INDENT;
         productivityResourceX = productivityResourcePicX + bitmapFontSmall.getCapHeight() * 1.2f;
 
+        myButtons.add(new MyButtons(0, APP_WIDTH, productivityLabelY,
+                productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f))); // Кликкер-кнопка
         myButtons.add(new MyButtons(0, APP_WIDTH, productivityTitleY - bitmapFontSmall.getCapHeight() * 1.9f,
                 APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
 
@@ -299,14 +284,12 @@ public class Planet implements MyScreen {
         Делаем адаптивный размер поля.
          */
         if (SCALEY_NEW_ORIGINAL > SCALEX_NEW_ORIGINAL) {
-            SIDE_OF_FIELD = (APP_WIDTH - LEFT_INDENT * 3 - 4 * NUMBER_OF_COLUMNS) / (float) NUMBER_OF_COLUMNS;
+            SIDE_OF_FIELD = APP_WIDTH / (float) NUMBER_OF_COLUMNS;
         } else {
-            SIDE_OF_FIELD = (productivityLabelY - BUTTON_HEIGHT * 1.02f - 4 * NUMBER_OF_ROWS) / (float) NUMBER_OF_ROWS;
+            SIDE_OF_FIELD = (productivityLabelY - BUTTON_HEIGHT) / (float) NUMBER_OF_ROWS;
         }
 
-        startFieldPosX = APP_WIDTH / 2 - (SIDE_OF_FIELD + 4) * NUMBER_OF_COLUMNS / 2f + 4;
-        startFieldPosY = (productivityLabelY - BUTTON_HEIGHT) / 2 + BUTTON_HEIGHT -
-                (SIDE_OF_FIELD + 4) * NUMBER_OF_ROWS / 2f + 1;
+        startFieldPosY = BUTTON_HEIGHT;
 
         myButtons = new ArrayList<>();
         myButtons.add(new MyButtons(0, APP_WIDTH, 0, BUTTON_HEIGHT));
@@ -317,7 +300,7 @@ public class Planet implements MyScreen {
 
         productivityTitleX = APP_WIDTH / 2 - "productivity".length() * 11 * Constants.SCALEXY_NEW;
         productivityTitleY = APP_HEIGHT - bitmapFont.getCapHeight() * 0.9f;
-        productivityResourcePicX = LEFT_INDENT;
+        productivityResourcePicX = SIDE_INDENT;
         productivityResourceX = productivityResourcePicX + bitmapFontSmall.getCapHeight() * 1.2f;
 
         productivityMoneyPicY = APP_HEIGHT - bitmapFont.getCapHeight() -
@@ -341,11 +324,6 @@ public class Planet implements MyScreen {
         incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(sys, user);
 
         lastAnimationTime = System.currentTimeMillis();
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -380,12 +358,12 @@ public class Planet implements MyScreen {
 
         batch.draw(backgroundsOther.get(curScreenAnimation), 0, 0, APP_WIDTH, APP_HEIGHT);
 
-        planetFieldsBackground.draw(batch, startFieldPosX - 4, startFieldPosY - 4,
-                (SIDE_OF_FIELD + 4) * 5 + 4, (SIDE_OF_FIELD + 4) * 7 + 4);
+        planetFieldsBackground.draw(batch, startFieldPosX, startFieldPosY, // planetFieldsBackground.draw(batch, startFieldPosX - 4, startFieldPosY - 4,
+                (SIDE_OF_FIELD + 4) * 5, (SIDE_OF_FIELD + 4) * 7);
 
         for (int i = 0; i < NUMBER_OF_COLUMNS; i++) {
             for (int j = 0; j < NUMBER_OF_ROWS; j++) {
-                batch.draw(textureRegion, startFieldPosX + (SIDE_OF_FIELD + 4) * i,
+                batch.draw(textureRegion, startFieldPosX + (SIDE_OF_FIELD + 4) * i, // batch.draw(textureRegion, startFieldPosX + (SIDE_OF_FIELD + 4) * i,
                         startFieldPosY + (SIDE_OF_FIELD + 4) * j, SIDE_OF_FIELD, SIDE_OF_FIELD);
                 /*
                 Устанавливаем здание на выбранную ячейку поля и проверяем кнопки на нажатие.
@@ -394,7 +372,7 @@ public class Planet implements MyScreen {
                         && lastTouchTime != 0
                         && !Gdx.input.isTouched()
                         && isInPlaceMain(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                        startFieldPosX + (SIDE_OF_FIELD + 4) * i,
+                        startFieldPosX + (SIDE_OF_FIELD + 4) * i, // startFieldPosX + (SIDE_OF_FIELD + 4) * i,
                         startFieldPosY + (SIDE_OF_FIELD + 4) * j, SIDE_OF_FIELD, SIDE_OF_FIELD)) {
                     if (building.isProductiveType()) {
                         incrementMoney += building.getUsefulMoney();
@@ -424,7 +402,7 @@ public class Planet implements MyScreen {
         if (buildingsOnFields.get(currentPlanet).size() != 0) {
             for (int i = 0; i < buildingsOnFields.get(currentPlanet).size(); i++) {
                 batch.draw(buildingsOnFields.get(currentPlanet).get(i).getBuilding().getPicture(),
-                        startFieldPosX + (SIDE_OF_FIELD + 4) * buildingsOnFields.get(currentPlanet).get(i).getI(),
+                        startFieldPosX + (SIDE_OF_FIELD + 4) * buildingsOnFields.get(currentPlanet).get(i).getI(), // startFieldPosX + (SIDE_OF_FIELD + 4) * buildingsOnFields.get(currentPlanet).get(i).getI(),
                         startFieldPosY + (SIDE_OF_FIELD + 4) * buildingsOnFields.get(currentPlanet).get(i).getJ(),
                         SIDE_OF_FIELD, SIDE_OF_FIELD);
             }
@@ -438,7 +416,7 @@ public class Planet implements MyScreen {
                 Random random = new Random();
                 meteorBuildingI = random.nextInt(NUMBER_OF_COLUMNS);
                 meteorBuildingJ = random.nextInt(NUMBER_OF_ROWS);
-                meteorSpeedX = (APP_WIDTH - (startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI)) / 50;
+                meteorSpeedX = (APP_WIDTH - (startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI)) / 50; // meteorSpeedX = (APP_WIDTH - (startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI)) / 50;
                 meteorSpeedY = (APP_HEIGHT - (startFieldPosY + (SIDE_OF_FIELD + 4) * meteorBuildingJ)) / 50;
                 lastMeteorFellTime = System.currentTimeMillis();
                 meteorFallingTime = System.currentTimeMillis();
@@ -490,7 +468,7 @@ public class Planet implements MyScreen {
             for (int i = 0; i < buildingsOnFields.get(currentPlanet).size(); i++) {
                 currBuilding = buildingsOnFields.get(currentPlanet).get(i);
                 if (!Gdx.input.isTouched() && isInPlaceMain(touchedX, touchedY,
-                        startFieldPosX + (SIDE_OF_FIELD + 4) * currBuilding.getI(),
+                        startFieldPosX + (SIDE_OF_FIELD + 4) * currBuilding.getI(), // startFieldPosX + (SIDE_OF_FIELD + 4) * currBuilding.getI()
                         startFieldPosY + (SIDE_OF_FIELD + 4) * currBuilding.getJ(),
                         SIDE_OF_FIELD, SIDE_OF_FIELD)) {
                     miniWindowActivated(currBuilding);
@@ -499,11 +477,13 @@ public class Planet implements MyScreen {
             bitmapFont.draw(batch, "menu", menuX, BOTTOM_BUTTONS_TEXT_Y);
             bitmapFont.draw(batch, "inventory", inventoryX, BOTTOM_BUTTONS_TEXT_Y);
 
-            downNinePatch.draw(batch, startFieldPosX + (4 + SIDE_OF_FIELD) * NUMBER_OF_COLUMNS,
-                    BUTTON_HEIGHT, startFieldPosX - 5, productivityLabelY - BUTTON_HEIGHT);
-            upNinePatch.draw(batch, startFieldPosX + (4 + SIDE_OF_FIELD) * NUMBER_OF_COLUMNS,
-                    BUTTON_HEIGHT, startFieldPosX - 5, (productivityLabelY - BUTTON_HEIGHT) *
-                            (incrementMechanicValue / (float) incrementMechanicMaxValue + 1 / (float) incrementMechanicMaxValue));
+            // Шкала кликкера
+            downNinePatch.draw(batch, 0,
+                    productivityLabelY, startFieldPosX - 5, productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
+            upNinePatch.draw(batch, 0,
+                    productivityLabelY, APP_WIDTH *
+                            (incrementMechanicValue / (float) incrementMechanicMaxValue + 1 / (float) incrementMechanicMaxValue),
+                    productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
         } else {
             if (Gdx.input.isTouched()) {
                 lastTouchTime = System.currentTimeMillis();
@@ -542,10 +522,10 @@ public class Planet implements MyScreen {
             bitmapFont.draw(batch, "cancel", cancelX, BOTTOM_BUTTONS_TEXT_Y);
         }
 
-        upNinePatch.draw(batch, 0, productivityLabelY, APP_WIDTH, productivityLabelHigh);
-        if (building != null)
+        if (building != null) {
+            upNinePatch.draw(batch, 0, productivityLabelY, APP_WIDTH, productivityLabelHigh);
             bitmapFont.draw(batch, "productivity:", productivityTitleX, productivityTitleY);
-        else bitmapFontSmall.draw(batch, "change planet", productivityTitleX, productivityTitleY);
+        } else bitmapFontSmall.draw(batch, "change planet", productivityTitleX, productivityTitleY);
 
         batch.draw(moneyTexture, productivityResourcePicX, productivityMoneyPicY,
                 bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
@@ -571,8 +551,8 @@ public class Planet implements MyScreen {
                 meteorY -= meteorSpeedY;
                 meteorFallingTime = System.currentTimeMillis();
             }
-            if (meteorX > startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI - SIDE_OF_FIELD / 6f &&
-                    meteorX < startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI + SIDE_OF_FIELD / 6f) {
+            if (meteorX > startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI - SIDE_OF_FIELD / 6f && // if (meteorX > startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI - SIDE_OF_FIELD / 6f &&
+                    meteorX < startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI + SIDE_OF_FIELD / 6f) { // meteorX < startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI + SIDE_OF_FIELD / 6f) {
                 if (currMeteorBuilding != null) {
                     if (isBuildingUnderDefense(currMeteorBuilding)) {
                         defenseSound.play(user.getSoundsVolume());
@@ -609,21 +589,6 @@ public class Planet implements MyScreen {
         }
 
         batch.end();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
     }
 
     @Override
@@ -682,12 +647,9 @@ public class Planet implements MyScreen {
                 incrementMechanicValue++;
                 if (incrementMechanicValue == incrementMechanicMaxValue) {
                     incrementMechanicValue = 0;
-                    if (incrementMoney == 0) user.setMoney(user.getMoney() + 1);
-                    else user.setMoney(user.getMoney() + incrementMoney);
-                    if (incrementMetal == 0) user.setMetal(user.getMetal() + 1);
-                    else user.setMetal(user.getMetal() + incrementMetal);
-                    if (incrementEnergy == 0) user.setEnergy(user.getEnergy() + 1);
-                    else user.setEnergy(user.getEnergy() + incrementEnergy);
+                    user.setMoney(incrementMoney != 0 ? user.getMoney() + incrementMoney : user.getMoney() + 1);
+                    user.setMetal(incrementMetal != 0 ? user.getMetal() + incrementMetal : user.getMetal() + 1);
+                    user.setEnergy(incrementEnergy != 0 ? user.getEnergy() + incrementEnergy : user.getEnergy() + 1);
                     if (user.getMoney() > maxMoney) user.setMoney(maxMoney);
                     if (user.getMetal() > maxMetal) user.setMetal(maxMetal);
                     if (user.getEnergy() > maxEnergy) user.setEnergy(maxEnergy);

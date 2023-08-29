@@ -1,6 +1,5 @@
 android {
-    buildToolsVersion "30.0.2"
-    compileSdkVersion 30
+    compileSdkVersion 33
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -14,12 +13,14 @@ android {
 
     }
     packagingOptions {
-        exclude 'META-INF/robovm/ios/robovm.xml'
+        resources {
+            excludes += ['META-INF/robovm/ios/robovm.xml']
+        }
     }
     defaultConfig {
         applicationId "com.extractss.game"
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
@@ -30,7 +31,8 @@ android {
         }
     }
     dependencies {
-        implementation 'com.google.android.gms:play-services-ads:17.0.0'
+        //implementation 'com.google.android.gms:play-services-ads:17.0.0'
+        implementation 'com.google.android.play:integrity:1.2.0'
     }
 }
 

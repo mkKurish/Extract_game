@@ -1,8 +1,9 @@
 package com.extractss.game.SimpleClasses;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.extractss.game.ClassesForLists.BasicListItem;
 
-public class Building {
+public class Building extends BasicListItem {
 
     private String name;
     private Texture picture;
@@ -20,11 +21,6 @@ public class Building {
     /*
     true - productive type
     false - storage type
-     */
-
-    public float y;
-    /*
-    Данная переменная 'y' нужна для визуального создания списка на экране покупки зданий.
      */
 
     public Building(String name, Texture picture, boolean productiveType, int costMoney,

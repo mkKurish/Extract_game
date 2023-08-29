@@ -5,8 +5,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.extractss.game.ClassesForLists.BuildingsInInventory;
+import com.extractss.game.ClassesForLists.ItemSelectingPlanet;
 import com.extractss.game.ExtractSolarSys;
 import com.extractss.game.ClassesForLists.ItemShop;
+import com.extractss.game.SimpleClasses.Building;
 import com.extractss.game.SimpleClasses.MyButtons;
 import com.extractss.game.SimpleClasses.User;
 import com.extractss.game.utils.IncrementResourcesTimeCheck;
@@ -48,7 +51,7 @@ import static com.extractss.game.utils.Constants.HEIGHT_FOR_RESOURCES;
 import static com.extractss.game.utils.Constants.HEIGHT_RESOURCES_TABLE;
 import static com.extractss.game.utils.Constants.KNOB_WIDTH;
 import static com.extractss.game.utils.Constants.KNOB_X;
-import static com.extractss.game.utils.Constants.LEFT_INDENT;
+import static com.extractss.game.utils.Constants.SIDE_INDENT;
 import static com.extractss.game.utils.Constants.LIST_SHOP_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_WIDTH;
@@ -61,57 +64,24 @@ import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
-public class Shop implements MyScreen {
-    private ExtractSolarSys sys;
-    User user;
-
-    private Batch batch;
-
-    private ArrayList<MyButtons> myButtons;
-    private MyButtons myButton;
+public class Shop extends BasicScrollScreen {
 
     private ArrayList<ItemShop> listItems;
     private ItemShop listElementForCycle;
 
-    private float touchedX;
-    private float touchedY;
     private float touchedListY;
-    private long lastTouchTime = 0;
     private long lastListTouchTime = 1000;
     static long lastPanelTouchTime = 0;
-    private long lastAnimationTime;
-    private int curScreenAnimation = 0;
-    private float knobHeight;
-    private static float yForIcons;
-    private static float heightForIcons;
-    private static float widthForIcons;
-    private static float yForResourcesText;
-    private static float xForPriceListElements;
-    private static float xForIconsListElements;
-    private static float appWidthToTwentyFour = APP_WIDTH / 24;
-    private static float firstElementY;
-    private static float lastElementY;
-    private static float boarderUp;
     private static boolean listTouchMode;
     private static float xForSecondIconsListResources;
     private static float xForSecondPriceListResources;
-    private static float resCoord;
     private static int averageValueToGetRes;
     private static int averageValueToGetResAdd;
     private static int averageValueToGetResDonate;
-    private static float moneyTextureX;
-    private static float metalTextureX;
-    private static float energyTextureX;
-    private static float moneyValueX;
-    private static float metalValueX;
-    private static float energyValueX;
-    private static float deltaFirstElementY;
     private static float menuX;
     private static float planetX;
     private static float researchX;
     private static float constructX;
-
-    IncrementResourcesTimeCheck incrementResourcesTimeCheck;
 
     public Shop(ExtractSolarSys sys, User user) {
         this.sys = sys;
@@ -211,13 +181,11 @@ public class Shop implements MyScreen {
         heightForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         widthForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         yForResourcesText = HEIGHT_FOR_RESOURCES - bitmapFontSmall.getCapHeight() / 2;
-        xForPriceListElements = LEFT_INDENT + 3 * bitmapFontSmall.getCapHeight() / 2;
-        xForIconsListElements = LEFT_INDENT + bitmapFontSmall.getCapHeight() / 2;
+        xForPriceListElements = SIDE_INDENT + 3 * bitmapFontSmall.getCapHeight() / 2;
+        xForIconsListElements = SIDE_INDENT + bitmapFontSmall.getCapHeight() / 2;
         xForSecondIconsListResources = xForIconsListElements + SCALEXY_NEW * 11 *
                 (AVERAGE_VALUE_TO_BUY_RES + " ->  ").length() + bitmapFontSmall.getCapHeight();
         xForSecondPriceListResources = xForSecondIconsListResources + bitmapFontSmall.getCapHeight();
-
-        boarderUp = APP_HEIGHT - BUTTON_HEIGHT - LIST_SHOP_ELEMENT_HEIGHT - 2 * bitmapFontSmall.getCapHeight();
 
         menuX = APP_WIDTH / 4 - "menu".length() * 11 * SCALEXY_NEW;
         planetX = 3 * APP_WIDTH / 4 - "planet".length() * 11 * SCALEXY_NEW;
@@ -227,12 +195,6 @@ public class Shop implements MyScreen {
         incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(sys, user);
 
         lastAnimationTime = System.currentTimeMillis();
-    }
-
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -273,7 +235,7 @@ public class Shop implements MyScreen {
         firstElementY = listItems.get(0).y;
         lastElementY = listItems.get(listItems.size() - 1).y;
         if (!listTouchMode && Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
-                Gdx.graphics.getHeight() - Gdx.input.getY(), LEFT_INDENT, BUTTON_HEIGHT,
+                Gdx.graphics.getHeight() - Gdx.input.getY(), SIDE_INDENT, BUTTON_HEIGHT,
                 LIST_WIDTH, LIST_HEIGHT)) {
             if (System.currentTimeMillis() - lastListTouchTime < 50) {
                 resCoord = (-touchedListY + Gdx.graphics.getHeight() - Gdx.input.getY()) * 2;
@@ -310,7 +272,7 @@ public class Shop implements MyScreen {
             if (listTouchMode
                     && Gdx.input.isTouched()
                     && isInPlaceMain(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                    LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight())
+                    SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight())
                     && Gdx.input.getY() < (LIST_HEIGHT + BUTTON_HEIGHT)
                     && Gdx.input.getY() > BUTTON_HEIGHT) {
                 lastTouchTime = System.currentTimeMillis();
@@ -330,12 +292,12 @@ public class Shop implements MyScreen {
             if ((listElementForCycle.y < APP_HEIGHT + BUTTON_HEIGHT && listElementForCycle.y > -listItems.get(i).getHeight())) {
                 if (listElementForCycle.getName() == "faster click") {
                     if (isEnableToBuy(user, listElementForCycle) && incrementMechanicMaxValue > 2) {
-                        upNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH,
+                        upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH,
                                 listItems.get(i).getHeight());
                         if (Gdx.input.isTouched() && listTouchMode
                                 && isInPlaceMain(Gdx.input.getX(),
                                 APP_HEIGHT - Gdx.input.getY(),
-                                LEFT_INDENT, listElementForCycle.y,
+                                SIDE_INDENT, listElementForCycle.y,
                                 LIST_WIDTH, listItems.get(i).getHeight())) {
                             user.setMoney(user.getMoney() - listElementForCycle.getCostMoney());
                             user.setMetal(user.getMetal() - listElementForCycle.getCostMetal());
@@ -351,7 +313,7 @@ public class Shop implements MyScreen {
                             listTouchMode = false;
                         }
                     } else {
-                        downNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     }
                     batch.draw(moneyTexture, xForIconsListElements, listElementForCycle.y -
                                     3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
@@ -374,7 +336,7 @@ public class Shop implements MyScreen {
                 }
                 if (listElementForCycle.getCostMoney() == AVERAGE_VALUE_TO_BUY_RES) {
                     if (listTouchMode && Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
-                            APP_HEIGHT - Gdx.input.getY(), LEFT_INDENT, listElementForCycle.y,
+                            APP_HEIGHT - Gdx.input.getY(), SIDE_INDENT, listElementForCycle.y,
                             LIST_WIDTH, listItems.get(i).getHeight())
                             && isEnableToBuy(user, listElementForCycle)) {
                         if (listElementForCycle.getOutputMetal() != 0) {
@@ -387,9 +349,9 @@ public class Shop implements MyScreen {
                         listTouchMode = false;
                     }
                     if (isEnableToBuy(user, listElementForCycle)) {
-                        upNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     } else {
-                        downNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     }
                     bitmapFontSmall.draw(batch, listElementForCycle.getCostMoney() + " -> ",
                             xForPriceListElements, listElementForCycle.y -
@@ -415,7 +377,7 @@ public class Shop implements MyScreen {
                                 bitmapFontSmall.getCapHeight());
                     }
                 } else if (listElementForCycle.getCostMoney() == 1) {
-                    upNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     bitmapFontSmall.draw(batch, "cash ->",
                             xForPriceListElements, listElementForCycle.y - 2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputMoney()),
@@ -426,7 +388,7 @@ public class Shop implements MyScreen {
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     //TODO: add ads
                 } else if (listElementForCycle.getCostMoney() == 2) {
-                    upNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     bitmapFontSmall.draw(batch, "ads ->",
                             xForPriceListElements, listElementForCycle.y -
                                     2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
@@ -439,7 +401,7 @@ public class Shop implements MyScreen {
                     //TODO: add donations
                 } else if (listElementForCycle.getCostMetal() == AVERAGE_VALUE_TO_BUY_RES) {
                     if (listTouchMode && Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
-                            APP_HEIGHT - Gdx.input.getY(), LEFT_INDENT, listElementForCycle.y,
+                            APP_HEIGHT - Gdx.input.getY(), SIDE_INDENT, listElementForCycle.y,
                             LIST_WIDTH, listItems.get(i).getHeight())
                             && isEnableToBuy(user, listElementForCycle)) {
                         if (listElementForCycle.getOutputMoney() != 0) {
@@ -452,9 +414,9 @@ public class Shop implements MyScreen {
                         listTouchMode = false;
                     }
                     if (isEnableToBuy(user, listElementForCycle)) {
-                        upNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     } else {
-                        downNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     }
                     bitmapFontSmall.draw(batch, listElementForCycle.getCostMetal() + " -> ",
                             xForPriceListElements, listElementForCycle.y -
@@ -478,7 +440,7 @@ public class Shop implements MyScreen {
                                 bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     }
                 } else if (listElementForCycle.getCostMetal() == 1) {
-                    upNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     bitmapFontSmall.draw(batch, "cash ->",
                             xForPriceListElements, listElementForCycle.y -
                                     2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
@@ -490,7 +452,7 @@ public class Shop implements MyScreen {
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     //TODO: add ads
                 } else if (listElementForCycle.getCostMetal() == 2) {
-                    upNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     bitmapFontSmall.draw(batch, "ads ->",
                             xForPriceListElements, listElementForCycle.y -
                                     2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
@@ -503,7 +465,7 @@ public class Shop implements MyScreen {
                     //TODO: add donations
                 } else if (listElementForCycle.getCostEnergy() == AVERAGE_VALUE_TO_BUY_RES) {
                     if (listTouchMode && Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
-                            APP_HEIGHT - Gdx.input.getY(), LEFT_INDENT, listElementForCycle.y,
+                            APP_HEIGHT - Gdx.input.getY(), SIDE_INDENT, listElementForCycle.y,
                             LIST_WIDTH, listItems.get(i).getHeight())
                             && isEnableToBuy(user, listElementForCycle)) {
                         if (listElementForCycle.getOutputMetal() != 0) {
@@ -516,9 +478,9 @@ public class Shop implements MyScreen {
                         listTouchMode = false;
                     }
                     if (isEnableToBuy(user, listElementForCycle)) {
-                        upNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     } else {
-                        downNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     }
                     bitmapFontSmall.draw(batch, listElementForCycle.getCostEnergy() + " -> ",
                             xForPriceListElements, listElementForCycle.y -
@@ -542,7 +504,7 @@ public class Shop implements MyScreen {
                                 bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     }
                 } else if (listElementForCycle.getCostEnergy() == 1) {
-                    upNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     bitmapFontSmall.draw(batch, "cash ->",
                             xForPriceListElements, listElementForCycle.y -
                                     2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
@@ -554,7 +516,7 @@ public class Shop implements MyScreen {
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     //TODO: add ads
                 } else if (listElementForCycle.getCostEnergy() == 2) {
-                    upNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
                     bitmapFontSmall.draw(batch, "ads ->",
                             xForPriceListElements, listElementForCycle.y -
                                     2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
@@ -602,46 +564,7 @@ public class Shop implements MyScreen {
         bitmapFontSmall.draw(batch, String.valueOf(user.getEnergy()),
                 energyValueX, yForResourcesText);
 
-        /*
-        Проверяем кнопки на нажатие.
-         */
-        for (int i = 0; i < myButtons.size(); i++) {
-            myButton = myButtons.get(i);
-            if (Gdx.input.isTouched()) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                if (isInPlace(touchedX, touchedY, myButton)) {
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (!myButton.isPressedToSound()) {
-                        buttonDownSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(true);
-                    }
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                }
-            } else {
-                if (isInPlace(touchedX, touchedY, myButton) && lastTouchTime != 0) {
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    this.buttonActivated(i);
-                    touchedX = touchedY = -1;
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                }
-            }
-        }
+        checkButtonTouches(); // Проверяем кнопки на нажатие.
 
         /*
         Отрисовываем ползунок, показывающий место в списке, в котором мы находимся.
@@ -672,7 +595,7 @@ public class Shop implements MyScreen {
         режим пролистывания - режим нажатия на элемент.
          */
         if (Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
-                Gdx.graphics.getHeight() - Gdx.input.getY(), 0, BUTTON_HEIGHT, LEFT_INDENT, LIST_HEIGHT)
+                Gdx.graphics.getHeight() - Gdx.input.getY(), 0, BUTTON_HEIGHT, SIDE_INDENT, LIST_HEIGHT)
                 && System.currentTimeMillis() - lastPanelTouchTime > 300) {
             if (!listTouchMode) buttonDownSound.play(user.getSoundsVolume());
             else buttonUpSound.play(user.getSoundsVolume());
@@ -684,9 +607,9 @@ public class Shop implements MyScreen {
         Отрисовываем кнопку режимов слева от списка.
          */
         if (listTouchMode) {
-            listButtonDown.draw(batch, 0, BUTTON_HEIGHT, LEFT_INDENT, LIST_HEIGHT);
+            listButtonDown.draw(batch, 0, BUTTON_HEIGHT, SIDE_INDENT, LIST_HEIGHT);
         } else {
-            listButtonUp.draw(batch, 0, BUTTON_HEIGHT, LEFT_INDENT, LIST_HEIGHT);
+            listButtonUp.draw(batch, 0, BUTTON_HEIGHT, SIDE_INDENT, LIST_HEIGHT);
         }
 
         bitmapFont.draw(batch, "menu", menuX, BOTTOM_BUTTONS_TEXT_Y);
@@ -695,21 +618,6 @@ public class Shop implements MyScreen {
         bitmapFont.draw(batch, "construct", constructX, TOP_BUTTONS_TEXT_Y);
 
         batch.end();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
     }
 
     @Override
@@ -765,5 +673,20 @@ public class Shop implements MyScreen {
                 sys.setScreen(screenManager.getConstructionScreen());
                 break;
         }
+    }
+
+    @Override
+    protected void miniWindowActivated(Building building) {
+
+    }
+
+    @Override
+    protected void miniWindowActivated(BuildingsInInventory buildingInInventory) {
+
+    }
+
+    @Override
+    protected void miniWindowActivated(ItemSelectingPlanet itemSelectingPlanet) {
+
     }
 }

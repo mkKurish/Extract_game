@@ -1,10 +1,14 @@
- package com.extractss.game.screens;
+package com.extractss.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.extractss.game.ClassesForLists.BasicListItem;
+import com.extractss.game.ClassesForLists.BuildingsInInventory;
+import com.extractss.game.ClassesForLists.ItemResearch;
+import com.extractss.game.ClassesForLists.ItemSelectingPlanet;
+import com.extractss.game.ClassesForLists.ItemShop;
 import com.extractss.game.SimpleClasses.Building;
 import com.extractss.game.ExtractSolarSys;
 import com.extractss.game.SimpleClasses.MyButtons;
@@ -21,8 +25,6 @@ import static com.extractss.game.ExtractSolarSys.buttonUpSound;
 import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.incrementingThreadTime;
-import static com.extractss.game.ExtractSolarSys.listButtonDown;
-import static com.extractss.game.ExtractSolarSys.listButtonUp;
 import static com.extractss.game.ExtractSolarSys.metalTexture;
 import static com.extractss.game.ExtractSolarSys.moneyTexture;
 import static com.extractss.game.ExtractSolarSys.progressBarKnobNinePatch;
@@ -38,7 +40,6 @@ import static com.extractss.game.utils.Constants.HEIGHT_FOR_RESOURCES;
 import static com.extractss.game.utils.Constants.HEIGHT_RESOURCES_TABLE;
 import static com.extractss.game.utils.Constants.KNOB_WIDTH;
 import static com.extractss.game.utils.Constants.KNOB_X;
-import static com.extractss.game.utils.Constants.LEFT_INDENT;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_SIZE;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_TITLE_X_CENTER;
@@ -54,60 +55,19 @@ import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
-public class Construction implements MyScreen {
-
-    private ExtractSolarSys sys;
-    User user;
-
-    private Batch batch;
-
-    private ArrayList<MyButtons> myButtons;
-    private MyButtons myButton;
+public class Construction extends BasicScrollScreen {
 
     private ArrayList<Building> listItems;
     private Building listElementForCycle;
-
-    private float touchedX;
-    private float touchedY;
-    private float touchedListY;
-    private long lastTouchTime = 0;
-    private long lastListTouchTime = 1000;
-    static long lastPanelTouchTime = 0;
-    private long lastAnimationTime;
-    private int curScreenAnimation = 0;
-    private float knobHeight;
-    private static float yForIcons;
-    private static float heightForIcons;
-    private static float widthForIcons;
-    private static float yForResourcesText;
-    private static float xForPriceListElements;
-    private static float xForIconsListElements;
-    private static float appWidthToTwentyFour = APP_WIDTH / 24;
-    private static float firstElementY;
-    private static float lastElementY;
-    private static float boarderUp;
-    private static boolean listTouchMode;
-    private float resCoord = 0;
-    private static float moneyTextureX;
-    private static float metalTextureX;
-    private static float energyTextureX;
-    private static float moneyValueX;
-    private static float metalValueX;
-    private static float energyValueX;
-    private static float deltaFirstElementY;
     private static float menuX;
     private static float inventoryX;
     private static float shopX;
-
-    IncrementResourcesTimeCheck incrementResourcesTimeCheck;
 
     public Construction(ExtractSolarSys sys, User user) {
         this.sys = sys;
         this.user = user;
 
         batch = new SpriteBatch();
-
-        listTouchMode = false;
 
         myButtons = new ArrayList<>();
         myButtons.add(new MyButtons(0, APP_WIDTH / 2f, 0, BUTTON_HEIGHT));
@@ -192,10 +152,8 @@ public class Construction implements MyScreen {
         heightForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         widthForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         yForResourcesText = HEIGHT_FOR_RESOURCES - bitmapFontSmall.getCapHeight() / 2;
-        xForPriceListElements = LEFT_INDENT + LIST_ELEMENT_HEIGHT + 3 * bitmapFontSmall.getCapHeight() / 2;
-        xForIconsListElements = LEFT_INDENT + LIST_ELEMENT_HEIGHT + bitmapFontSmall.getCapHeight() / 2;
-
-        boarderUp = APP_HEIGHT - BUTTON_HEIGHT - LIST_ELEMENT_HEIGHT - 2 * bitmapFontSmall.getCapHeight();
+        xForPriceListElements = LIST_ELEMENT_HEIGHT + 3 * bitmapFontSmall.getCapHeight() / 2;
+        xForIconsListElements = LIST_ELEMENT_HEIGHT + bitmapFontSmall.getCapHeight() / 2;
 
         menuX = APP_WIDTH / 4f - "menu".length() * 11 * SCALEXY_NEW;
         inventoryX = 3 * APP_WIDTH / 4f - "inventory".length() * 11 * SCALEXY_NEW;
@@ -204,12 +162,6 @@ public class Construction implements MyScreen {
         incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(sys, user);
 
         lastAnimationTime = System.currentTimeMillis();
-    }
-
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -247,65 +199,18 @@ public class Construction implements MyScreen {
         /*
         Прокручиваем список зданий, если палец скользит по списку.
          */
-        firstElementY = listItems.get(0).y;
-        lastElementY = listItems.get(listItems.size() - 1).y;
-        if (!listTouchMode && Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
-                Gdx.graphics.getHeight() - Gdx.input.getY(), LEFT_INDENT, BUTTON_HEIGHT,
-                LIST_WIDTH, LIST_HEIGHT)) {
-            if (System.currentTimeMillis() - lastListTouchTime < 50) {
-                resCoord = (-touchedListY + Gdx.graphics.getHeight() - Gdx.input.getY()) * 2;
-                if (firstElementY + resCoord > BUTTON_HEIGHT) {
-                    resCoord -= firstElementY + resCoord - BUTTON_HEIGHT;
-                } else if (lastElementY + resCoord < boarderUp) {
-                    resCoord += boarderUp - lastElementY - resCoord;
-                }
-                for (int i = 0; i < listItems.size(); i++) {
-                    listItems.get(i).y += resCoord;
-                }
-                lastListTouchTime = System.currentTimeMillis() - lastListTouchTime;
-            } else {
-                lastListTouchTime = System.currentTimeMillis();
-            }
-            touchedListY = Gdx.graphics.getHeight() - Gdx.input.getY();
-        } else {
-            if (lastElementY < boarderUp) {
-                for (int i = 0; i < listItems.size(); i++) {
-                    listItems.get(i).y += boarderUp - lastElementY + 1;
-                }
-            } else if (firstElementY > BUTTON_HEIGHT) {
-                for (int i = 0; i < listItems.size(); i++) {
-                    listItems.get(i).y += BUTTON_HEIGHT - firstElementY;
-                }
-            }
-        }
-
+        scrollTouchMechanic(listItems);
 
         for (int i = 0; i < listItems.size(); i++) {
             listElementForCycle = listItems.get(i);
-            /*
-            Если в режиме нажатий коснулись элемента списка, открываем экран с информацией о здании,
-            где его можно купить (при покупке автоматически появится в инвентаре).
-             */
-            if (listTouchMode
-                    && Gdx.input.isTouched()
-                    && isInPlaceMain(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                    LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, LIST_ELEMENT_HEIGHT)
-                    && Gdx.input.getY() < (LIST_HEIGHT + BUTTON_HEIGHT)
-                    && Gdx.input.getY() > BUTTON_HEIGHT
-                    && user.getInvents() >= listElementForCycle.getInventLvl()) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                miniWindowActivated(listItems.get(i));
-            }
             /*
             Отрисовываем каждый элемент списка, который помещается на экран.
              */
             if ((listElementForCycle.y < APP_HEIGHT + BUTTON_HEIGHT && listElementForCycle.y > -LIST_ELEMENT_HEIGHT)) {
                 if (isEnableToBuy(user, listElementForCycle)) {
-                    upNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, LIST_ELEMENT_HEIGHT);
+                    upNinePatch.draw(batch, 0, listElementForCycle.y, LIST_WIDTH, LIST_ELEMENT_HEIGHT);
                 } else {
-                    downNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, LIST_ELEMENT_HEIGHT);
+                    downNinePatch.draw(batch, 0, listElementForCycle.y, LIST_WIDTH, LIST_ELEMENT_HEIGHT);
                 }
                 if (user.getInvents() >= listElementForCycle.getInventLvl()) {
                     upNinePatch.draw(batch, LIST_ELEMENT_PIC_X - 1, listElementForCycle.y + LIST_ELEMENT_HEIGHT / 10f - 1,
@@ -316,7 +221,7 @@ public class Construction implements MyScreen {
                             LIST_ELEMENT_TITLE_X_CENTER - listElementForCycle.getName().length() * 11 * SMALLER_SCALE,
                             listElementForCycle.y - bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getCostMoney()),
-                            xForPriceListElements, listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            xForPriceListElements, listElementForCycle.y - 3  * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getCostMetal()),
                             xForPriceListElements, listElementForCycle.y - 4.5f * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getCostEnergy()),
@@ -367,46 +272,7 @@ public class Construction implements MyScreen {
         bitmapFontSmall.draw(batch, String.valueOf(user.getEnergy()),
                 energyValueX, yForResourcesText);
 
-        /*
-        Проверяем кнопки на нажатие.
-         */
-        for (int i = 0; i < myButtons.size(); i++) {
-            myButton = myButtons.get(i);
-            if (Gdx.input.isTouched()) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                if (isInPlace(touchedX, touchedY, myButton)) {
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (!myButton.isPressedToSound()) {
-                        buttonDownSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(true);
-                    }
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                }
-            } else {
-                if (isInPlace(touchedX, touchedY, myButton) && lastTouchTime != 0) {
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    this.buttonActivated(i);
-                    touchedX = touchedY = -1;
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                }
-            }
-        }
+        checkButtonTouches(); // Проверяем кнопки на нажатие.
 
         /*
         Отрисовываем ползунок, показывающий место в списке, в котором мы находимся.
@@ -414,6 +280,7 @@ public class Construction implements MyScreen {
         progressBarBackNinePatch.draw(batch, KNOB_X, BUTTON_HEIGHT, KNOB_WIDTH, LIST_HEIGHT);
         progressBarKnobNinePatch.draw(batch, KNOB_X, BUTTON_HEIGHT -
                 knobHeight * (listItems.get(0).y - BUTTON_HEIGHT) / LIST_HEIGHT, KNOB_WIDTH, knobHeight);
+
 
         /*
         Если нажать на ползунок, мы переместимся в ту часть списка, в какую часть ползунка мы нажали.
@@ -431,47 +298,11 @@ public class Construction implements MyScreen {
             }
         }
 
-        /*
-        Если нажата кнопка слева от списка, то переключается режим:
-        режим пролистывания - режим нажатия на элемент.
-         */
-        if (Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                0, BUTTON_HEIGHT, LEFT_INDENT, LIST_HEIGHT) && System.currentTimeMillis() - lastPanelTouchTime > 300) {
-            if (!listTouchMode) buttonDownSound.play(user.getSoundsVolume());
-            else buttonUpSound.play(user.getSoundsVolume());
-            listTouchMode = !listTouchMode;
-            lastPanelTouchTime = System.currentTimeMillis();
-        }
-
-        /*
-        Отрисовываем кнопку режимов слева от списка.
-         */
-        if (listTouchMode) {
-            listButtonDown.draw(batch, 0, BUTTON_HEIGHT, LEFT_INDENT, LIST_HEIGHT);
-        } else {
-            listButtonUp.draw(batch, 0, BUTTON_HEIGHT, LEFT_INDENT, LIST_HEIGHT);
-        }
-
         bitmapFont.draw(batch, "menu", menuX, BOTTOM_BUTTONS_TEXT_Y);
         bitmapFont.draw(batch, "inventory", inventoryX, BOTTOM_BUTTONS_TEXT_Y);
         bitmapFont.draw(batch, "shop", shopX, TOP_BUTTONS_TEXT_Y);
 
         batch.end();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
     }
 
     @Override
@@ -500,12 +331,24 @@ public class Construction implements MyScreen {
                 break;
         }
     }
-
-    private void miniWindowActivated(Building item) {
+    @Override
+    protected void miniWindowActivated(Building item) {
         if (item.getName() == "rocket") sys.setScreen(screenManager.getGameOverScreen());
         else {
-            screenManager.setMiniWindowBuyingScreen(new MiniWindowBuying(sys, user, new Building(item)));
+            screenManager.setMiniWindowBuyingScreen(new BuildingMiniWindowBuying(sys, user, new Building(item)));
             sys.setScreen(screenManager.getMiniWindowBuyingScreen());
         }
     }
+
+    @Override
+    protected void miniWindowActivated(BuildingsInInventory building) {
+
+    }
+
+
+    @Override
+    protected void miniWindowActivated(ItemSelectingPlanet building) {
+
+    }
+
 }

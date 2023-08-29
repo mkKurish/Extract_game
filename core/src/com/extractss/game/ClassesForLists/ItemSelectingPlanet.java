@@ -1,24 +1,14 @@
 package com.extractss.game.ClassesForLists;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import javax.xml.soap.Text;
-
-public class ItemSelectingPlanet {
+public class ItemSelectingPlanet extends BasicListItem {
     private String name;
     private TextureRegion picture;
 
     private int costMoney;
     private int costMetal;
     private int costEnergy;
-
-    private int inventLvl;
-
-    public float y;
-    /*
-    Данная переменная 'y' нужна для визуального создания списка на экране исследований.
-     */
 
     public ItemSelectingPlanet(String name, TextureRegion picture, int costMoney, int costMetal, int costEnergy, int inventLvl, float y) {
         this.name = name;

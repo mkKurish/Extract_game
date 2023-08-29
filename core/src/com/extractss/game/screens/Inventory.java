@@ -2,9 +2,11 @@ package com.extractss.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.extractss.game.ClassesForLists.ItemResearch;
+import com.extractss.game.ClassesForLists.ItemSelectingPlanet;
+import com.extractss.game.ClassesForLists.ItemShop;
 import com.extractss.game.SimpleClasses.Building;
 import com.extractss.game.ClassesForLists.BuildingsInInventory;
 import com.extractss.game.ExtractSolarSys;
@@ -19,7 +21,6 @@ import static com.extractss.game.ExtractSolarSys.bitmapFont;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
 import static com.extractss.game.ExtractSolarSys.buttonDownSound;
 import static com.extractss.game.ExtractSolarSys.buttonUpSound;
-import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.incrementingThreadTime;
 import static com.extractss.game.ExtractSolarSys.inventoryBuildings;
@@ -39,7 +40,7 @@ import static com.extractss.game.utils.Constants.HEIGHT_FOR_RESOURCES;
 import static com.extractss.game.utils.Constants.HEIGHT_RESOURCES_TABLE;
 import static com.extractss.game.utils.Constants.KNOB_WIDTH;
 import static com.extractss.game.utils.Constants.KNOB_X;
-import static com.extractss.game.utils.Constants.LEFT_INDENT;
+import static com.extractss.game.utils.Constants.SIDE_INDENT;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_SIZE;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_X;
@@ -50,57 +51,20 @@ import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Constants.SMALLER_SCALE;
 import static com.extractss.game.utils.Constants.TOP_BUTTONS_TEXT_Y;
 import static com.extractss.game.utils.Constants.Y_RESOURCES_TABLE;
-import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
-public class Inventory implements MyScreen {
+public class Inventory extends BasicScrollScreen {
 
     private Building listElementForCycle;
-
-    private ExtractSolarSys sys;
-    User user;
-
-    private Batch batch;
-
-    private ArrayList<MyButtons> myButtons;
-    private MyButtons myButton;
-
-    private float touchedX;
-    private float touchedY;
-    private long lastTouchTime = 0;
-    private long lastAnimationTime;
     private long lastListTouchTime = 1000;
-    private int curScreenAnimation = 0;
     static long lastPanelTouchTime = 0;
-    private float touchedListY;
-    private static float firstElementY;
-    private static float lastElementY;
-    private static float boarderUp;
     private static boolean listTouchMode;
-    private static float yForIcons;
-    private static float heightForIcons;
-    private static float widthForIcons;
-    private static float yForResourcesText;
-    private static float xForPriceListElements;
-    private static float xForIconsLestElements;
-    private static float appWidthToTwentyFour = APP_WIDTH / 24;
-    private float knobHeight;
     private float listElementY;
-    private static float resCoord = 0;
-    private static float moneyTextureX;
-    private static float metalTextureX;
-    private static float energyTextureX;
-    private static float moneyValueX;
-    private static float metalValueX;
-    private static float energyValueX;
-    private static float deltaFirstElementY;
     private static float menuX;
     private static float planetX;
     private static float researchX;
     private static float constructX;
-
-    IncrementResourcesTimeCheck incrementResourcesTimeCheck;
 
     public Inventory(ExtractSolarSys sys, User user) {
         this.sys = sys;
@@ -129,10 +93,8 @@ public class Inventory implements MyScreen {
         heightForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         widthForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         yForResourcesText = HEIGHT_FOR_RESOURCES - bitmapFontSmall.getCapHeight() / 2;
-        xForPriceListElements = LEFT_INDENT + LIST_ELEMENT_HEIGHT + 3 * bitmapFontSmall.getCapHeight() / 2;
-        xForIconsLestElements = LEFT_INDENT + LIST_ELEMENT_HEIGHT + bitmapFontSmall.getCapHeight() / 2;
-
-        boarderUp = APP_HEIGHT - BUTTON_HEIGHT - LIST_ELEMENT_HEIGHT - 2 * bitmapFontSmall.getCapHeight();
+        xForPriceListElements = LIST_ELEMENT_HEIGHT + 3 * bitmapFontSmall.getCapHeight() / 2;
+        xForIconsListElements = LIST_ELEMENT_HEIGHT + bitmapFontSmall.getCapHeight() / 2;
 
         menuX = APP_WIDTH / 4 - "menu".length() * 11 * SCALEXY_NEW;
         planetX = 3 * APP_WIDTH / 4 - "planet".length() * 11 * SCALEXY_NEW;
@@ -142,12 +104,6 @@ public class Inventory implements MyScreen {
         incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(sys, user);
 
         lastAnimationTime = System.currentTimeMillis();
-    }
-
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -195,70 +151,16 @@ public class Inventory implements MyScreen {
         /*
         Прокручиваем список зданий, если палец скользит по списку.
          */
-        if (inventoryBuildings.size() != 0) {
-            firstElementY = inventoryBuildings.get(0).getY();
-            lastElementY = inventoryBuildings.get(inventoryBuildings.size() - 1).getY();
-        }
-        if ((inventoryBuildings.size() * LIST_ELEMENT_HEIGHT > LIST_HEIGHT)
-                && !listTouchMode
-                && Gdx.input.isTouched()
-                && isInPlaceMain(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                LEFT_INDENT, BUTTON_HEIGHT, LIST_WIDTH, LIST_HEIGHT)) {
-            if (System.currentTimeMillis() - lastListTouchTime < 50) {
-                resCoord = (-touchedListY + Gdx.graphics.getHeight() - Gdx.input.getY()) * 2;
-                if (firstElementY + resCoord > BUTTON_HEIGHT) {
-                    resCoord -= firstElementY + resCoord - BUTTON_HEIGHT;
-                } else if (lastElementY + resCoord < boarderUp) {
-                    resCoord += boarderUp - lastElementY - resCoord;
-                }
-                for (int i = 0; i < inventoryBuildings.size(); i++) {
-                    inventoryBuildings.get(i).setY(inventoryBuildings.get(i).getY() + resCoord);
-                }
-                lastListTouchTime = System.currentTimeMillis() - lastListTouchTime;
-            } else {
-                lastListTouchTime = System.currentTimeMillis();
-            }
-            touchedListY = Gdx.graphics.getHeight() - Gdx.input.getY();
-        } else {
-            if (lastElementY < boarderUp && (inventoryBuildings.size() * LIST_ELEMENT_HEIGHT > LIST_HEIGHT)) {
-                for (int i = 0; i < inventoryBuildings.size(); i++) {
-                    inventoryBuildings.get(i).setY(inventoryBuildings.get(i).getY() + boarderUp - lastElementY + 1);
-                }
-            } else if (firstElementY > BUTTON_HEIGHT && (inventoryBuildings.size() * LIST_ELEMENT_HEIGHT > LIST_HEIGHT)) {
-                for (int i = 0; i < inventoryBuildings.size(); i++) {
-                    inventoryBuildings.get(i).setY(inventoryBuildings.get(i).getY() + BUTTON_HEIGHT - firstElementY);
-                }
-            }
-        }
-        if (inventoryBuildings.size() * LIST_ELEMENT_HEIGHT < LIST_HEIGHT && firstElementY != BUTTON_HEIGHT) {
-            for (int i = inventoryBuildings.size() - 1; i >= 0; i--) {
-                inventoryBuildings.get(i).setY(inventoryBuildings.get(i).getY() + BUTTON_HEIGHT - firstElementY);
-            }
-        }
+        scrollTouchMechanic(inventoryBuildings);
 
         for (int i = 0; i < inventoryBuildings.size(); i++) {
             listElementForCycle = inventoryBuildings.get(i).getBuilding();
             listElementY = inventoryBuildings.get(i).getY();
             /*
-            Если в режиме нажатий коснулись элемента списка, открываем экран с информацией о здании,
-            где его можно установить на поле.
-             */
-            if (listTouchMode
-                    && Gdx.input.isTouched()
-                    && isInPlaceMain(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                    LEFT_INDENT, listElementY, LIST_WIDTH, LIST_ELEMENT_HEIGHT)
-                    && Gdx.input.getY() < (LIST_HEIGHT + BUTTON_HEIGHT)
-                    && Gdx.input.getY() > BUTTON_HEIGHT) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                miniWindowActivated(inventoryBuildings.get(i));
-            }
-            /*
             Отрисовываем каждый элемент списка, который помещается на экран.
              */
             if ((listElementY < APP_HEIGHT + BUTTON_HEIGHT && listElementY > -LIST_ELEMENT_HEIGHT)) {
-                upNinePatch.draw(batch, LEFT_INDENT, listElementY, LIST_WIDTH, LIST_ELEMENT_HEIGHT);
+                upNinePatch.draw(batch, 0, listElementY, LIST_WIDTH, LIST_ELEMENT_HEIGHT);
                 upNinePatch.draw(batch, LIST_ELEMENT_PIC_X - 1,
                         listElementY + LIST_ELEMENT_HEIGHT / 10 - 1,
                         LIST_ELEMENT_PIC_SIZE + 2, LIST_ELEMENT_PIC_SIZE + 2);
@@ -288,13 +190,13 @@ public class Inventory implements MyScreen {
                             xForPriceListElements,
                             listElementY - 6 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
                 }
-                batch.draw(moneyTexture, xForIconsLestElements, listElementY -
+                batch.draw(moneyTexture, xForIconsListElements, listElementY -
                                 4 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT, bitmapFontSmall.getCapHeight(),
                         bitmapFontSmall.getCapHeight());
-                batch.draw(metalTexture, xForIconsLestElements, listElementY -
+                batch.draw(metalTexture, xForIconsListElements, listElementY -
                                 5.5f * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT, bitmapFontSmall.getCapHeight(),
                         bitmapFontSmall.getCapHeight());
-                batch.draw(energyTexture, xForIconsLestElements, listElementY -
+                batch.draw(energyTexture, xForIconsListElements, listElementY -
                                 7 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT, bitmapFontSmall.getCapHeight(),
                         bitmapFontSmall.getCapHeight());
             }
@@ -325,46 +227,7 @@ public class Inventory implements MyScreen {
         bitmapFontSmall.draw(batch, String.valueOf(user.getEnergy()),
                 energyValueX, yForResourcesText);
 
-        /*
-        Проверяем кнопки на нажатие.
-         */
-        for (int i = 0; i < myButtons.size(); i++) {
-            myButton = myButtons.get(i);
-            if (Gdx.input.isTouched()) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                if (isInPlace(touchedX, touchedY, myButton)) {
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (!myButton.isPressedToSound()) {
-                        buttonDownSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(true);
-                    }
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                }
-            } else {
-                if (isInPlace(touchedX, touchedY, myButton) && lastTouchTime != 0) {
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    this.buttonActivated(i);
-                    touchedX = touchedY = -1;
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                }
-            }
-        }
+        checkButtonTouches(); // Проверяем кнопки на нажатие.
 
         /*
         Отрисовываем ползунок, показывающий место в списке, в котором мы находимся.
@@ -393,48 +256,12 @@ public class Inventory implements MyScreen {
             }
         }
 
-        /*
-        Если нажата кнопка слева от списка, то переключается режим:
-        режим пролистывания - режим нажатия на элемент.
-         */
-        if (Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                0, BUTTON_HEIGHT, LEFT_INDENT, LIST_HEIGHT) && System.currentTimeMillis() - lastPanelTouchTime > 300) {
-            if (!listTouchMode) buttonDownSound.play(user.getSoundsVolume());
-            else buttonUpSound.play(user.getSoundsVolume());
-            listTouchMode = !listTouchMode;
-            lastPanelTouchTime = System.currentTimeMillis();
-        }
-
-        /*
-        Отрисовываем кнопку режимов слева от списка.
-         */
-        if (listTouchMode) {
-            listButtonDown.draw(batch, 0, BUTTON_HEIGHT, LEFT_INDENT, LIST_HEIGHT);
-        } else {
-            listButtonUp.draw(batch, 0, BUTTON_HEIGHT, LEFT_INDENT, LIST_HEIGHT);
-        }
-
         bitmapFont.draw(batch, "menu", menuX, BOTTOM_BUTTONS_TEXT_Y);
         bitmapFont.draw(batch, "planet", planetX, BOTTOM_BUTTONS_TEXT_Y);
         bitmapFont.draw(batch, "research", researchX, TOP_BUTTONS_TEXT_Y);
         bitmapFont.draw(batch, "construct", constructX, TOP_BUTTONS_TEXT_Y);
 
         batch.end();
-
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
 
     }
 
@@ -447,11 +274,6 @@ public class Inventory implements MyScreen {
     public void dispose() {
         parseAndSavePrefsBuildings(user);
         batch.dispose();
-    }
-
-    private void miniWindowActivated(BuildingsInInventory item) {
-        screenManager.setMiniWindowInventoryScreen(new MiniWindowInventory(sys, user, item));
-        sys.setScreen(screenManager.getMiniWindowInventoryScreen());
     }
 
     @Override
@@ -471,4 +293,21 @@ public class Inventory implements MyScreen {
                 break;
         }
     }
+
+    @Override
+    protected void miniWindowActivated(Building building) {
+
+    }
+
+    @Override
+    protected void miniWindowActivated(BuildingsInInventory item) {
+        screenManager.setMiniWindowInventoryScreen(new MiniWindowInventory(sys, user, item));
+        sys.setScreen(screenManager.getMiniWindowInventoryScreen());
+    }
+
+    @Override
+    protected void miniWindowActivated(ItemSelectingPlanet building) {
+
+    }
+
 }

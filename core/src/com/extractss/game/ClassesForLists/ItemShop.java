@@ -4,7 +4,7 @@ package com.extractss.game.ClassesForLists;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_SHOP_ELEMENT_HEIGHT;
 
-public class ItemShop {
+public class ItemShop extends BasicListItem{
 
     private String name;
 
@@ -16,10 +16,6 @@ public class ItemShop {
     private int outputEnergy;
 
     private float height;
-    public float y;
-    /*
-    Данная переменная 'y' нужна для визуального создания списка на экране магазина.
-     */
 
     public ItemShop(String name, int costMoney, int costMetal, int costEnergy, int outputMoney,
                     int outputMetal, int outputEnergy, float y) {

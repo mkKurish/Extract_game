@@ -5,8 +5,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.extractss.game.ClassesForLists.BuildingsInInventory;
 import com.extractss.game.ClassesForLists.ItemSelectingPlanet;
 import com.extractss.game.ExtractSolarSys;
+import com.extractss.game.SimpleClasses.Building;
 import com.extractss.game.SimpleClasses.MyButtons;
 import com.extractss.game.SimpleClasses.User;
 import com.extractss.game.utils.IncrementResourcesTimeCheck;
@@ -22,7 +24,6 @@ import static com.extractss.game.ExtractSolarSys.currentPlanet;
 import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.incrementingThreadTime;
-import static com.extractss.game.ExtractSolarSys.inventTexture;
 import static com.extractss.game.ExtractSolarSys.listButtonDown;
 import static com.extractss.game.ExtractSolarSys.listButtonUp;
 import static com.extractss.game.ExtractSolarSys.metalTexture;
@@ -41,7 +42,7 @@ import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
 import static com.extractss.game.utils.Constants.HEIGHT_RESOURCES_TABLE;
 import static com.extractss.game.utils.Constants.KNOB_WIDTH;
 import static com.extractss.game.utils.Constants.KNOB_X;
-import static com.extractss.game.utils.Constants.LEFT_INDENT;
+import static com.extractss.game.utils.Constants.SIDE_INDENT;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_SIZE;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_X;
@@ -50,57 +51,23 @@ import static com.extractss.game.utils.Constants.LIST_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_WIDTH;
 import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Constants.SMALLER_SCALE;
-import static com.extractss.game.utils.Constants.TOP_BUTTONS_TEXT_Y;
 import static com.extractss.game.utils.Constants.Y_RESOURCES_TABLE;
 import static com.extractss.game.utils.Operations.isEnableToBuy;
 import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
-public class SelectingPlanetScreen implements MyScreen {
-    private ExtractSolarSys sys;
-    User user;
+public class SelectingPlanetScreen extends BasicScrollScreen {
 
     private ItemSelectingPlanet listElementForCycle;
 
-    private Batch batch;
 
-    private ArrayList<MyButtons> myButtons;
-    private MyButtons myButton;
-
-    private float touchedX;
-    private float touchedY;
-    private float touchedListY;
-    private long lastTouchTime = 0;
     private long lastListTouchTime = 1000;
     static long lastPanelTouchTime = 0;
-    private long lastAnimationTime;
-    private int curScreenAnimation = 0;
-    private float knobHeight;
-    private static float yForIcons;
-    private static float heightForIcons;
-    private static float widthForIcons;
-    private static float yForResourcesText;
-    private static float xForPriceListElements;
-    private static float xForIconsListElements;
-    private static float appWidthToTwentyFour = APP_WIDTH / 24;
-    private static float firstElementY;
-    private static float lastElementY;
-    private static float boarderUp;
     private static boolean listTouchMode;
-    private static float resCoord;
-    private static float moneyTextureX;
-    private static float metalTextureX;
-    private static float energyTextureX;
-    private static float moneyValueX;
-    private static float metalValueX;
-    private static float energyValueX;
-    private static float deltaFirstElementY;
     private static float cancelX;
     private static float thisListHeight;
     private static float thisResourcesLabelY;
-
-    IncrementResourcesTimeCheck incrementResourcesTimeCheck;
 
     public SelectingPlanetScreen(ExtractSolarSys sys, User user) {
         this.sys = sys;
@@ -127,21 +94,14 @@ public class SelectingPlanetScreen implements MyScreen {
         heightForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         widthForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         yForResourcesText = APP_HEIGHT - bitmapFontSmall.getCapHeight() / 2;
-        xForPriceListElements = LEFT_INDENT + LIST_ELEMENT_HEIGHT + 3 * bitmapFontSmall.getCapHeight() / 2;
-        xForIconsListElements = LEFT_INDENT + LIST_ELEMENT_HEIGHT + bitmapFontSmall.getCapHeight() / 2;
-
-        boarderUp = APP_HEIGHT - LIST_ELEMENT_HEIGHT - 2 * bitmapFontSmall.getCapHeight();
+        xForPriceListElements = SIDE_INDENT + LIST_ELEMENT_HEIGHT + 3 * bitmapFontSmall.getCapHeight() / 2;
+        xForIconsListElements = SIDE_INDENT + LIST_ELEMENT_HEIGHT + bitmapFontSmall.getCapHeight() / 2;
 
         cancelX = APP_WIDTH / 2f - "cancel".length() * 11 * SCALEXY_NEW;
 
         incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(sys, user);
 
         lastAnimationTime = System.currentTimeMillis();
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -182,7 +142,7 @@ public class SelectingPlanetScreen implements MyScreen {
         firstElementY = selectingPlanetArrayList.get(0).y;
         lastElementY = selectingPlanetArrayList.get(selectingPlanetArrayList.size() - 1).y;
         if (!listTouchMode && Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
-                Gdx.graphics.getHeight() - Gdx.input.getY(), LEFT_INDENT, BUTTON_HEIGHT,
+                Gdx.graphics.getHeight() - Gdx.input.getY(), SIDE_INDENT, BUTTON_HEIGHT,
                 LIST_WIDTH, thisListHeight)) {
             if (System.currentTimeMillis() - lastListTouchTime < 50) {
                 resCoord = (-touchedListY + Gdx.graphics.getHeight() - Gdx.input.getY()) * 2;
@@ -220,7 +180,7 @@ public class SelectingPlanetScreen implements MyScreen {
             if (listTouchMode
                     && Gdx.input.isTouched()
                     && isInPlaceMain(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                    LEFT_INDENT, listElementForCycle.y, LIST_WIDTH, LIST_ELEMENT_HEIGHT)
+                    SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, LIST_ELEMENT_HEIGHT)
                     && Gdx.input.getY() < (thisListHeight + BUTTON_HEIGHT)
                     && Gdx.input.getY() > BUTTON_HEIGHT && isEnableToBuy(user, listElementForCycle)) {
                 lastTouchTime = System.currentTimeMillis();
@@ -245,10 +205,10 @@ public class SelectingPlanetScreen implements MyScreen {
             if ((listElementForCycle.y < APP_HEIGHT + BUTTON_HEIGHT
                     && listElementForCycle.y > -LIST_ELEMENT_HEIGHT)) {
                 if (isEnableToBuy(user, listElementForCycle)) {
-                    upNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y,
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y,
                             LIST_WIDTH, LIST_ELEMENT_HEIGHT);
                 } else {
-                    downNinePatch.draw(batch, LEFT_INDENT, listElementForCycle.y,
+                    downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y,
                             LIST_WIDTH, LIST_ELEMENT_HEIGHT);
                 }
                 if (user.getInvents() >= listElementForCycle.getInventLvl()) {
@@ -322,46 +282,7 @@ public class SelectingPlanetScreen implements MyScreen {
         bitmapFontSmall.draw(batch, String.valueOf(user.getEnergy()),
                 energyValueX, yForResourcesText);
 
-        /*
-        Проверяем кнопки на нажатие.
-         */
-        for (int i = 0; i < myButtons.size(); i++) {
-            myButton = myButtons.get(i);
-            if (Gdx.input.isTouched()) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                if (isInPlace(touchedX, touchedY, myButton)) {
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (!myButton.isPressedToSound()) {
-                        buttonDownSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(true);
-                    }
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                }
-            } else {
-                if (isInPlace(touchedX, touchedY, myButton) && lastTouchTime != 0) {
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    this.buttonActivated(i);
-                    touchedX = touchedY = -1;
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                }
-            }
-        }
+        checkButtonTouches(); // Проверяем кнопки на нажатие.
 
         /*
         Отрисовываем ползунок, показывающий место в списке, в котором мы находимся.
@@ -392,7 +313,7 @@ public class SelectingPlanetScreen implements MyScreen {
         режим пролистывания - режим нажатия на элемент.
          */
         if (Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
-                Gdx.graphics.getHeight() - Gdx.input.getY(), 0, BUTTON_HEIGHT, LEFT_INDENT, thisListHeight)
+                Gdx.graphics.getHeight() - Gdx.input.getY(), 0, BUTTON_HEIGHT, SIDE_INDENT, thisListHeight)
                 && System.currentTimeMillis() - lastPanelTouchTime > 300) {
             if (!listTouchMode) buttonDownSound.play(user.getSoundsVolume());
             else buttonUpSound.play(user.getSoundsVolume());
@@ -404,9 +325,9 @@ public class SelectingPlanetScreen implements MyScreen {
         Отрисовываем кнопку режимов слева от списка.
          */
         if (listTouchMode) {
-            listButtonDown.draw(batch, 0, BUTTON_HEIGHT, LEFT_INDENT, thisListHeight);
+            listButtonDown.draw(batch, 0, BUTTON_HEIGHT, SIDE_INDENT, thisListHeight);
         } else {
-            listButtonUp.draw(batch, 0, BUTTON_HEIGHT, LEFT_INDENT, thisListHeight);
+            listButtonUp.draw(batch, 0, BUTTON_HEIGHT, SIDE_INDENT, thisListHeight);
         }
 
         bitmapFont.draw(batch, "cancel", cancelX, BOTTOM_BUTTONS_TEXT_Y);
@@ -415,20 +336,6 @@ public class SelectingPlanetScreen implements MyScreen {
 
     }
 
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
 
     @Override
     public void hide() {
@@ -437,7 +344,7 @@ public class SelectingPlanetScreen implements MyScreen {
 
     @Override
     public void dispose() {
-
+        //TODO: why I found NOTHING here???
     }
 
     @Override
@@ -447,5 +354,20 @@ public class SelectingPlanetScreen implements MyScreen {
                 sys.setScreen(screenManager.getPlanetScreen());
                 break;
         }
+    }
+
+    @Override
+    protected void miniWindowActivated(Building building) {
+
+    }
+
+    @Override
+    protected void miniWindowActivated(BuildingsInInventory buildingInInventory) {
+
+    }
+
+    @Override
+    protected void miniWindowActivated(ItemSelectingPlanet itemSelectingPlanet) {
+
     }
 }

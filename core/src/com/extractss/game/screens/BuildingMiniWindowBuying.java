@@ -2,8 +2,6 @@ package com.extractss.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.extractss.game.SimpleClasses.Building;
@@ -32,77 +30,16 @@ import static com.extractss.game.utils.Constants.APP_HEIGHT;
 import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
-import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Operations.isEnableToBuy;
 import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
-public class MiniWindowBuying implements MyScreen {
-    ExtractSolarSys sys;
-    User user;
-    Building building;
-
-    private Batch batch;
-
-    private ArrayList<MyButtons> myButtons;
-    private MyButtons myButton;
-
-    private Texture texture;
-
-    private TextureRegion picTextureRegion;
-
-    private long lastAnimationTime;
-    private int curScreenAnimation = 0;
-
-    private float touchedX;
-    private float touchedY;
-    private long lastTouchTime = 0;
-
-    private static float titleX;
-    private static float titleY;
-
-    private static float frameX;
-    private static float frameWidth;
-    private static float frameY;
-    private static float frameHigh;
-
-    private static float firstResourceYMoney;
-    private static float firstResourceYMetal;
-    private static float firstResourceYEnergy;
-    private static float firstResourcePicYMoney;
-    private static float firstResourcePicYMetal;
-    private static float firstResourcePicYEnergy;
-
-    private static float inventLvlBuildingY;
-    private static float inventLvlBuildingPicY;
-
-    private static float secondResourceYMoney;
-    private static float secondResourceYMetal;
-    private static float secondResourceYEnergy;
-    private static float secondResourcePicYMoney;
-    private static float secondResourcePicYMetal;
-    private static float secondResourcePicYEnergy;
-
-    private static float resourceHighWidth;
-    private static float resourceX;
-    private static float resourcePicX;
-
-    private static float costY;
-
-    private static float productivityY;
-
-    private static float picX;
-    private static float picY;
-    private static float picWidth;
-    private static float picHigh;
-
-    private static float cancelX;
-    private static float cancelY;
+public class BuildingMiniWindowBuying extends BasicBuildingMiniWindow {
 
     private static float buyX;
     private static float buyY;
 
-    public MiniWindowBuying(ExtractSolarSys sys, User user, Building item) {
+    public BuildingMiniWindowBuying(ExtractSolarSys sys, User user, Building item) {
         this.sys = sys;
         this.user = user;
         building = item;
@@ -162,12 +99,6 @@ public class MiniWindowBuying implements MyScreen {
         secondResourceYEnergy = secondResourcePicYEnergy + bitmapFont.getCapHeight();
 
         resourceHighWidth = bitmapFont.getCapHeight();
-    }
-
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -285,21 +216,6 @@ public class MiniWindowBuying implements MyScreen {
         bitmapFont.draw(batch, "buy", buyX, buyY);
 
         batch.end();
-    }
-
-    @Override
-    public void resize(int i, int i1) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
     }
 
     @Override
