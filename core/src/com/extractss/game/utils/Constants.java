@@ -20,11 +20,9 @@ public class Constants {
     public static float SCALEX_NEW_ORIGINAL;
     public static float SCALEXY_NEW;
     public static float SIDE_OF_FIELD;
-    public static float LIST_ELEMENT_HEIGHT;
     public static float LIST_WIDTH;
     public static float LIST_HEIGHT;
     public static float HEIGHT_FOR_RESOURCES;
-    public static float LIST_SHOP_ELEMENT_HEIGHT;
     public static float Y_RESOURCES_TABLE;
     public static float HEIGHT_RESOURCES_TABLE;
     public static int AVERAGE_VALUE_TO_BUY_RES;
@@ -36,6 +34,8 @@ public class Constants {
     public static float LIST_ELEMENT_TITLE_X_CENTER;
     public static float BOTTOM_BUTTONS_TEXT_Y;
     public static float TOP_BUTTONS_TEXT_Y;
+    public static float MEDIUM_LEST_ELEMENT_HEIGHT;
+    public static float SMALL_LIST_ELEMENT_HEIGHT;
 
     public static void defineVariables() {
         APP_WIDTH = Gdx.graphics.getWidth();
@@ -58,21 +58,22 @@ public class Constants {
         bitmapFont.getData().setScale(SCALEXY_NEW, SCALEXY_NEW);
         bitmapFontReversedColorSmall.getData().setScale(SMALLER_SCALE);
 
-        LIST_ELEMENT_HEIGHT = 8 * bitmapFontSmall.getCapHeight();
+        MEDIUM_LEST_ELEMENT_HEIGHT = 8 * bitmapFontSmall.getCapHeight();
         LIST_WIDTH = APP_WIDTH - 2 * SIDE_INDENT;
         LIST_HEIGHT = APP_HEIGHT - 2 * BUTTON_HEIGHT - 2 * bitmapFontSmall.getCapHeight();
         HEIGHT_FOR_RESOURCES = APP_HEIGHT - BUTTON_HEIGHT;
-        LIST_SHOP_ELEMENT_HEIGHT = 4 * bitmapFontSmall.getCapHeight();
+        SMALL_LIST_ELEMENT_HEIGHT = 4 * bitmapFontSmall.getCapHeight();
         Y_RESOURCES_TABLE = LIST_HEIGHT + BUTTON_HEIGHT + 1;
         HEIGHT_RESOURCES_TABLE = APP_HEIGHT - BUTTON_HEIGHT - Y_RESOURCES_TABLE;
 
         KNOB_WIDTH = SIDE_INDENT * 2;
         KNOB_X = LIST_WIDTH;
 
-        LIST_ELEMENT_PIC_X = SIDE_INDENT + LIST_ELEMENT_HEIGHT / 10f;
-        LIST_ELEMENT_PIC_SIZE = 8 * LIST_ELEMENT_HEIGHT / 10;
-        LIST_ELEMENT_TITLE_X_CENTER = SIDE_INDENT + 9 * LIST_ELEMENT_HEIGHT / 10 +
-                (LIST_WIDTH - 9 * LIST_ELEMENT_HEIGHT / 10) / 2f;
+        //TODO: change design!
+        LIST_ELEMENT_PIC_X = SIDE_INDENT;
+        LIST_ELEMENT_PIC_SIZE = 8 * MEDIUM_LEST_ELEMENT_HEIGHT / 10;
+        LIST_ELEMENT_TITLE_X_CENTER = SIDE_INDENT + 9 * MEDIUM_LEST_ELEMENT_HEIGHT / 10 +
+                (LIST_WIDTH - 9 * MEDIUM_LEST_ELEMENT_HEIGHT / 10) / 2f;
 
         BOTTOM_BUTTONS_TEXT_Y = BUTTON_HEIGHT / 2 + bitmapFont.getCapHeight() / 2;
         TOP_BUTTONS_TEXT_Y = APP_HEIGHT - BUTTON_HEIGHT / 2 + bitmapFont.getCapHeight() / 2;

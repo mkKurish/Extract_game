@@ -4,16 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.extractss.game.ClassesForLists.BasicListItem;
 import com.extractss.game.ClassesForLists.BuildingsOnField;
 import com.extractss.game.ClassesForLists.ItemResearch;
 import com.extractss.game.ClassesForLists.ItemSelectingPlanet;
 import com.extractss.game.ClassesForLists.ItemShop;
-import com.extractss.game.ExtractSolarSys;
 import com.extractss.game.SimpleClasses.Building;
 import com.extractss.game.SimpleClasses.MyButtons;
 import com.extractss.game.SimpleClasses.User;
-import com.extractss.game.screens.NoConnectionToIncrementResources;
-import com.extractss.game.screens.SelectingPlanetScreen;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,7 +30,6 @@ import static com.extractss.game.ExtractSolarSys.buildingsOnFields;
 import static com.extractss.game.ExtractSolarSys.buttonDownSound;
 import static com.extractss.game.ExtractSolarSys.buttonUpSound;
 import static com.extractss.game.ExtractSolarSys.currentPlanet;
-import static com.extractss.game.ExtractSolarSys.earthTexture;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.gameLogo;
 import static com.extractss.game.ExtractSolarSys.getIncrementMechanicUpgradeCost;
@@ -44,31 +41,22 @@ import static com.extractss.game.ExtractSolarSys.incrementMoney;
 import static com.extractss.game.ExtractSolarSys.inventTexture;
 import static com.extractss.game.ExtractSolarSys.inventoryBuildings;
 import static com.extractss.game.ExtractSolarSys.isTrainingComplete;
-import static com.extractss.game.ExtractSolarSys.jupiterTexture;
 import static com.extractss.game.ExtractSolarSys.lastAdNonRewardedShown;
 import static com.extractss.game.ExtractSolarSys.lastIncrementGatherTime;
 import static com.extractss.game.ExtractSolarSys.lastMeteorFellTime;
-import static com.extractss.game.ExtractSolarSys.marsTexture;
 import static com.extractss.game.ExtractSolarSys.maxEnergy;
 import static com.extractss.game.ExtractSolarSys.maxMetal;
 import static com.extractss.game.ExtractSolarSys.maxMoney;
-import static com.extractss.game.ExtractSolarSys.mercuryTexture;
 import static com.extractss.game.ExtractSolarSys.metalTexture;
 import static com.extractss.game.ExtractSolarSys.moneyTexture;
 import static com.extractss.game.ExtractSolarSys.musicTexture;
-import static com.extractss.game.ExtractSolarSys.neptuneTexture;
-import static com.extractss.game.ExtractSolarSys.planetFieldsBackground;
-import static com.extractss.game.ExtractSolarSys.saturnTexture;
-import static com.extractss.game.ExtractSolarSys.screenManager;
 import static com.extractss.game.ExtractSolarSys.selectingPlanetArrayList;
 import static com.extractss.game.ExtractSolarSys.settingsButtonSign;
 import static com.extractss.game.ExtractSolarSys.soundTexture;
 import static com.extractss.game.ExtractSolarSys.successSound;
-import static com.extractss.game.ExtractSolarSys.uranusTexture;
-import static com.extractss.game.ExtractSolarSys.venusTexture;
 import static com.extractss.game.utils.Constants.AVERAGE_VALUE_TO_BUY_RES;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
-import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
+import static com.extractss.game.utils.Constants.MEDIUM_LEST_ELEMENT_HEIGHT;
 
 public class Operations {
     public static boolean isEnableToBuy(User user, Building listItem) {
@@ -158,7 +146,8 @@ public class Operations {
                         inventoryBuildings.get(i).getBuilding().getUsefulEnergy());
                 prefs.putInteger("i" + i + "inventLvl",
                         inventoryBuildings.get(i).getBuilding().getInventLvl());
-                prefs.putFloat("i" + i + "y", inventoryBuildings.get(i).getY());
+                prefs.putFloat("i" + i + "y", inventoryBuildings.get(i).y);
+                prefs.putFloat("i" + i + "elementHeight", inventoryBuildings.get(i).elementHeight);
             }
         }
 
@@ -200,6 +189,7 @@ public class Operations {
             prefs.putInteger(i + "selectingPlanetArrayList" + "energy", selectingPlanetArrayList.get(i).getCostEnergy());
             prefs.putInteger(i + "selectingPlanetArrayList" + "invent", selectingPlanetArrayList.get(i).getInventLvl());
             prefs.putFloat(i + "selectingPlanetArrayList" + "y", selectingPlanetArrayList.get(i).y);
+            prefs.putFloat(i + "selectingPlanetArrayList" + "elementHeight", selectingPlanetArrayList.get(i).elementHeight);
         }
 
         prefs.putBoolean("soundsActive", user.isSoundsActive());
@@ -324,28 +314,43 @@ public class Operations {
     public static ArrayList<ItemSelectingPlanet> initializeSelectingPlanetArrayList (ArrayList<ItemSelectingPlanet> listItems){
         listItems.add(new ItemSelectingPlanet("earth", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\earth.png"))),
                 0, 0, 0, 0,
-                BUTTON_HEIGHT));
+                BUTTON_HEIGHT, MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("mars", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\mars.png"))),
                 167, 348, 243, 1,
-                listItems.get(listItems.size()-1).y + LIST_ELEMENT_HEIGHT));
+                listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("venus", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\venus.png"))),
                 1243, 843, 2134, 1,
-                listItems.get(listItems.size()-1).y + LIST_ELEMENT_HEIGHT));
+                listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("mercury", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\mercury.png"))),
                 7567, 3125, 4657, 2,
-                listItems.get(listItems.size()-1).y + LIST_ELEMENT_HEIGHT));
+                listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("jupiter", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\jupiter.png"))),
                 10743, 15342, 13467, 3,
-                listItems.get(listItems.size()-1).y + LIST_ELEMENT_HEIGHT));
+                listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("saturn", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\saturn.png"))),
                 30278, 37152, 42057, 3,
-                listItems.get(listItems.size()-1).y + LIST_ELEMENT_HEIGHT));
+                listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("uranus", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\uranus.png"))),
                 58345, 64375, 49835, 4,
-                listItems.get(listItems.size()-1).y + LIST_ELEMENT_HEIGHT));
+                listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("neptune", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\neptune.png"))),
                 112345, 75682, 87351, 5,
-                listItems.get(listItems.size()-1).y + LIST_ELEMENT_HEIGHT));
+                listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         return listItems;
+    }
+
+    public static float totalListHeight(ArrayList<? extends BasicListItem> lst){
+        float result = 0;
+        for (BasicListItem elem : lst){
+            result += elem.elementHeight;
+        }
+        return result;
     }
 }

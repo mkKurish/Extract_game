@@ -4,11 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.extractss.game.ClassesForLists.BasicListItem;
 import com.extractss.game.ClassesForLists.BuildingsInInventory;
-import com.extractss.game.ClassesForLists.ItemResearch;
-import com.extractss.game.ClassesForLists.ItemSelectingPlanet;
-import com.extractss.game.ClassesForLists.ItemShop;
 import com.extractss.game.SimpleClasses.Building;
 import com.extractss.game.ExtractSolarSys;
 import com.extractss.game.SimpleClasses.MyButtons;
@@ -20,8 +16,6 @@ import java.util.ArrayList;
 import static com.extractss.game.ExtractSolarSys.backgroundsOther;
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
-import static com.extractss.game.ExtractSolarSys.buttonDownSound;
-import static com.extractss.game.ExtractSolarSys.buttonUpSound;
 import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.incrementingThreadTime;
@@ -40,20 +34,20 @@ import static com.extractss.game.utils.Constants.HEIGHT_FOR_RESOURCES;
 import static com.extractss.game.utils.Constants.HEIGHT_RESOURCES_TABLE;
 import static com.extractss.game.utils.Constants.KNOB_WIDTH;
 import static com.extractss.game.utils.Constants.KNOB_X;
-import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_SIZE;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_TITLE_X_CENTER;
 import static com.extractss.game.utils.Constants.LIST_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_X;
 import static com.extractss.game.utils.Constants.LIST_WIDTH;
+import static com.extractss.game.utils.Constants.MEDIUM_LEST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Constants.SMALLER_SCALE;
 import static com.extractss.game.utils.Constants.TOP_BUTTONS_TEXT_Y;
 import static com.extractss.game.utils.Constants.Y_RESOURCES_TABLE;
 import static com.extractss.game.utils.Operations.isEnableToBuy;
-import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
+import static com.extractss.game.utils.Operations.totalListHeight;
 
 public class Construction extends BasicScrollScreen {
 
@@ -81,66 +75,85 @@ public class Construction extends BasicScrollScreen {
         listItems = new ArrayList<>();
         listItems.add(new Building("bank lvl 1", true,
                 10, 7, 13, 2, 0, 0,
-                0, BUTTON_HEIGHT));
+                0, BUTTON_HEIGHT, MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("tpp coal", true,
                 14, 11, 9, 0, 0, 1,
-                0, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                0, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("placer", true,
                 16, 10, 14, 0, 3, 0,
-                0, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                0, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("tpp oil", true,
                 54, 43, 35, 0, 0, 2,
-                1, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                1, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("garage", false,
                 67, 38, 59, 350, 350, 350,
-                1, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                1, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("bank lvl 2", true,
                 54, 38, 70, 5, 0, 0,
-                2, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                2, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("tpp gas", true,
                 208, 166, 135, 0, 0, 4,
-                2, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                2, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("hangar", false,
                 184, 105, 162, 3150, 3150, 3150,
-                3, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                3, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("gpp", true,
                 800, 638, 519, 0, 0, 7,
-                3, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                3, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("pit", true,
                 463, 290, 405, 0, 13, 0,
-                3, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                3, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("defender", true,
                 8241, 6512, 5623, 0, 0, 0,
-                3, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                3, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("bank lvl 3", true,
                 1116, 786, 1447, 18, 0, 0,
-                4, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                4, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("warehouse", false,
                 990, 565, 872, 25200, 25200, 25200,
-                5, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                5, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("windmill", true,
                 4303, 3432, 2792, 0, 0, 15,
-                4, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                4, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("solar panel", true,
                 23143, 18459, 15017, 0, 0, 31,
-                5, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                5, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("mega storage", false,
                 10436, 5956, 9193, 151200, 151200, 151200,
-                6, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                6, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("bank lvl 4", true,
                 32281, 22736, 41856, 73, 0, 0,
-                6, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                6, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("mine", true,
                 26250, 16442, 22962, 0, 70, 0,
-                6, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                6, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("nuc plant", true,
                 174257, 138988, 113072, 0, 0, 72,
-                7, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                7, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new Building("rocket", false,
                 0, 0, 0, 0, 0, 0,
-                8, listItems.get(listItems.size() - 1).y + LIST_ELEMENT_HEIGHT));
+                8, listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
 
-        knobHeight = LIST_HEIGHT * LIST_HEIGHT / (listItems.size() * LIST_ELEMENT_HEIGHT);
+        knobHeight = LIST_HEIGHT * LIST_HEIGHT / (totalListHeight(listItems));
 
         yForIcons = HEIGHT_FOR_RESOURCES - 7 * bitmapFontSmall.getCapHeight() / 4;
         moneyTextureX = 2 * appWidthToTwentyFour / 3;
@@ -152,8 +165,6 @@ public class Construction extends BasicScrollScreen {
         heightForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         widthForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         yForResourcesText = HEIGHT_FOR_RESOURCES - bitmapFontSmall.getCapHeight() / 2;
-        xForPriceListElements = LIST_ELEMENT_HEIGHT + 3 * bitmapFontSmall.getCapHeight() / 2;
-        xForIconsListElements = LIST_ELEMENT_HEIGHT + bitmapFontSmall.getCapHeight() / 2;
 
         menuX = APP_WIDTH / 4f - "menu".length() * 11 * SCALEXY_NEW;
         inventoryX = 3 * APP_WIDTH / 4f - "inventory".length() * 11 * SCALEXY_NEW;
@@ -206,44 +217,44 @@ public class Construction extends BasicScrollScreen {
             /*
             Отрисовываем каждый элемент списка, который помещается на экран.
              */
-            if ((listElementForCycle.y < APP_HEIGHT + BUTTON_HEIGHT && listElementForCycle.y > -LIST_ELEMENT_HEIGHT)) {
+            if ((listElementForCycle.y < APP_HEIGHT + BUTTON_HEIGHT && listElementForCycle.y > -listElementForCycle.elementHeight)) {
                 if (isEnableToBuy(user, listElementForCycle)) {
-                    upNinePatch.draw(batch, 0, listElementForCycle.y, LIST_WIDTH, LIST_ELEMENT_HEIGHT);
+                    upNinePatch.draw(batch, 0, listElementForCycle.y, LIST_WIDTH, listElementForCycle.elementHeight);
                 } else {
-                    downNinePatch.draw(batch, 0, listElementForCycle.y, LIST_WIDTH, LIST_ELEMENT_HEIGHT);
+                    downNinePatch.draw(batch, 0, listElementForCycle.y, LIST_WIDTH, listElementForCycle.elementHeight);
                 }
                 if (user.getInvents() >= listElementForCycle.getInventLvl()) {
-                    upNinePatch.draw(batch, LIST_ELEMENT_PIC_X - 1, listElementForCycle.y + LIST_ELEMENT_HEIGHT / 10f - 1,
+                    upNinePatch.draw(batch, LIST_ELEMENT_PIC_X - 1, listElementForCycle.y + listElementForCycle.elementHeight / 10f - 1,
                             LIST_ELEMENT_PIC_SIZE + 2, LIST_ELEMENT_PIC_SIZE + 2);
                     batch.draw(listElementForCycle.getPicture(), LIST_ELEMENT_PIC_X,
-                            listElementForCycle.y + LIST_ELEMENT_HEIGHT / 10f, LIST_ELEMENT_PIC_SIZE, LIST_ELEMENT_PIC_SIZE);
+                            listElementForCycle.y + listElementForCycle.elementHeight / 10f, LIST_ELEMENT_PIC_SIZE, LIST_ELEMENT_PIC_SIZE);
                     bitmapFontSmall.draw(batch, listElementForCycle.getName(),
                             LIST_ELEMENT_TITLE_X_CENTER - listElementForCycle.getName().length() * 11 * SMALLER_SCALE,
-                            listElementForCycle.y - bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            listElementForCycle.y - bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getCostMoney()),
-                            xForPriceListElements, listElementForCycle.y - 3  * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            xForPriceListElements, listElementForCycle.y - 3  * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getCostMetal()),
-                            xForPriceListElements, listElementForCycle.y - 4.5f * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            xForPriceListElements, listElementForCycle.y - 4.5f * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getCostEnergy()),
-                            xForPriceListElements, listElementForCycle.y - 6 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            xForPriceListElements, listElementForCycle.y - 6 * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                 } else {
                     unknownNinePatch.draw(batch, LIST_ELEMENT_PIC_X - 1,
-                            listElementForCycle.y + LIST_ELEMENT_HEIGHT / 10f - 1, LIST_ELEMENT_PIC_SIZE + 2, LIST_ELEMENT_PIC_SIZE + 2);
+                            listElementForCycle.y + listElementForCycle.elementHeight / 10f - 1, LIST_ELEMENT_PIC_SIZE + 2, LIST_ELEMENT_PIC_SIZE + 2);
                     bitmapFontSmall.draw(batch, "?????", LIST_ELEMENT_TITLE_X_CENTER - "?????".length() * 11 * SMALLER_SCALE,
-                            listElementForCycle.y - bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            listElementForCycle.y - bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                     bitmapFontSmall.draw(batch, "???",
-                            xForPriceListElements, listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            xForPriceListElements, listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                     bitmapFontSmall.draw(batch, "???",
-                            xForPriceListElements, listElementForCycle.y - 4.5f * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            xForPriceListElements, listElementForCycle.y - 4.5f * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                     bitmapFontSmall.draw(batch, "???",
-                            xForPriceListElements, listElementForCycle.y - 6 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            xForPriceListElements, listElementForCycle.y - 6 * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                 }
                 batch.draw(moneyTexture, xForIconsListElements, listElementForCycle.y -
-                        4 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT, bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
+                        4 * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight, bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                 batch.draw(metalTexture, xForIconsListElements, listElementForCycle.y -
-                        5.5f * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT, bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
+                        5.5f * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight, bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                 batch.draw(energyTexture, xForIconsListElements, listElementForCycle.y -
-                        7 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT, bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
+                        7 * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight, bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
             }
         }
 
@@ -335,19 +346,13 @@ public class Construction extends BasicScrollScreen {
     protected void miniWindowActivated(Building item) {
         if (item.getName() == "rocket") sys.setScreen(screenManager.getGameOverScreen());
         else {
-            screenManager.setMiniWindowBuyingScreen(new BuildingMiniWindowBuying(sys, user, new Building(item)));
+            screenManager.setMiniWindowBuyingScreen(new MiniWindowBuildingBuying(sys, user, new Building(item)));
             sys.setScreen(screenManager.getMiniWindowBuyingScreen());
         }
     }
 
     @Override
     protected void miniWindowActivated(BuildingsInInventory building) {
-
-    }
-
-
-    @Override
-    protected void miniWindowActivated(ItemSelectingPlanet building) {
 
     }
 

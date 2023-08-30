@@ -3,7 +3,6 @@ package com.extractss.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.extractss.game.ExtractSolarSys;
 import com.extractss.game.SimpleClasses.MyButtons;
@@ -19,7 +18,6 @@ import static com.extractss.game.ExtractSolarSys.bitmapFontReversedColorSmall;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
 import static com.extractss.game.ExtractSolarSys.buttonDownSound;
 import static com.extractss.game.ExtractSolarSys.buttonUpSound;
-import static com.extractss.game.ExtractSolarSys.currentPlanet;
 import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.lastMeteorFellTime;
 import static com.extractss.game.ExtractSolarSys.maxMeteorFellTime;
@@ -36,7 +34,6 @@ import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BUTTONS_VOID;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
 import static com.extractss.game.utils.Constants.BUTTON_WIDTH;
-import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Constants.SMALLER_SCALE;
 import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
@@ -143,62 +140,10 @@ public class Settings extends BasicScreen {
 
         batch.draw(backgroundsOther.get(curScreenAnimation), 0, 0, APP_WIDTH, APP_HEIGHT);
 
-        /*
-        Проверяем кнопки на нажатие.
-         */
-        for (int i = 0; i < myButtons.size(); i++) {
-            myButton = myButtons.get(i);
-            if (Gdx.input.isTouched()) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                if (isInPlace(touchedX, touchedY, myButton)) {
-                    if (i == 1)
-                        resetButtonDown.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                    else
-                        downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                    if (!myButton.isPressedToSound()) {
-                        buttonDownSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(true);
-                    }
-                } else {
-                    if (i == 1)
-                        resetButtonUp.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                    else
-                        upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                }
-            } else {
-                if (isInPlace(touchedX, touchedY, myButton) && lastTouchTime != 0) {
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                    if (i == 1)
-                        resetButtonDown.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                    else
-                        downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                    this.buttonActivated(i);
-                    touchedX = touchedY = -1;
-                } else {
-                    if (i == 1)
-                        resetButtonUp.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                    else
-                        upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                }
-            }
-        }
+
+        checkButtonTouches(); // Проверяем кнопки на нажатие.
+        resetButtonUp.draw(batch, myButtons.get(1).getX1(), myButtons.get(1).getY1(), myButtons.get(1).getWidth(),
+                myButtons.get(1).getHeight());
 
         /*
         Проверяем меню звуков и музыки на нажатие.

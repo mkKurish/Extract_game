@@ -5,9 +5,10 @@ import com.extractss.game.SimpleClasses.Building;
 public class BuildingsInInventory extends BasicListItem {
     private Building building;
 
-    public BuildingsInInventory(Building building, float y) {
+    public BuildingsInInventory(Building building, float y, float elementHeight) {
         this.building = building;
         this.y = y;
+        this.elementHeight = elementHeight;
     }
 
     public Building getBuilding() {
@@ -16,13 +17,5 @@ public class BuildingsInInventory extends BasicListItem {
 
     public void setBuilding(Building building) {
         this.building = building;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
     }
 }

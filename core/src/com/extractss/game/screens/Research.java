@@ -2,11 +2,9 @@ package com.extractss.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.extractss.game.ClassesForLists.BuildingsInInventory;
-import com.extractss.game.ClassesForLists.ItemSelectingPlanet;
 import com.extractss.game.ExtractSolarSys;
 import com.extractss.game.ClassesForLists.ItemResearch;
 import com.extractss.game.SimpleClasses.Building;
@@ -19,20 +17,15 @@ import java.util.ArrayList;
 import static com.extractss.game.ExtractSolarSys.backgroundsOther;
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
-import static com.extractss.game.ExtractSolarSys.buttonDownSound;
-import static com.extractss.game.ExtractSolarSys.buttonUpSound;
 import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.incrementingThreadTime;
 import static com.extractss.game.ExtractSolarSys.inventTexture;
-import static com.extractss.game.ExtractSolarSys.listButtonDown;
-import static com.extractss.game.ExtractSolarSys.listButtonUp;
 import static com.extractss.game.ExtractSolarSys.metalTexture;
 import static com.extractss.game.ExtractSolarSys.moneyTexture;
 import static com.extractss.game.ExtractSolarSys.progressBarKnobNinePatch;
 import static com.extractss.game.ExtractSolarSys.progressBarBackNinePatch;
 import static com.extractss.game.ExtractSolarSys.screenManager;
-import static com.extractss.game.ExtractSolarSys.successSound;
 import static com.extractss.game.ExtractSolarSys.upNinePatch;
 import static com.extractss.game.utils.Constants.APP_HEIGHT;
 import static com.extractss.game.utils.Constants.APP_WIDTH;
@@ -42,8 +35,7 @@ import static com.extractss.game.utils.Constants.HEIGHT_FOR_RESOURCES;
 import static com.extractss.game.utils.Constants.HEIGHT_RESOURCES_TABLE;
 import static com.extractss.game.utils.Constants.KNOB_WIDTH;
 import static com.extractss.game.utils.Constants.KNOB_X;
-import static com.extractss.game.utils.Constants.SIDE_INDENT;
-import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
+import static com.extractss.game.utils.Constants.MEDIUM_LEST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_SIZE;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_X;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_TITLE_X_CENTER;
@@ -54,17 +46,13 @@ import static com.extractss.game.utils.Constants.SMALLER_SCALE;
 import static com.extractss.game.utils.Constants.TOP_BUTTONS_TEXT_Y;
 import static com.extractss.game.utils.Constants.Y_RESOURCES_TABLE;
 import static com.extractss.game.utils.Operations.isEnableToBuy;
-import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
+import static com.extractss.game.utils.Operations.totalListHeight;
 
 public class Research extends BasicScrollScreen {
     private ArrayList<ItemResearch> listItems;
     private ItemResearch listElementForCycle;
-
-    private long lastListTouchTime = 1000;
-    static long lastPanelTouchTime = 0;
-    private static boolean listTouchMode;
     private static float menuX;
     private static float inventoryX;
     private static float shopX;
@@ -84,30 +72,37 @@ public class Research extends BasicScrollScreen {
         listItems = new ArrayList<>();
         listItems.add(new ItemResearch("LvL 1", inventTexture,
                 27, 26, 24, 1,
-                BUTTON_HEIGHT));
+                BUTTON_HEIGHT, MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemResearch("LvL 2", inventTexture,
                 182, 196, 144, 2,
-                BUTTON_HEIGHT + LIST_ELEMENT_HEIGHT));
+                listItems.get(listItems.size()-1).y + MEDIUM_LEST_ELEMENT_HEIGHT,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemResearch("LvL 3", inventTexture,
                 1263, 1312, 1294, 3,
-                BUTTON_HEIGHT + LIST_ELEMENT_HEIGHT * 2));
+                listItems.get(listItems.size()-1).y + MEDIUM_LEST_ELEMENT_HEIGHT,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemResearch("LvL 4", inventTexture,
                 3843, 4124, 3035, 4,
-                BUTTON_HEIGHT + LIST_ELEMENT_HEIGHT * 3));
+                listItems.get(listItems.size()-1).y + MEDIUM_LEST_ELEMENT_HEIGHT,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemResearch("LvL 5", inventTexture,
                 36513, 37945, 37422, 5,
-                BUTTON_HEIGHT + LIST_ELEMENT_HEIGHT * 4));
+                listItems.get(listItems.size()-1).y + MEDIUM_LEST_ELEMENT_HEIGHT,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemResearch("LvL 6", inventTexture,
                 152089, 162963, 116222, 6,
-                BUTTON_HEIGHT + LIST_ELEMENT_HEIGHT * 5));
+                listItems.get(listItems.size()-1).y + MEDIUM_LEST_ELEMENT_HEIGHT,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemResearch("LvL 7", inventTexture,
                 273760, 293333, 209200, 7,
-                BUTTON_HEIGHT + LIST_ELEMENT_HEIGHT * 6));
+                listItems.get(listItems.size()-1).y + MEDIUM_LEST_ELEMENT_HEIGHT,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemResearch("max LvL", inventTexture,
                 629648, 674666, 481160, 8,
-                BUTTON_HEIGHT + LIST_ELEMENT_HEIGHT * 7));
+                listItems.get(listItems.size()-1).y + MEDIUM_LEST_ELEMENT_HEIGHT,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
 
-        knobHeight = LIST_HEIGHT * LIST_HEIGHT / (listItems.size() * LIST_ELEMENT_HEIGHT);
+        knobHeight = LIST_HEIGHT * LIST_HEIGHT / (totalListHeight(listItems));
 
         yForIcons = HEIGHT_FOR_RESOURCES - 7 * bitmapFontSmall.getCapHeight() / 4;
         moneyTextureX = 2 * appWidthToTwentyFour / 3;
@@ -119,8 +114,6 @@ public class Research extends BasicScrollScreen {
         heightForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         widthForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         yForResourcesText = HEIGHT_FOR_RESOURCES - bitmapFontSmall.getCapHeight() / 2;
-        xForPriceListElements = SIDE_INDENT + LIST_ELEMENT_HEIGHT + 3 * bitmapFontSmall.getCapHeight() / 2;
-        xForIconsListElements = SIDE_INDENT + LIST_ELEMENT_HEIGHT + bitmapFontSmall.getCapHeight() / 2;
 
         menuX = APP_WIDTH / 4f - "menu".length() * 11 * SCALEXY_NEW;
         inventoryX = 3 * APP_WIDTH / 4f - "inventory".length() * 11 * SCALEXY_NEW;
@@ -163,114 +156,60 @@ public class Research extends BasicScrollScreen {
 
         batch.draw(backgroundsOther.get(curScreenAnimation), 0, 0, APP_WIDTH, APP_HEIGHT);
 
-        /*
-        Прокручиваем список исследований, если палец скользит по списку.
-         */
-        firstElementY = listItems.get(0).y;
-        lastElementY = listItems.get(listItems.size() - 1).y;
-        if (!listTouchMode && Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
-                Gdx.graphics.getHeight() - Gdx.input.getY(), SIDE_INDENT, BUTTON_HEIGHT,
-                LIST_WIDTH, LIST_HEIGHT)) {
-            if (System.currentTimeMillis() - lastListTouchTime < 50) {
-                resCoord = (-touchedListY + Gdx.graphics.getHeight() - Gdx.input.getY()) * 2;
-                if (firstElementY + resCoord > BUTTON_HEIGHT) {
-                    resCoord -= firstElementY + resCoord - BUTTON_HEIGHT;
-                } else if (lastElementY + resCoord < boarderUp) {
-                    resCoord += boarderUp - lastElementY - resCoord;
-                }
-                for (int i = 0; i < listItems.size(); i++) {
-                    listItems.get(i).y += resCoord;
-                }
-                lastListTouchTime = System.currentTimeMillis() - lastListTouchTime;
-            } else {
-                lastListTouchTime = System.currentTimeMillis();
-            }
-            touchedListY = Gdx.graphics.getHeight() - Gdx.input.getY();
-        } else {
-            if (lastElementY < boarderUp) {
-                for (int i = 0; i < listItems.size(); i++) {
-                    listItems.get(i).y += boarderUp - lastElementY + 1;
-                }
-            } else if (firstElementY > BUTTON_HEIGHT) {
-                for (int i = 0; i < listItems.size(); i++) {
-                    listItems.get(i).y += BUTTON_HEIGHT - firstElementY;
-                }
-            }
-        }
+        scrollTouchMechanic(listItems);
 
         for (int i = 0; i < listItems.size(); i++) {
             listElementForCycle = listItems.get(i);
             /*
-            Если в режиме нажатий коснулись элемента списка, исследование покупается
-            (открываются новые здания в магазине зданий).
-             */
-            if (listTouchMode
-                    && Gdx.input.isTouched()
-                    && isInPlaceMain(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                    SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, LIST_ELEMENT_HEIGHT)
-                    && Gdx.input.getY() < (LIST_HEIGHT + BUTTON_HEIGHT)
-                    && Gdx.input.getY() > BUTTON_HEIGHT && isEnableToBuy(user, listElementForCycle)) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                user.addInvents();
-                user.setMoney(user.getMoney() - listElementForCycle.getCostMoney());
-                user.setMetal(user.getMetal() - listElementForCycle.getCostMetal());
-                user.setEnergy(user.getEnergy() - listElementForCycle.getCostEnergy());
-                parseAndSavePrefsBuildings(user);
-                successSound.play(user.getSoundsVolume());
-                listTouchMode = false;
-            }
-            /*
             Отрисовываем каждый элемент списка, который помещается на экран.
              */
             if ((listElementForCycle.y < APP_HEIGHT + BUTTON_HEIGHT
-                    && listElementForCycle.y > -LIST_ELEMENT_HEIGHT)) {
+                    && listElementForCycle.y > -listElementForCycle.elementHeight)) {
                 if (isEnableToBuy(user, listElementForCycle)) {
-                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y,
-                            LIST_WIDTH, LIST_ELEMENT_HEIGHT);
+                    upNinePatch.draw(batch, 0, listElementForCycle.y,
+                            LIST_WIDTH, listElementForCycle.elementHeight);
                 } else {
-                    downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y,
-                            LIST_WIDTH, LIST_ELEMENT_HEIGHT);
+                    downNinePatch.draw(batch, 0, listElementForCycle.y,
+                            LIST_WIDTH, listElementForCycle.elementHeight);
                 }
                 upNinePatch.draw(batch, LIST_ELEMENT_PIC_X - 1,
-                        listElementForCycle.y + LIST_ELEMENT_HEIGHT / 10 - 1,
+                        listElementForCycle.y + listElementForCycle.elementHeight / 10 - 1,
                         LIST_ELEMENT_PIC_SIZE + 2, LIST_ELEMENT_PIC_SIZE + 2);
                 batch.draw(listElementForCycle.getPicture(), LIST_ELEMENT_PIC_X,
-                        listElementForCycle.y + LIST_ELEMENT_HEIGHT / 10,
+                        listElementForCycle.y + listElementForCycle.elementHeight / 10,
                         LIST_ELEMENT_PIC_SIZE, LIST_ELEMENT_PIC_SIZE);
                 bitmapFontSmall.draw(batch, listElementForCycle.getName(),
                         LIST_ELEMENT_TITLE_X_CENTER - listElementForCycle.getName().length() * 11 * SMALLER_SCALE,
-                        listElementForCycle.y - bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                        listElementForCycle.y - bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                 if (user.getInvents() >= listElementForCycle.getInventLvl() - 1) {
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getCostMoney()),
                             xForPriceListElements,
-                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getCostMetal()),
                             xForPriceListElements,
-                            listElementForCycle.y - 4.5f * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            listElementForCycle.y - 4.5f * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getCostEnergy()),
                             xForPriceListElements,
-                            listElementForCycle.y - 6 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            listElementForCycle.y - 6 * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                 } else {
                     bitmapFontSmall.draw(batch, "???",
                             xForPriceListElements, listElementForCycle.y -
-                                    3 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                                    3 * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                     bitmapFontSmall.draw(batch, "???",
                             xForPriceListElements, listElementForCycle.y -
-                                    4.5f * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                                    4.5f * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                     bitmapFontSmall.draw(batch, "???",
                             xForPriceListElements, listElementForCycle.y -
-                                    6 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                                    6 * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight);
                 }
                 batch.draw(moneyTexture, xForIconsListElements, listElementForCycle.y -
-                                4 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT, bitmapFontSmall.getCapHeight(),
+                                4 * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight, bitmapFontSmall.getCapHeight(),
                         bitmapFontSmall.getCapHeight());
                 batch.draw(metalTexture, xForIconsListElements, listElementForCycle.y -
-                                5.5f * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT, bitmapFontSmall.getCapHeight(),
+                                5.5f * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight, bitmapFontSmall.getCapHeight(),
                         bitmapFontSmall.getCapHeight());
                 batch.draw(energyTexture, xForIconsListElements, listElementForCycle.y -
-                                7 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT, bitmapFontSmall.getCapHeight(),
+                                7 * bitmapFontSmall.getCapHeight() + listElementForCycle.elementHeight, bitmapFontSmall.getCapHeight(),
                         bitmapFontSmall.getCapHeight());
             }
         }
@@ -326,28 +265,6 @@ public class Research extends BasicScrollScreen {
             }
         }
 
-        /*
-        Если нажата кнопка слева от списка, то переключается режим:
-        режим пролистывания - режим нажатия на элемент.
-         */
-        if (Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
-                Gdx.graphics.getHeight() - Gdx.input.getY(), 0, BUTTON_HEIGHT, SIDE_INDENT, LIST_HEIGHT)
-                && System.currentTimeMillis() - lastPanelTouchTime > 300) {
-            if (!listTouchMode) buttonDownSound.play(user.getSoundsVolume());
-            else buttonUpSound.play(user.getSoundsVolume());
-            listTouchMode = !listTouchMode;
-            lastPanelTouchTime = System.currentTimeMillis();
-        }
-
-        /*
-        Отрисовываем кнопку режимов слева от списка.
-         */
-        if (listTouchMode) {
-            listButtonDown.draw(batch, 0, BUTTON_HEIGHT, SIDE_INDENT, LIST_HEIGHT);
-        } else {
-            listButtonUp.draw(batch, 0, BUTTON_HEIGHT, SIDE_INDENT, LIST_HEIGHT);
-        }
-
         bitmapFont.draw(batch, "menu", menuX, BOTTOM_BUTTONS_TEXT_Y);
         bitmapFont.draw(batch, "inventory", inventoryX, BOTTOM_BUTTONS_TEXT_Y);
         bitmapFont.draw(batch, "shop", shopX, TOP_BUTTONS_TEXT_Y);
@@ -389,11 +306,6 @@ public class Research extends BasicScrollScreen {
 
     @Override
     protected void miniWindowActivated(BuildingsInInventory buildingInInventory) {
-
-    }
-
-    @Override
-    protected void miniWindowActivated(ItemSelectingPlanet itemSelectingPlanet) {
 
     }
 }

@@ -1,30 +1,28 @@
 package com.extractss.game.screens;
 
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
-import static com.extractss.game.ExtractSolarSys.inventoryBuildings;
-import static com.extractss.game.ExtractSolarSys.progressBarBackNinePatch;
-import static com.extractss.game.ExtractSolarSys.progressBarKnobNinePatch;
+import static com.extractss.game.ExtractSolarSys.currentPlanet;
 import static com.extractss.game.ExtractSolarSys.screenManager;
+import static com.extractss.game.ExtractSolarSys.selectingPlanetArrayList;
+import static com.extractss.game.ExtractSolarSys.successSound;
 import static com.extractss.game.utils.Constants.APP_HEIGHT;
 import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
-import static com.extractss.game.utils.Constants.KNOB_WIDTH;
-import static com.extractss.game.utils.Constants.KNOB_X;
-import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_WIDTH;
+import static com.extractss.game.utils.Constants.MEDIUM_LEST_ELEMENT_HEIGHT;
+import static com.extractss.game.utils.Operations.isEnableToBuy;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
+import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
+import static com.extractss.game.utils.Operations.totalListHeight;
 
 import com.badlogic.gdx.Gdx;
 import com.extractss.game.ClassesForLists.BasicListItem;
 import com.extractss.game.ClassesForLists.BuildingsInInventory;
 import com.extractss.game.ClassesForLists.ItemResearch;
 import com.extractss.game.ClassesForLists.ItemSelectingPlanet;
-import com.extractss.game.ClassesForLists.ItemShop;
-import com.extractss.game.ExtractSolarSys;
 import com.extractss.game.SimpleClasses.Building;
 import com.extractss.game.utils.IncrementResourcesTimeCheck;
-import com.sun.org.apache.bcel.internal.classfile.JavaClass;
 
 import java.util.ArrayList;
 
@@ -35,13 +33,13 @@ abstract public class BasicScrollScreen extends BasicScreen {
     protected static float heightForIcons;
     protected static float widthForIcons;
     protected float yForResourcesText;
-    protected float xForPriceListElements;
-    protected float xForIconsListElements;
+    //TODO: why do these two variables below depend on listElementForCycle.elementHeight?
+    protected float xForPriceListElements = MEDIUM_LEST_ELEMENT_HEIGHT + 3 * bitmapFontSmall.getCapHeight() / 2;;
+    protected float xForIconsListElements = MEDIUM_LEST_ELEMENT_HEIGHT + bitmapFontSmall.getCapHeight() / 2;
     protected static float appWidthToTwentyFour = APP_WIDTH / 24;
     protected float firstElementY;
     protected float lastElementY;
-    protected static float boarderUp = APP_HEIGHT - BUTTON_HEIGHT - LIST_ELEMENT_HEIGHT - 2 * bitmapFontSmall.getCapHeight();
-    ;
+    protected static float boarderUp = APP_HEIGHT - BUTTON_HEIGHT - 2 * bitmapFontSmall.getCapHeight();
     protected float deltaFirstElementY;
     protected int startedTouchX;
     protected int startedTouchY;
@@ -52,16 +50,18 @@ abstract public class BasicScrollScreen extends BasicScreen {
     protected float moneyValueX;
     protected float metalValueX;
     protected float energyValueX;
+    protected float lastElementHeight;
     protected boolean screenWasTouchedJustNow = false;
     protected long lastListTouchTime = 1000;
     IncrementResourcesTimeCheck incrementResourcesTimeCheck;
 
     protected void scrollTouchMechanic(ArrayList<? extends BasicListItem> arrayList) {
-        boolean isBigList = arrayList.size() * LIST_ELEMENT_HEIGHT > LIST_HEIGHT;
+        boolean isBigList = totalListHeight(arrayList) > LIST_HEIGHT;
 
         if (arrayList.size() != 0) {
             firstElementY = arrayList.get(0).y;
             lastElementY = arrayList.get(arrayList.size() - 1).y;
+            lastElementHeight = arrayList.get(arrayList.size() - 1).elementHeight;
         }
         if (isInPlaceMain(Gdx.input.getX(),
                 Gdx.graphics.getHeight() - Gdx.input.getY(), 0, BUTTON_HEIGHT,
@@ -69,12 +69,13 @@ abstract public class BasicScrollScreen extends BasicScreen {
             if (Gdx.input.isTouched()) {
                 if (screenWasTouchedJustNow) {
                     if (isBigList) {
+                        // List scroll
                         if (System.currentTimeMillis() - lastListTouchTime < 50) {
                             resCoord = (-touchedListY + Gdx.graphics.getHeight() - Gdx.input.getY()) * 2;
                             if (firstElementY + resCoord > BUTTON_HEIGHT) {
                                 resCoord -= firstElementY + resCoord - BUTTON_HEIGHT;
-                            } else if (lastElementY + resCoord < boarderUp) {
-                                resCoord += boarderUp - lastElementY - resCoord;
+                            } else if (lastElementY + lastElementHeight + resCoord < boarderUp) {
+                                resCoord += boarderUp - lastElementY - resCoord - lastElementHeight;
                             }
                             for (int i = 0; i < arrayList.size(); i++) {
                                 arrayList.get(i).y += resCoord;
@@ -91,31 +92,54 @@ abstract public class BasicScrollScreen extends BasicScreen {
                     screenWasTouchedJustNow = true;
                 }
             } else {
-                if (Gdx.input.getX() == startedTouchX && Gdx.input.getY() == startedTouchY) {
+                if (Gdx.input.getX() == startedTouchX && Gdx.input.getY() == startedTouchY && screenWasTouchedJustNow) {
                     // List touch
                     for (int i = 0; i < arrayList.size(); i++) {
-                        /*
-                        Если в режиме нажатий коснулись элемента списка, открываем экран с информацией о здании,
-                        где его можно купить (при покупке автоматически появится в инвентаре).
-                        */
                         touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
                         if (touchedY > arrayList.get(i).y
-                                && touchedY < arrayList.get(i).y + LIST_ELEMENT_HEIGHT
-                                && user.getInvents() >= arrayList.get(i).getInventLvl()) {
-                            miniWindowSwitch(arrayList.get(i));
-                            break;
+                                && touchedY < arrayList.get(i).y + arrayList.get(i).elementHeight) {
+                            if ((this instanceof Construction || this instanceof Inventory)
+                                    && user.getInvents() >= arrayList.get(i).getInventLvl()){
+                                miniWindowSwitch(arrayList.get(i));
+                                break;
+                            } else if (this instanceof Research && isEnableToBuy(user, (ItemResearch) arrayList.get(i))) {
+                                user.addInvents();
+                                user.setMoney(user.getMoney() - ((ItemResearch)arrayList.get(i)).getCostMoney());
+                                user.setMetal(user.getMetal() - ((ItemResearch)arrayList.get(i)).getCostMetal());
+                                user.setEnergy(user.getEnergy() - ((ItemResearch)arrayList.get(i)).getCostEnergy());
+                                parseAndSavePrefsBuildings(user);
+                                successSound.play(user.getSoundsVolume());
+                                break;
+                            }else if (this instanceof SelectingPlanetScreen && isEnableToBuy(user, (ItemSelectingPlanet) arrayList.get(i))) {
+                                user.setMoney(user.getMoney() - ((ItemSelectingPlanet)arrayList.get(i)).getCostMoney());
+                                user.setMetal(user.getMetal() - ((ItemSelectingPlanet)arrayList.get(i)).getCostMetal());
+                                user.setEnergy(user.getEnergy() - ((ItemSelectingPlanet)arrayList.get(i)).getCostEnergy());
+                                selectingPlanetArrayList.get(i).setCostMoney(0);
+                                selectingPlanetArrayList.get(i).setCostMetal(0);
+                                selectingPlanetArrayList.get(i).setCostEnergy(0);
+                                currentPlanet = i;
+                                parseAndSavePrefsBuildings(user);
+                                successSound.play(user.getSoundsVolume());
+                                screenManager.setPlanetScreen(new Planet(sys, user));
+                                sys.setScreen(screenManager.getPlanetScreen());
+                                break;
+                            }else if (this instanceof Shop) {
+                                //TODO: touch mechanic is very complicated, fix it!
+                                break;
+                            }
                         }
                     }
                 }
+                screenWasTouchedJustNow = false;
             }
         }
 
         if (!Gdx.input.isTouched()) {
             screenWasTouchedJustNow = false;
             if (isBigList) {
-                if (lastElementY < boarderUp) {
+                if (lastElementY + lastElementHeight < boarderUp) {
                     for (int i = 0; i < arrayList.size(); i++) {
-                        arrayList.get(i).y += boarderUp - lastElementY;
+                        arrayList.get(i).y += boarderUp - lastElementY - lastElementHeight;
                     }
                 } else if (firstElementY > BUTTON_HEIGHT) {
                     for (int i = 0; i < arrayList.size(); i++) {
@@ -131,14 +155,10 @@ abstract public class BasicScrollScreen extends BasicScreen {
             miniWindowActivated((Building) building);
         } else if (building.getClass().equals(BuildingsInInventory.class)) {
             miniWindowActivated((BuildingsInInventory) building);
-        } else if (building.getClass().equals(ItemSelectingPlanet.class)) {
-            miniWindowActivated((ItemSelectingPlanet) building);
         }
     }
 
     protected abstract void miniWindowActivated(Building building);
 
     protected abstract void miniWindowActivated(BuildingsInInventory buildingInInventory);
-
-    protected abstract void miniWindowActivated(ItemSelectingPlanet itemSelectingPlanet);
 }

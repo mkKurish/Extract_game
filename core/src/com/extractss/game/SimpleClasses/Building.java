@@ -25,7 +25,7 @@ public class Building extends BasicListItem {
 
     public Building(String name, Texture picture, boolean productiveType, int costMoney,
                     int costMetal, int costEnergy, int usefulMoney, int usefulMetal,
-                    int usefulEnergy, int inventLvl, float y) {
+                    int usefulEnergy, int inventLvl, float y, float elementHeight) {
         this.name = name;
         this.picture = picture;
         this.productiveType = productiveType;
@@ -37,12 +37,13 @@ public class Building extends BasicListItem {
         this.usefulEnergy = usefulEnergy;
         this.inventLvl = inventLvl;
         this.y = y;
+        this.elementHeight = elementHeight;
         this.buildingLvl = 0;
     }
 
     public Building(String name, boolean productiveType, int costMoney, int costMetal,
                     int costEnergy, int usefulMoney, int usefulMetal, int usefulEnergy,
-                    int inventLvl, float y) {
+                    int inventLvl, float y, float elementHeight) {
         this.name = name;
         this.productiveType = productiveType;
         this.picture = new Texture("buildings\\" + name + ".png");
@@ -54,6 +55,7 @@ public class Building extends BasicListItem {
         this.usefulEnergy = usefulEnergy;
         this.inventLvl = inventLvl;
         this.y = y;
+        this.elementHeight = elementHeight;
         this.buildingLvl = 0;
     }
 
@@ -69,6 +71,7 @@ public class Building extends BasicListItem {
         this.usefulEnergy = building.usefulEnergy;
         this.inventLvl = building.inventLvl;
         this.y = building.y;
+        this.elementHeight = building.elementHeight;
         this.buildingLvl = 0;
     }
 

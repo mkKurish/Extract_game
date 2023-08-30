@@ -135,46 +135,7 @@ public class MainScreen extends BasicScreen {
 
         batch.draw(backgroundsMain.get(curScreenAnimation), 0, 0, APP_WIDTH, APP_HEIGHT);
 
-        /*
-        Проверяем кнопки на нажатие.
-         */
-        for (int i = 0; i < myButtons.size(); i++) {
-            myButton = myButtons.get(i);
-            if (Gdx.input.isTouched()) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                if (isInPlace(touchedX, touchedY, myButton)) {
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (!myButton.isPressedToSound()) {
-                        buttonDownSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(true);
-                    }
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                }
-            } else {
-                if (isInPlace(touchedX, touchedY, myButton) && lastTouchTime != 0) {
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    this.buttonActivated(i);
-                    touchedX = touchedY = -1;
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                }
-            }
-        }
+        checkButtonTouches(); // Проверяем кнопки на нажатие.
 
         batch.draw(gameLogo, logoX, logoY, logoWidth, logoHigh);
 

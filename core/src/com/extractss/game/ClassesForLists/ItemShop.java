@@ -1,9 +1,5 @@
 package com.extractss.game.ClassesForLists;
 
-
-import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
-import static com.extractss.game.utils.Constants.LIST_SHOP_ELEMENT_HEIGHT;
-
 public class ItemShop extends BasicListItem{
 
     private String name;
@@ -15,10 +11,8 @@ public class ItemShop extends BasicListItem{
     private int outputMetal;
     private int outputEnergy;
 
-    private float height;
-
     public ItemShop(String name, int costMoney, int costMetal, int costEnergy, int outputMoney,
-                    int outputMetal, int outputEnergy, float y) {
+                    int outputMetal, int outputEnergy, float y, float elementHeight) {
         this.name = name;
         this.costMoney = costMoney;
         this.costMetal = costMetal;
@@ -27,8 +21,7 @@ public class ItemShop extends BasicListItem{
         this.outputMetal = outputMetal;
         this.outputEnergy = outputEnergy;
         this.y = y;
-        if (name == "faster click") this.height = LIST_ELEMENT_HEIGHT;
-        else this.height = LIST_SHOP_ELEMENT_HEIGHT;
+        this.elementHeight = elementHeight;
     }
 
     public String getName() {
@@ -89,13 +82,5 @@ public class ItemShop extends BasicListItem{
     public void setOutputEnergy(int outputEnergy) {
 
         this.outputEnergy = outputEnergy;
-    }
-
-    public float getHeight() {
-        return height;
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
     }
 }

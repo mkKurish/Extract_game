@@ -2,7 +2,6 @@ package com.extractss.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.extractss.game.ClassesForLists.BuildingsInInventory;
@@ -51,18 +50,19 @@ import static com.extractss.game.utils.Constants.HEIGHT_FOR_RESOURCES;
 import static com.extractss.game.utils.Constants.HEIGHT_RESOURCES_TABLE;
 import static com.extractss.game.utils.Constants.KNOB_WIDTH;
 import static com.extractss.game.utils.Constants.KNOB_X;
+import static com.extractss.game.utils.Constants.MEDIUM_LEST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.SIDE_INDENT;
-import static com.extractss.game.utils.Constants.LIST_SHOP_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_WIDTH;
 import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Constants.SMALLER_SCALE;
+import static com.extractss.game.utils.Constants.SMALL_LIST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.TOP_BUTTONS_TEXT_Y;
 import static com.extractss.game.utils.Constants.Y_RESOURCES_TABLE;
 import static com.extractss.game.utils.Operations.isEnableToBuy;
-import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
+import static com.extractss.game.utils.Operations.totalListHeight;
 
 public class Shop extends BasicScrollScreen {
 
@@ -119,57 +119,69 @@ public class Shop extends BasicScrollScreen {
         listItems = new ArrayList<>();
         listItems.add(new ItemShop("Money to Metal",
                 AVERAGE_VALUE_TO_BUY_RES, 0, 0,
-                0, averageValueToGetRes, 0, BUTTON_HEIGHT));
+                0, averageValueToGetRes, 0, BUTTON_HEIGHT, SMALL_LIST_ELEMENT_HEIGHT));
         listItems.add(new ItemShop("Money to Energy",
                 AVERAGE_VALUE_TO_BUY_RES, 0, 0,
                 0, 0, averageValueToGetRes,
-                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).getHeight()));
+                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                SMALL_LIST_ELEMENT_HEIGHT));
         listItems.add(new ItemShop("Metal to Money",
                 0, AVERAGE_VALUE_TO_BUY_RES, 0,
                 averageValueToGetRes, 0, 0,
-                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).getHeight()));
+                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                SMALL_LIST_ELEMENT_HEIGHT));
         listItems.add(new ItemShop("Metal to Energy",
                 0, AVERAGE_VALUE_TO_BUY_RES, 0,
                 0, 0, averageValueToGetRes,
-                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).getHeight()));
+                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                SMALL_LIST_ELEMENT_HEIGHT));
         listItems.add(new ItemShop("Energy to Money",
                 0, 0, AVERAGE_VALUE_TO_BUY_RES,
                 averageValueToGetRes, 0, 0,
-                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).getHeight()));
+                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                SMALL_LIST_ELEMENT_HEIGHT));
         listItems.add(new ItemShop("Energy to Metal",
                 0, 0, AVERAGE_VALUE_TO_BUY_RES,
                 0, averageValueToGetRes, 0,
-                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).getHeight()));
+                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                SMALL_LIST_ELEMENT_HEIGHT));
         listItems.add(new ItemShop("faster click",
                 getIncrementMechanicUpgradeCost, getIncrementMechanicUpgradeCost, getIncrementMechanicUpgradeCost,
                 0, 0, 0,
-                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).getHeight()));
+                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemShop("Ads for Money",
                 2, 0, 0,
                 averageValueToGetResAdd, 0, 0,
-                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).getHeight()));
+                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                SMALL_LIST_ELEMENT_HEIGHT));
         listItems.add(new ItemShop("Ads for Metal",
                 0, 2, 0,
                 0, averageValueToGetResAdd, 0,
-                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).getHeight()));
+                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                SMALL_LIST_ELEMENT_HEIGHT));
         listItems.add(new ItemShop("Ads for Energy",
                 0, 0, 2,
                 0, 0, averageValueToGetResAdd,
-                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).getHeight()));
-//        listItems.add(new ItemShop("Buy Money",
-//                1, 0, 0,
-//                averageValueToGetResDonate, 0, 0,
-//                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).getHeight()));
-//        listItems.add(new ItemShop("Buy Metal",
-//                0, 1, 0,
-//                0, averageValueToGetResDonate, 0,
-//                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).getHeight()));
-//        listItems.add(new ItemShop("Buy Energy",
-//                0, 0, 1,
-//                0, 0, averageValueToGetResDonate,
-//                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).getHeight()));
+                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                SMALL_LIST_ELEMENT_HEIGHT));
+/*        listItems.add(new ItemShop("Buy Money",
+                1, 0, 0,
+                averageValueToGetResDonate, 0, 0,
+                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                SMALL_LIST_ELEMENT_HEIGHT));
+        listItems.add(new ItemShop("Buy Metal",
+                0, 1, 0,
+                0, averageValueToGetResDonate, 0,
+                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                SMALL_LIST_ELEMENT_HEIGHT));
+        listItems.add(new ItemShop("Buy Energy",
+                0, 0, 1,
+                0, 0, averageValueToGetResDonate,
+                listItems.get(listItems.size() - 1).y + listItems.get(listItems.size() - 1).elementHeight,
+                SMALL_LIST_ELEMENT_HEIGHT));*/
 
-        knobHeight = LIST_HEIGHT * LIST_HEIGHT / ((listItems.size()+1) * LIST_SHOP_ELEMENT_HEIGHT);
+        knobHeight = LIST_HEIGHT * LIST_HEIGHT / totalListHeight(listItems);
 
         yForIcons = HEIGHT_FOR_RESOURCES - 7 * bitmapFontSmall.getCapHeight() / 4;
         moneyTextureX = 2 * appWidthToTwentyFour / 3;
@@ -181,8 +193,6 @@ public class Shop extends BasicScrollScreen {
         heightForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         widthForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         yForResourcesText = HEIGHT_FOR_RESOURCES - bitmapFontSmall.getCapHeight() / 2;
-        xForPriceListElements = SIDE_INDENT + 3 * bitmapFontSmall.getCapHeight() / 2;
-        xForIconsListElements = SIDE_INDENT + bitmapFontSmall.getCapHeight() / 2;
         xForSecondIconsListResources = xForIconsListElements + SCALEXY_NEW * 11 *
                 (AVERAGE_VALUE_TO_BUY_RES + " ->  ").length() + bitmapFontSmall.getCapHeight();
         xForSecondPriceListResources = xForSecondIconsListResources + bitmapFontSmall.getCapHeight();
@@ -269,10 +279,11 @@ public class Shop extends BasicScrollScreen {
             /*
             Если в режиме нажатий коснулись элемента списка, активируется выбранная функция.
              */
+            //TODO: touch mechanic is very complicated
             if (listTouchMode
                     && Gdx.input.isTouched()
                     && isInPlaceMain(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                    SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight())
+                    SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight)
                     && Gdx.input.getY() < (LIST_HEIGHT + BUTTON_HEIGHT)
                     && Gdx.input.getY() > BUTTON_HEIGHT) {
                 lastTouchTime = System.currentTimeMillis();
@@ -289,16 +300,16 @@ public class Shop extends BasicScrollScreen {
             /*
             Отрисовываем каждый элемент списка, который помещается на экран, а также проверяется на нажатие.
              */
-            if ((listElementForCycle.y < APP_HEIGHT + BUTTON_HEIGHT && listElementForCycle.y > -listItems.get(i).getHeight())) {
+            if ((listElementForCycle.y < APP_HEIGHT + BUTTON_HEIGHT && listElementForCycle.y > -listItems.get(i).elementHeight)) {
                 if (listElementForCycle.getName() == "faster click") {
                     if (isEnableToBuy(user, listElementForCycle) && incrementMechanicMaxValue > 2) {
                         upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH,
-                                listItems.get(i).getHeight());
+                                listItems.get(i).elementHeight);
                         if (Gdx.input.isTouched() && listTouchMode
                                 && isInPlaceMain(Gdx.input.getX(),
                                 APP_HEIGHT - Gdx.input.getY(),
                                 SIDE_INDENT, listElementForCycle.y,
-                                LIST_WIDTH, listItems.get(i).getHeight())) {
+                                LIST_WIDTH, listItems.get(i).elementHeight)) {
                             user.setMoney(user.getMoney() - listElementForCycle.getCostMoney());
                             user.setMetal(user.getMetal() - listElementForCycle.getCostMetal());
                             user.setEnergy(user.getEnergy() - listElementForCycle.getCostEnergy());
@@ -313,31 +324,31 @@ public class Shop extends BasicScrollScreen {
                             listTouchMode = false;
                         }
                     } else {
-                        downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     }
                     batch.draw(moneyTexture, xForIconsListElements, listElementForCycle.y -
-                                    3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                                    3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     batch.draw(metalTexture, xForIconsListElements, listElementForCycle.y -
-                                    5f * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                                    5f * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     batch.draw(energyTexture, xForIconsListElements, listElementForCycle.y -
-                                    7 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                                    7 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getCostMoney()),
                             xForPriceListElements, listElementForCycle.y -
-                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getCostMoney()),
                             xForPriceListElements, listElementForCycle.y -
-                                    4f * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    4f * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getCostMoney()),
                             xForPriceListElements, listElementForCycle.y -
-                                    6 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    6 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                 }
                 if (listElementForCycle.getCostMoney() == AVERAGE_VALUE_TO_BUY_RES) {
                     if (listTouchMode && Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
                             APP_HEIGHT - Gdx.input.getY(), SIDE_INDENT, listElementForCycle.y,
-                            LIST_WIDTH, listItems.get(i).getHeight())
+                            LIST_WIDTH, listItems.get(i).elementHeight)
                             && isEnableToBuy(user, listElementForCycle)) {
                         if (listElementForCycle.getOutputMetal() != 0) {
                             user.setMetal(user.getMetal() + listElementForCycle.getOutputMetal());
@@ -349,60 +360,60 @@ public class Shop extends BasicScrollScreen {
                         listTouchMode = false;
                     }
                     if (isEnableToBuy(user, listElementForCycle)) {
-                        upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     } else {
-                        downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     }
                     bitmapFontSmall.draw(batch, listElementForCycle.getCostMoney() + " -> ",
                             xForPriceListElements, listElementForCycle.y -
-                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     batch.draw(moneyTexture, xForIconsListElements, listElementForCycle.y -
-                                    3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                                    3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     if (listElementForCycle.getOutputMetal() != 0) {
                         bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputMetal()),
                                 xForSecondPriceListResources, listElementForCycle.y -
-                                        2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                        2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                         batch.draw(metalTexture, xForSecondIconsListResources,
                                 listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() +
-                                        listItems.get(i).getHeight(), bitmapFontSmall.getCapHeight(),
+                                        listItems.get(i).elementHeight, bitmapFontSmall.getCapHeight(),
                                 bitmapFontSmall.getCapHeight());
                     } else {
                         bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputEnergy()),
                                 xForSecondPriceListResources, listElementForCycle.y -
-                                        2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                        2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                         batch.draw(energyTexture, xForSecondIconsListResources,
                                 listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() +
-                                        listItems.get(i).getHeight(), bitmapFontSmall.getCapHeight(),
+                                        listItems.get(i).elementHeight, bitmapFontSmall.getCapHeight(),
                                 bitmapFontSmall.getCapHeight());
                     }
                 } else if (listElementForCycle.getCostMoney() == 1) {
-                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, "cash ->",
-                            xForPriceListElements, listElementForCycle.y - 2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                            xForPriceListElements, listElementForCycle.y - 2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputMoney()),
                             12 * xForSecondPriceListResources / 10, listElementForCycle.y -
-                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     batch.draw(moneyTexture, 12 * xForSecondIconsListResources / 10,
-                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     //TODO: add ads
                 } else if (listElementForCycle.getCostMoney() == 2) {
-                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, "ads ->",
                             xForPriceListElements, listElementForCycle.y -
-                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputMoney()),
                             11 * xForSecondPriceListResources / 10, listElementForCycle.y -
-                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     batch.draw(moneyTexture, 11 * xForSecondIconsListResources / 10,
-                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     //TODO: add donations
                 } else if (listElementForCycle.getCostMetal() == AVERAGE_VALUE_TO_BUY_RES) {
                     if (listTouchMode && Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
                             APP_HEIGHT - Gdx.input.getY(), SIDE_INDENT, listElementForCycle.y,
-                            LIST_WIDTH, listItems.get(i).getHeight())
+                            LIST_WIDTH, listItems.get(i).elementHeight)
                             && isEnableToBuy(user, listElementForCycle)) {
                         if (listElementForCycle.getOutputMoney() != 0) {
                             user.setMoney(user.getMoney() + listElementForCycle.getOutputMoney());
@@ -414,59 +425,59 @@ public class Shop extends BasicScrollScreen {
                         listTouchMode = false;
                     }
                     if (isEnableToBuy(user, listElementForCycle)) {
-                        upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     } else {
-                        downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     }
                     bitmapFontSmall.draw(batch, listElementForCycle.getCostMetal() + " -> ",
                             xForPriceListElements, listElementForCycle.y -
-                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     batch.draw(metalTexture, xForIconsListElements,
-                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     if (listElementForCycle.getOutputMoney() != 0) {
                         bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputMoney()),
                                 xForSecondPriceListResources, listElementForCycle.y -
-                                        2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                        2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                         batch.draw(moneyTexture, xForSecondIconsListResources,
-                                listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                                listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                                 bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     } else {
                         bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputEnergy()),
                                 xForSecondPriceListResources, listElementForCycle.y -
-                                        2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                        2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                         batch.draw(energyTexture, xForSecondIconsListResources,
-                                listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                                listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                                 bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     }
                 } else if (listElementForCycle.getCostMetal() == 1) {
-                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, "cash ->",
                             xForPriceListElements, listElementForCycle.y -
-                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputMetal()),
                             12 * xForSecondPriceListResources / 10, listElementForCycle.y -
-                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     batch.draw(metalTexture, 12 * xForSecondIconsListResources / 10,
-                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     //TODO: add ads
                 } else if (listElementForCycle.getCostMetal() == 2) {
-                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, "ads ->",
                             xForPriceListElements, listElementForCycle.y -
-                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputMetal()),
                             11 * xForSecondPriceListResources / 10,
-                            listElementForCycle.y - 2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                            listElementForCycle.y - 2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     batch.draw(metalTexture, 11 * xForSecondIconsListResources / 10,
-                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     //TODO: add donations
                 } else if (listElementForCycle.getCostEnergy() == AVERAGE_VALUE_TO_BUY_RES) {
                     if (listTouchMode && Gdx.input.isTouched() && isInPlaceMain(Gdx.input.getX(),
                             APP_HEIGHT - Gdx.input.getY(), SIDE_INDENT, listElementForCycle.y,
-                            LIST_WIDTH, listItems.get(i).getHeight())
+                            LIST_WIDTH, listItems.get(i).elementHeight)
                             && isEnableToBuy(user, listElementForCycle)) {
                         if (listElementForCycle.getOutputMetal() != 0) {
                             user.setMetal(user.getMetal() + listElementForCycle.getOutputMetal());
@@ -478,60 +489,60 @@ public class Shop extends BasicScrollScreen {
                         listTouchMode = false;
                     }
                     if (isEnableToBuy(user, listElementForCycle)) {
-                        upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     } else {
-                        downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                        downNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     }
                     bitmapFontSmall.draw(batch, listElementForCycle.getCostEnergy() + " -> ",
                             xForPriceListElements, listElementForCycle.y -
-                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     batch.draw(energyTexture, xForIconsListElements,
-                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     if (listElementForCycle.getOutputMetal() != 0) {
                         bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputMetal()),
                                 xForSecondPriceListResources, listElementForCycle.y -
-                                        2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                        2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                         batch.draw(metalTexture, xForSecondIconsListResources,
-                                listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                                listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                                 bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     } else {
                         bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputMoney()),
                                 xForSecondPriceListResources, listElementForCycle.y -
-                                        2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                        2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                         batch.draw(moneyTexture, xForSecondIconsListResources,
-                                listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                                listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                                 bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     }
                 } else if (listElementForCycle.getCostEnergy() == 1) {
-                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, "cash ->",
                             xForPriceListElements, listElementForCycle.y -
-                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputEnergy()),
                             12 * xForSecondPriceListResources / 10,
-                            listElementForCycle.y - 2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                            listElementForCycle.y - 2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     batch.draw(energyTexture, 12 * xForSecondIconsListResources / 10,
-                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     //TODO: add ads
                 } else if (listElementForCycle.getCostEnergy() == 2) {
-                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).getHeight());
+                    upNinePatch.draw(batch, SIDE_INDENT, listElementForCycle.y, LIST_WIDTH, listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, "ads ->",
                             xForPriceListElements, listElementForCycle.y -
-                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                                    2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     bitmapFontSmall.draw(batch, String.valueOf(listElementForCycle.getOutputEnergy()),
                             11 * xForSecondPriceListResources / 10,
-                            listElementForCycle.y - 2 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight());
+                            listElementForCycle.y - 2 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight);
                     batch.draw(energyTexture, 11 * xForSecondIconsListResources / 10,
-                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).getHeight(),
+                            listElementForCycle.y - 3 * bitmapFontSmall.getCapHeight() + listItems.get(i).elementHeight,
                             bitmapFontSmall.getCapHeight(), bitmapFontSmall.getCapHeight());
                     //TODO: add donations
                 }
 
                 bitmapFontSmall.draw(batch, listElementForCycle.getName(),
                         APP_WIDTH / 2 - listElementForCycle.getName().length() * 11 * SMALLER_SCALE,
-                        listElementForCycle.y - bitmapFontSmall.getCapHeight() * 0.7f + listItems.get(i).getHeight());
+                        listElementForCycle.y - bitmapFontSmall.getCapHeight() * 0.7f + listItems.get(i).elementHeight);
             }
         }
 
@@ -682,11 +693,6 @@ public class Shop extends BasicScrollScreen {
 
     @Override
     protected void miniWindowActivated(BuildingsInInventory buildingInInventory) {
-
-    }
-
-    @Override
-    protected void miniWindowActivated(ItemSelectingPlanet itemSelectingPlanet) {
 
     }
 }

@@ -12,7 +12,7 @@ public class ItemResearch extends BasicListItem {
     private int costEnergy;
 
     public ItemResearch(String name, Texture picture, int costMoney, int costMetal, int costEnergy,
-                        int inventLvl, float y) {
+                        int inventLvl, float y, float elementHeight) {
         this.name = name;
         this.picture = picture;
         this.costMoney = costMoney;
@@ -20,6 +20,7 @@ public class ItemResearch extends BasicListItem {
         this.costEnergy = costEnergy;
         this.inventLvl = inventLvl;
         this.y = y;
+        this.elementHeight = elementHeight;
     }
 
     public String getName() {

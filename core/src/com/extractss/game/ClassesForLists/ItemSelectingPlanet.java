@@ -10,7 +10,8 @@ public class ItemSelectingPlanet extends BasicListItem {
     private int costMetal;
     private int costEnergy;
 
-    public ItemSelectingPlanet(String name, TextureRegion picture, int costMoney, int costMetal, int costEnergy, int inventLvl, float y) {
+    public ItemSelectingPlanet(String name, TextureRegion picture, int costMoney, int costMetal,
+                               int costEnergy, int inventLvl, float y, float elementHeight) {
         this.name = name;
         this.picture = picture;
         this.costMoney = costMoney;
@@ -18,6 +19,7 @@ public class ItemSelectingPlanet extends BasicListItem {
         this.costEnergy = costEnergy;
         this.inventLvl = inventLvl;
         this.y = y;
+        this.elementHeight = elementHeight;
     }
 
     public String getName() {

@@ -2,7 +2,6 @@ package com.extractss.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -65,7 +64,6 @@ import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BOTTOM_BUTTONS_TEXT_Y;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
 import static com.extractss.game.utils.Constants.SIDE_INDENT;
-import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.NUMBER_OF_COLUMNS;
 import static com.extractss.game.utils.Constants.NUMBER_OF_ROWS;
 import static com.extractss.game.utils.Constants.SCALEXY_NEW;
@@ -332,14 +330,6 @@ public class Planet extends BasicScreen {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
 
         /*
-        Проверяем, прошла ли минута, чтобы увеличить значение внутриигровых рерурсов.
-         */
-        if (System.currentTimeMillis() - incrementingThreadTime > 60000) {
-            incrementResourcesTimeCheck.test();
-            incrementingThreadTime = System.currentTimeMillis();
-        }
-
-        /*
         Производим анимацию фона.
          */
         if (System.currentTimeMillis() - lastAnimationTime >= 550) {
@@ -352,6 +342,14 @@ public class Planet extends BasicScreen {
                     break;
             }
             lastAnimationTime = System.currentTimeMillis();
+        }
+
+        /*
+        Проверяем, прошла ли минута, чтобы увеличить значение внутриигровых рерурсов.
+         */
+        if (System.currentTimeMillis() - incrementingThreadTime > 60000) {
+            incrementResourcesTimeCheck.test();
+            incrementingThreadTime = System.currentTimeMillis();
         }
 
         batch.begin();
@@ -411,6 +409,7 @@ public class Planet extends BasicScreen {
         /*
         Проверяем кнопки на нажатие.
          */
+        // TODO: checkButtonTouches mechanic is very complicated
         if (building == null) {
             if (System.currentTimeMillis() - lastMeteorFellTime >= maxMeteorFellTime && !meteorIsActive) {
                 Random random = new Random();
@@ -480,6 +479,10 @@ public class Planet extends BasicScreen {
             // Шкала кликкера
             downNinePatch.draw(batch, 0,
                     productivityLabelY, startFieldPosX - 5, productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
+            downNinePatch.draw(batch, 0,
+                    productivityLabelY, APP_WIDTH *
+                            ((System.currentTimeMillis() - incrementingThreadTime) / (float) 60000),
+                    productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
             upNinePatch.draw(batch, 0,
                     productivityLabelY, APP_WIDTH *
                             (incrementMechanicValue / (float) incrementMechanicMaxValue + 1 / (float) incrementMechanicMaxValue),
@@ -543,7 +546,6 @@ public class Planet extends BasicScreen {
                 productivityResourceX, productivityEnergyY);
         bitmapFontSmall.draw(batch, user.getInvents() + " (LvL)", productivityResourceX,
                 productivityInventY);
-
 
         if (meteorIsActive && building == null) {
             if (System.currentTimeMillis() - meteorFallingTime > 10) {
@@ -629,7 +631,7 @@ public class Planet extends BasicScreen {
                 Удаляем здание из инвентаря.
                  */
                 for (int j = inventoryBuildings.indexOf(inventoryItem) + 1; j < inventoryBuildings.size(); j++) {
-                    inventoryBuildings.get(j).setY(inventoryBuildings.get(j).getY() - LIST_ELEMENT_HEIGHT);
+                    inventoryBuildings.get(j).y -= inventoryItem.elementHeight;
                 }
                 inventoryBuildings.remove(inventoryItem);
             case 1:

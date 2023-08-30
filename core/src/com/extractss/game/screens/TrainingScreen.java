@@ -3,7 +3,6 @@ package com.extractss.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.extractss.game.ExtractSolarSys;
 import com.extractss.game.SimpleClasses.MyButtons;
@@ -58,7 +57,7 @@ public class TrainingScreen extends BasicScreen {
         prevX = APP_WIDTH / 4 - "prev".length() * 11 * SCALEXY_NEW;
         nextX = APP_WIDTH / 2 + APP_WIDTH / 4 - "next".length() * 11 * SCALEXY_NEW;
         finishX = APP_WIDTH / 2 + APP_WIDTH / 4 - "finish".length() * 11 * SCALEXY_NEW;
-
+        //TODO: update screens
         texts = new ArrayList<>();
         texts.add("hello!\n" +
                 "it is training guide to\n" +
@@ -165,46 +164,7 @@ public class TrainingScreen extends BasicScreen {
 
         downNinePatch.draw(batch, 0, BUTTON_HEIGHT, APP_WIDTH, APP_HEIGHT - BUTTON_HEIGHT);
 
-        /*
-        Проверяем кнопки на нажатие.
-         */
-        for (int i = 0; i < myButtons.size(); i++) {
-            myButton = myButtons.get(i);
-            if (Gdx.input.isTouched()) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                if (isInPlace(touchedX, touchedY, myButton)) {
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (!myButton.isPressedToSound()) {
-                        buttonDownSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(true);
-                    }
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                }
-            } else {
-                if (isInPlace(touchedX, touchedY, myButton) && lastTouchTime != 0) {
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    this.buttonActivated(i);
-                    touchedX = touchedY = -1;
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                }
-            }
-        }
+        checkButtonTouches(); // Проверяем кнопки на нажатие.
 
         bitmapFont.draw(batch, "prev", prevX, BOTTOM_BUTTONS_TEXT_Y);
         if (iterator == texts.size() - 1)

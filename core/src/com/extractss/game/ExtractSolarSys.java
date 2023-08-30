@@ -6,10 +6,8 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.extractss.game.ClassesForLists.BuildingsInInventory;
 import com.extractss.game.ClassesForLists.BuildingsOnField;
@@ -228,7 +226,7 @@ public class ExtractSolarSys extends Game {
                     break;
                 }
                 inventoryBuildings.add(new BuildingsInInventory(
-                        new com.extractss.game.SimpleClasses.Building(
+                        new Building(
                                 preferences.getString("i" + i + "name"),
                                 preferences.getBoolean("i" + i + "productiveType"),
                                 preferences.getInteger("i" + i + "costMoney"),
@@ -238,8 +236,9 @@ public class ExtractSolarSys extends Game {
                                 preferences.getInteger("i" + i + "usefulMetal"),
                                 preferences.getInteger("i" + i + "usefulEnergy"),
                                 preferences.getInteger("i" + i + "inventLvl"),
-                                0),
-                        preferences.getFloat("i" + i + "y")));
+                                0, 0),
+                        preferences.getFloat("i" + i + "y"),
+                        preferences.getFloat("i" + i + "elementHeight")));
             }
 
             currentPlanet = preferences.getInteger("currentPlanet");
@@ -259,7 +258,7 @@ public class ExtractSolarSys extends Game {
                                     preferences.getInteger(j + "f" + i + "usefulMetal"),
                                     preferences.getInteger(j + "f" + i + "usefulEnergy"),
                                     preferences.getInteger(j + "f" + i + "inventLvl"),
-                                    0),
+                                    0, 0),
                             preferences.getInteger(j + "f" + i + "i"),
                             preferences.getInteger(j + "f" + i + "j")));
                     buildingsOnFields.get(j).get(i).getBuilding().setBuildingLvl(
@@ -308,7 +307,8 @@ public class ExtractSolarSys extends Game {
                         preferences.getInteger(i + "selectingPlanetArrayList" + "metal"),
                         preferences.getInteger(i + "selectingPlanetArrayList" + "energy"),
                         preferences.getInteger(i + "selectingPlanetArrayList" + "invent"),
-                        preferences.getFloat(i + "selectingPlanetArrayList" + "y")));
+                        preferences.getFloat(i + "selectingPlanetArrayList" + "y"),
+                        preferences.getFloat(i + "selectingPlanetArrayList" + "elementHeight")));
             }
 
             user.setSoundsActive(preferences.getBoolean("soundsActive"));
@@ -432,7 +432,7 @@ public class ExtractSolarSys extends Game {
                     new IncrementResourcesTimeCheck(this, user);
             incrementResourcesTimeCheck.test();
 
-            if (incrementTimeValue <= MAX_INCREMENT_TIME_ALLOWED * 1000)
+            if (incrementTimeValue <= MAX_INCREMENT_TIME_ALLOWED * 1000L)
                 this.setScreen(screenManager.getMainScreen());
         } else {
             this.setScreen(screenManager.getTrainingScreen());

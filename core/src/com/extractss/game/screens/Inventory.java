@@ -4,9 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.extractss.game.ClassesForLists.ItemResearch;
 import com.extractss.game.ClassesForLists.ItemSelectingPlanet;
-import com.extractss.game.ClassesForLists.ItemShop;
 import com.extractss.game.SimpleClasses.Building;
 import com.extractss.game.ClassesForLists.BuildingsInInventory;
 import com.extractss.game.ExtractSolarSys;
@@ -19,13 +17,9 @@ import java.util.ArrayList;
 import static com.extractss.game.ExtractSolarSys.backgroundsOther;
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
-import static com.extractss.game.ExtractSolarSys.buttonDownSound;
-import static com.extractss.game.ExtractSolarSys.buttonUpSound;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.incrementingThreadTime;
 import static com.extractss.game.ExtractSolarSys.inventoryBuildings;
-import static com.extractss.game.ExtractSolarSys.listButtonDown;
-import static com.extractss.game.ExtractSolarSys.listButtonUp;
 import static com.extractss.game.ExtractSolarSys.metalTexture;
 import static com.extractss.game.ExtractSolarSys.moneyTexture;
 import static com.extractss.game.ExtractSolarSys.progressBarKnobNinePatch;
@@ -40,27 +34,25 @@ import static com.extractss.game.utils.Constants.HEIGHT_FOR_RESOURCES;
 import static com.extractss.game.utils.Constants.HEIGHT_RESOURCES_TABLE;
 import static com.extractss.game.utils.Constants.KNOB_WIDTH;
 import static com.extractss.game.utils.Constants.KNOB_X;
-import static com.extractss.game.utils.Constants.SIDE_INDENT;
-import static com.extractss.game.utils.Constants.LIST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_SIZE;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_X;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_TITLE_X_CENTER;
 import static com.extractss.game.utils.Constants.LIST_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_WIDTH;
+import static com.extractss.game.utils.Constants.MEDIUM_LEST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Constants.SMALLER_SCALE;
 import static com.extractss.game.utils.Constants.TOP_BUTTONS_TEXT_Y;
 import static com.extractss.game.utils.Constants.Y_RESOURCES_TABLE;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
+import static com.extractss.game.utils.Operations.totalListHeight;
 
 public class Inventory extends BasicScrollScreen {
 
     private Building listElementForCycle;
-    private long lastListTouchTime = 1000;
-    static long lastPanelTouchTime = 0;
-    private static boolean listTouchMode;
     private float listElementY;
+    private float listElementHeight;
     private static float menuX;
     private static float planetX;
     private static float researchX;
@@ -71,8 +63,6 @@ public class Inventory extends BasicScrollScreen {
         this.user = user;
 
         batch = new SpriteBatch();
-
-        listTouchMode = false;
 
         myButtons = new ArrayList<>();
         myButtons.add(new MyButtons(0, APP_WIDTH / 2, 0, BUTTON_HEIGHT));
@@ -93,8 +83,6 @@ public class Inventory extends BasicScrollScreen {
         heightForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         widthForIcons = 3 * bitmapFontSmall.getCapHeight() / 2;
         yForResourcesText = HEIGHT_FOR_RESOURCES - bitmapFontSmall.getCapHeight() / 2;
-        xForPriceListElements = LIST_ELEMENT_HEIGHT + 3 * bitmapFontSmall.getCapHeight() / 2;
-        xForIconsListElements = LIST_ELEMENT_HEIGHT + bitmapFontSmall.getCapHeight() / 2;
 
         menuX = APP_WIDTH / 4 - "menu".length() * 11 * SCALEXY_NEW;
         planetX = 3 * APP_WIDTH / 4 - "planet".length() * 11 * SCALEXY_NEW;
@@ -115,7 +103,7 @@ public class Inventory extends BasicScrollScreen {
         Устанавливаем размер ползунка в зависимости от размера самого списка.
          */
         if (inventoryBuildings.size() > 0) {
-            knobHeight = LIST_HEIGHT * LIST_HEIGHT / (inventoryBuildings.size() * LIST_ELEMENT_HEIGHT);
+            knobHeight = LIST_HEIGHT * LIST_HEIGHT / (totalListHeight(inventoryBuildings));
         } else {
             knobHeight = LIST_HEIGHT;
         }
@@ -155,49 +143,50 @@ public class Inventory extends BasicScrollScreen {
 
         for (int i = 0; i < inventoryBuildings.size(); i++) {
             listElementForCycle = inventoryBuildings.get(i).getBuilding();
-            listElementY = inventoryBuildings.get(i).getY();
+            listElementY = inventoryBuildings.get(i).y;
+            listElementHeight = inventoryBuildings.get(i).elementHeight;
             /*
             Отрисовываем каждый элемент списка, который помещается на экран.
              */
-            if ((listElementY < APP_HEIGHT + BUTTON_HEIGHT && listElementY > -LIST_ELEMENT_HEIGHT)) {
-                upNinePatch.draw(batch, 0, listElementY, LIST_WIDTH, LIST_ELEMENT_HEIGHT);
+            if ((listElementY < APP_HEIGHT + BUTTON_HEIGHT && listElementY > -listElementHeight)) {
+                upNinePatch.draw(batch, 0, listElementY, LIST_WIDTH, listElementHeight);
                 upNinePatch.draw(batch, LIST_ELEMENT_PIC_X - 1,
-                        listElementY + LIST_ELEMENT_HEIGHT / 10 - 1,
+                        listElementY + listElementHeight / 10 - 1,
                         LIST_ELEMENT_PIC_SIZE + 2, LIST_ELEMENT_PIC_SIZE + 2);
                 batch.draw(listElementForCycle.getPicture(), LIST_ELEMENT_PIC_X,
-                        listElementY + LIST_ELEMENT_HEIGHT / 10, LIST_ELEMENT_PIC_SIZE, LIST_ELEMENT_PIC_SIZE);
+                        listElementY + listElementHeight / 10, LIST_ELEMENT_PIC_SIZE, LIST_ELEMENT_PIC_SIZE);
                 bitmapFontSmall.draw(batch, listElementForCycle.getName(),
                         LIST_ELEMENT_TITLE_X_CENTER - listElementForCycle.getName().length() * 11 * SMALLER_SCALE,
-                        listElementY - bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                        listElementY - bitmapFontSmall.getCapHeight() + listElementHeight);
                 if (listElementForCycle.isProductiveType()) {
                     bitmapFontSmall.draw(batch, listElementForCycle.getUsefulMoney() + "/min",
                             xForPriceListElements,
-                            listElementY - 3 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            listElementY - 3 * bitmapFontSmall.getCapHeight() + listElementHeight);
                     bitmapFontSmall.draw(batch, listElementForCycle.getUsefulMetal() + "/min",
                             xForPriceListElements,
-                            listElementY - 4.5f * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            listElementY - 4.5f * bitmapFontSmall.getCapHeight() + listElementHeight);
                     bitmapFontSmall.draw(batch, listElementForCycle.getUsefulEnergy() + "/min",
                             xForPriceListElements,
-                            listElementY - 6 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            listElementY - 6 * bitmapFontSmall.getCapHeight() + listElementHeight);
                 } else {
                     bitmapFontSmall.draw(batch, "+" + listElementForCycle.getUsefulMoney(),
                             xForPriceListElements,
-                            listElementY - 3 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            listElementY - 3 * bitmapFontSmall.getCapHeight() + listElementHeight);
                     bitmapFontSmall.draw(batch, "+" + listElementForCycle.getUsefulMetal(),
                             xForPriceListElements,
-                            listElementY - 4.5f * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            listElementY - 4.5f * bitmapFontSmall.getCapHeight() + listElementHeight);
                     bitmapFontSmall.draw(batch, "+" + listElementForCycle.getUsefulEnergy(),
                             xForPriceListElements,
-                            listElementY - 6 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT);
+                            listElementY - 6 * bitmapFontSmall.getCapHeight() + listElementHeight);
                 }
                 batch.draw(moneyTexture, xForIconsListElements, listElementY -
-                                4 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT, bitmapFontSmall.getCapHeight(),
+                                4 * bitmapFontSmall.getCapHeight() + listElementHeight, bitmapFontSmall.getCapHeight(),
                         bitmapFontSmall.getCapHeight());
                 batch.draw(metalTexture, xForIconsListElements, listElementY -
-                                5.5f * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT, bitmapFontSmall.getCapHeight(),
+                                5.5f * bitmapFontSmall.getCapHeight() + listElementHeight, bitmapFontSmall.getCapHeight(),
                         bitmapFontSmall.getCapHeight());
                 batch.draw(energyTexture, xForIconsListElements, listElementY -
-                                7 * bitmapFontSmall.getCapHeight() + LIST_ELEMENT_HEIGHT, bitmapFontSmall.getCapHeight(),
+                                7 * bitmapFontSmall.getCapHeight() + listElementHeight, bitmapFontSmall.getCapHeight(),
                         bitmapFontSmall.getCapHeight());
             }
         }
@@ -235,9 +224,9 @@ public class Inventory extends BasicScrollScreen {
         ползунок справа делать не нужно.
          */
         progressBarBackNinePatch.draw(batch, KNOB_X, BUTTON_HEIGHT, KNOB_WIDTH, LIST_HEIGHT);
-        if (inventoryBuildings.size() * LIST_ELEMENT_HEIGHT > LIST_HEIGHT) {
+        if (inventoryBuildings.size() * listElementHeight > LIST_HEIGHT) {
             progressBarKnobNinePatch.draw(batch, KNOB_X, BUTTON_HEIGHT - knobHeight *
-                    (inventoryBuildings.get(0).getY() - BUTTON_HEIGHT) / LIST_HEIGHT, KNOB_WIDTH, knobHeight);
+                    (inventoryBuildings.get(0).y - BUTTON_HEIGHT) / LIST_HEIGHT, KNOB_WIDTH, knobHeight);
             /*
             Если нажать на ползунок, мы переместимся в ту часть списка, в какую часть ползунка мы нажали.
              */
@@ -248,10 +237,10 @@ public class Inventory extends BasicScrollScreen {
                 } else if (touchedY - knobHeight / 2 < BUTTON_HEIGHT) {
                     touchedY = BUTTON_HEIGHT + knobHeight / 2;
                 }
-                deltaFirstElementY = -inventoryBuildings.get(0).getY() + (LIST_HEIGHT *
+                deltaFirstElementY = -inventoryBuildings.get(0).y + (LIST_HEIGHT *
                         (BUTTON_HEIGHT - touchedY + knobHeight / 2) / knobHeight + BUTTON_HEIGHT);
                 for (int i = 0; i < inventoryBuildings.size(); i++) {
-                    inventoryBuildings.get(i).setY(inventoryBuildings.get(i).getY() + deltaFirstElementY);
+                    inventoryBuildings.get(i).y += deltaFirstElementY;
                 }
             }
         }
@@ -303,11 +292,6 @@ public class Inventory extends BasicScrollScreen {
     protected void miniWindowActivated(BuildingsInInventory item) {
         screenManager.setMiniWindowInventoryScreen(new MiniWindowInventory(sys, user, item));
         sys.setScreen(screenManager.getMiniWindowInventoryScreen());
-    }
-
-    @Override
-    protected void miniWindowActivated(ItemSelectingPlanet building) {
-
     }
 
 }

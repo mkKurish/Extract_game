@@ -2,11 +2,8 @@ package com.extractss.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.extractss.game.SimpleClasses.Building;
 import com.extractss.game.ClassesForLists.BuildingsInInventory;
 import com.extractss.game.ExtractSolarSys;
 import com.extractss.game.SimpleClasses.MyButtons;
@@ -29,13 +26,10 @@ import static com.extractss.game.ExtractSolarSys.upNinePatch;
 import static com.extractss.game.utils.Constants.APP_HEIGHT;
 import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
-import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
 public class MiniWindowInventory extends BasicBuildingMiniWindow {
-
-    private float buildingY;
     private BuildingsInInventory item;
     private static float useX;
     private static float useY;
@@ -44,7 +38,6 @@ public class MiniWindowInventory extends BasicBuildingMiniWindow {
         this.sys = sys;
         this.user = user;
         building = item.getBuilding();
-        buildingY = item.getY();
         this.item = item;
 
         batch = new SpriteBatch();
@@ -131,46 +124,7 @@ public class MiniWindowInventory extends BasicBuildingMiniWindow {
 
         upNinePatch.draw(batch, frameX, frameY, frameWidth, frameHigh);
 
-        /*
-        Проверяем кнопки на нажатие.
-         */
-        for (int i = 0; i < myButtons.size(); i++) {
-            myButton = myButtons.get(i);
-            if (Gdx.input.isTouched()) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                if (isInPlace(touchedX, touchedY, myButton)) {
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (!myButton.isPressedToSound()) {
-                        buttonDownSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(true);
-                    }
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                }
-            } else {
-                if (isInPlace(touchedX, touchedY, myButton) && lastTouchTime != 0) {
-                    if (!myButton.isPressedToSound() || i != 1) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                    }
-                    myButton.setPressedToSound(false);
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    this.buttonActivated(i);
-                    touchedX = touchedY = -1;
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                }
-            }
-        }
+        checkButtonTouches(); // Проверяем кнопки на нажатие.
 
         bitmapFont.draw(batch, building.getName(), titleX, titleY);
 

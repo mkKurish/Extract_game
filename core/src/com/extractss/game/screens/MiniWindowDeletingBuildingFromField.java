@@ -161,56 +161,7 @@ final public class MiniWindowDeletingBuildingFromField extends BasicBuildingMini
 
         upNinePatch.draw(batch, frameX, frameY, frameWidth, frameHigh);
 
-        /*
-        Проверяем кнопки на нажатие.
-         */
-        for (int i = 0; i < myButtons.size(); i++) {
-            myButton = myButtons.get(i);
-            if (Gdx.input.isTouched()) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                if (isInPlace(touchedX, touchedY, myButton) || i == 2 && !isEnableToBuy(user, building)) {
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (!myButton.isPressedToSound() && (isEnableToBuy(user, building) || i != 2)) {
-                        buttonDownSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(true);
-                    }
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                }
-            } else {
-                if (isInPlace(touchedX, touchedY, myButton)
-                        && lastTouchTime != 0
-                        && (i != 2 || isEnableToBuy(user, building))) {
-                    if (myButton.isPressedToSound() && i >= 1) {
-                        successSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    } else if (myButton.isPressedToSound() && i == 0) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    this.buttonActivated(i);
-                    touchedX = touchedY = -1;
-                } else {
-                    if (i != 2 || isEnableToBuy(user, building)) {
-                        upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                    } else {
-                        downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                    }
-                }
-            }
-        }
+        checkButtonTouches(); // Проверяем кнопки на нажатие.
 
         bitmapFont.draw(batch, building.getName(), titleX, titleY);
 

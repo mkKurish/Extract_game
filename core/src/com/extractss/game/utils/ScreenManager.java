@@ -6,7 +6,7 @@ import com.extractss.game.screens.Construction;
 import com.extractss.game.screens.GameOverScreen;
 import com.extractss.game.screens.Inventory;
 import com.extractss.game.screens.MainScreen;
-import com.extractss.game.screens.BuildingMiniWindowBuying;
+import com.extractss.game.screens.MiniWindowBuildingBuying;
 import com.extractss.game.screens.MiniWindowDeletingBuildingFromField;
 import com.extractss.game.screens.MiniWindowInventory;
 import com.extractss.game.screens.MiniWindowResetConfirmation;
@@ -30,7 +30,7 @@ public class ScreenManager {
     private GameOverScreen gameOverScreen;
     private SelectingPlanetScreen selectingPlanetScreen;
 
-    private BuildingMiniWindowBuying miniWindowBuyingScreen;
+    private MiniWindowBuildingBuying miniWindowBuyingScreen;
     private MiniWindowDeletingBuildingFromField miniWindowDeletingBuildingFromFieldScreen;
     private MiniWindowInventory miniWindowInventoryScreen;
     private MiniWindowResetConfirmation miniWindowResetConfirmationScreen;
@@ -57,11 +57,11 @@ public class ScreenManager {
         this.selectingPlanetScreen = selectingPlanetScreen;
     }
 
-    public BuildingMiniWindowBuying getMiniWindowBuyingScreen() {
+    public MiniWindowBuildingBuying getMiniWindowBuyingScreen() {
         return miniWindowBuyingScreen;
     }
 
-    public void setMiniWindowBuyingScreen(BuildingMiniWindowBuying miniWindowBuyingScreen) {
+    public void setMiniWindowBuyingScreen(MiniWindowBuildingBuying miniWindowBuyingScreen) {
         this.miniWindowBuyingScreen = miniWindowBuyingScreen;
     }
 
