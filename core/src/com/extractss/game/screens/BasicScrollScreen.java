@@ -33,9 +33,8 @@ abstract public class BasicScrollScreen extends BasicScreen {
     protected static float heightForIcons;
     protected static float widthForIcons;
     protected float yForResourcesText;
-    //TODO: why do these two variables below depend on listElementForCycle.elementHeight?
-    protected float xForPriceListElements = MEDIUM_LEST_ELEMENT_HEIGHT + 3 * bitmapFontSmall.getCapHeight() / 2;;
-    protected float xForIconsListElements = MEDIUM_LEST_ELEMENT_HEIGHT + bitmapFontSmall.getCapHeight() / 2;
+    protected float xForPriceListElements = 9.5f * bitmapFontSmall.getCapHeight();
+    protected float xForIconsListElements = 8.5f * bitmapFontSmall.getCapHeight();
     protected static float appWidthToTwentyFour = APP_WIDTH / 24;
     protected float firstElementY;
     protected float lastElementY;
@@ -144,6 +143,13 @@ abstract public class BasicScrollScreen extends BasicScreen {
                 } else if (firstElementY > BUTTON_HEIGHT) {
                     for (int i = 0; i < arrayList.size(); i++) {
                         arrayList.get(i).y += BUTTON_HEIGHT - firstElementY;
+                    }
+                }
+            }else{
+                if (arrayList.size() > 0 && firstElementY != BUTTON_HEIGHT) {
+                    arrayList.get(0).y = BUTTON_HEIGHT;
+                    for (int i = 1; i < arrayList.size(); i++) {
+                        arrayList.get(i).y = arrayList.get(i-1).y + arrayList.get(i-1).elementHeight;
                     }
                 }
             }

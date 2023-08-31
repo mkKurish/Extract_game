@@ -69,7 +69,6 @@ public class Constants {
         KNOB_WIDTH = SIDE_INDENT * 2;
         KNOB_X = LIST_WIDTH;
 
-        //TODO: change design!
         LIST_ELEMENT_PIC_X = SIDE_INDENT;
         LIST_ELEMENT_PIC_SIZE = 8 * MEDIUM_LEST_ELEMENT_HEIGHT / 10;
         LIST_ELEMENT_TITLE_X_CENTER = SIDE_INDENT + 9 * MEDIUM_LEST_ELEMENT_HEIGHT / 10 +

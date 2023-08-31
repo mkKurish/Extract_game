@@ -56,6 +56,7 @@ import static com.extractss.game.ExtractSolarSys.planetFieldsBackgrounds;
 import static com.extractss.game.ExtractSolarSys.saturnTexture;
 import static com.extractss.game.ExtractSolarSys.screenManager;
 import static com.extractss.game.ExtractSolarSys.successSound;
+import static com.extractss.game.ExtractSolarSys.unknownNinePatch;
 import static com.extractss.game.ExtractSolarSys.upNinePatch;
 import static com.extractss.game.ExtractSolarSys.uranusTexture;
 import static com.extractss.game.ExtractSolarSys.venusTexture;
@@ -83,7 +84,7 @@ public class Planet extends BasicScreen {
 
     TextureRegion textureRegion;
 
-    private static float startFieldPosX = 0;
+    private static float startFieldPosX;
     private static float startFieldPosY;
     private static float productivityLabelY;
     private static float productivityLabelHigh;
@@ -172,12 +173,14 @@ public class Planet extends BasicScreen {
         Делаем адаптивный размер поля.
          */
         if (SCALEY_NEW_ORIGINAL > SCALEX_NEW_ORIGINAL) {
-            SIDE_OF_FIELD = APP_WIDTH / (float) NUMBER_OF_COLUMNS;
+            SIDE_OF_FIELD = APP_WIDTH / (float) NUMBER_OF_COLUMNS - 4;
+            startFieldPosX = 0;
+            startFieldPosY = (productivityLabelY - BUTTON_HEIGHT - NUMBER_OF_ROWS * (SIDE_OF_FIELD + 4))/ (float) 2 + BUTTON_HEIGHT;
         } else {
-            SIDE_OF_FIELD = (productivityLabelY - BUTTON_HEIGHT) / (float) NUMBER_OF_ROWS;
+            SIDE_OF_FIELD = (productivityLabelY - BUTTON_HEIGHT) / (float) NUMBER_OF_ROWS - 4;
+            startFieldPosX = (APP_WIDTH - NUMBER_OF_COLUMNS * (SIDE_OF_FIELD + 4)) / (float) 2;
+            startFieldPosY = BUTTON_HEIGHT;
         }
-
-        startFieldPosY = BUTTON_HEIGHT;
 
         myButtons = new ArrayList<>();
         myButtons.add(new MyButtons(0, APP_WIDTH / 2, 0, BUTTON_HEIGHT));
@@ -282,12 +285,14 @@ public class Planet extends BasicScreen {
         Делаем адаптивный размер поля.
          */
         if (SCALEY_NEW_ORIGINAL > SCALEX_NEW_ORIGINAL) {
-            SIDE_OF_FIELD = APP_WIDTH / (float) NUMBER_OF_COLUMNS;
+            SIDE_OF_FIELD = APP_WIDTH / (float) NUMBER_OF_COLUMNS - 4;
+            startFieldPosX = 0;
+            startFieldPosY = (productivityLabelY - BUTTON_HEIGHT - NUMBER_OF_ROWS * (SIDE_OF_FIELD + 4))/ (float) 2 + BUTTON_HEIGHT;
         } else {
-            SIDE_OF_FIELD = (productivityLabelY - BUTTON_HEIGHT) / (float) NUMBER_OF_ROWS;
+            SIDE_OF_FIELD = (productivityLabelY - BUTTON_HEIGHT) / (float) NUMBER_OF_ROWS - 4;
+            startFieldPosX = (APP_WIDTH - NUMBER_OF_COLUMNS * (SIDE_OF_FIELD + 4)) / (float) 2;
+            startFieldPosY = BUTTON_HEIGHT;
         }
-
-        startFieldPosY = BUTTON_HEIGHT;
 
         myButtons = new ArrayList<>();
         myButtons.add(new MyButtons(0, APP_WIDTH, 0, BUTTON_HEIGHT));
@@ -356,12 +361,11 @@ public class Planet extends BasicScreen {
 
         batch.draw(backgroundsOther.get(curScreenAnimation), 0, 0, APP_WIDTH, APP_HEIGHT);
 
-        planetFieldsBackground.draw(batch, startFieldPosX, startFieldPosY, // planetFieldsBackground.draw(batch, startFieldPosX - 4, startFieldPosY - 4,
+        planetFieldsBackground.draw(batch, startFieldPosX, startFieldPosY,
                 (SIDE_OF_FIELD + 4) * 5, (SIDE_OF_FIELD + 4) * 7);
-
         for (int i = 0; i < NUMBER_OF_COLUMNS; i++) {
             for (int j = 0; j < NUMBER_OF_ROWS; j++) {
-                batch.draw(textureRegion, startFieldPosX + (SIDE_OF_FIELD + 4) * i, // batch.draw(textureRegion, startFieldPosX + (SIDE_OF_FIELD + 4) * i,
+                batch.draw(textureRegion, startFieldPosX + (SIDE_OF_FIELD + 4) * i,
                         startFieldPosY + (SIDE_OF_FIELD + 4) * j, SIDE_OF_FIELD, SIDE_OF_FIELD);
                 /*
                 Устанавливаем здание на выбранную ячейку поля и проверяем кнопки на нажатие.
@@ -406,124 +410,7 @@ public class Planet extends BasicScreen {
             }
         }
 
-        /*
-        Проверяем кнопки на нажатие.
-         */
-        // TODO: checkButtonTouches mechanic is very complicated
-        if (building == null) {
-            if (System.currentTimeMillis() - lastMeteorFellTime >= maxMeteorFellTime && !meteorIsActive) {
-                Random random = new Random();
-                meteorBuildingI = random.nextInt(NUMBER_OF_COLUMNS);
-                meteorBuildingJ = random.nextInt(NUMBER_OF_ROWS);
-                meteorSpeedX = (APP_WIDTH - (startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI)) / 50; // meteorSpeedX = (APP_WIDTH - (startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI)) / 50;
-                meteorSpeedY = (APP_HEIGHT - (startFieldPosY + (SIDE_OF_FIELD + 4) * meteorBuildingJ)) / 50;
-                lastMeteorFellTime = System.currentTimeMillis();
-                meteorFallingTime = System.currentTimeMillis();
-                for (int i = 0; i < buildingsOnFields.get(currentPlanet).size(); i++) {
-                    if (buildingsOnFields.get(currentPlanet).get(i).getI() == meteorBuildingI && buildingsOnFields.get(currentPlanet).get(i).getJ() == meteorBuildingJ) {
-                        currMeteorBuilding = buildingsOnFields.get(currentPlanet).get(i);
-                    }
-                }
-                meteorIsActive = true;
-            }
-
-            for (int i = 0; i < myButtons.size(); i++) {
-                myButton = myButtons.get(i);
-                if (Gdx.input.isTouched()) {
-                    lastTouchTime = System.currentTimeMillis();
-                    touchedX = Gdx.input.getX();
-                    touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                    if (isInPlace(touchedX, touchedY, myButton)) {
-                        downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                        if (!myButton.isPressedToSound()) {
-                            buttonDownSound.play(user.getSoundsVolume());
-                            myButton.setPressedToSound(true);
-                        }
-                    } else {
-                        upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                        if (myButton.isPressedToSound()) {
-                            buttonUpSound.play(user.getSoundsVolume());
-                            myButton.setPressedToSound(false);
-                        }
-                    }
-                } else {
-                    if (isInPlace(touchedX, touchedY, myButton) && lastTouchTime != 0) {
-                        if (myButton.isPressedToSound()) {
-                            buttonUpSound.play(user.getSoundsVolume());
-                            myButton.setPressedToSound(false);
-                        }
-                        downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                        this.buttonActivated(i);
-                        touchedX = touchedY = -1;
-                    } else {
-                        upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                                myButton.getHeight());
-                    }
-                }
-            }
-            for (int i = 0; i < buildingsOnFields.get(currentPlanet).size(); i++) {
-                currBuilding = buildingsOnFields.get(currentPlanet).get(i);
-                if (!Gdx.input.isTouched() && isInPlaceMain(touchedX, touchedY,
-                        startFieldPosX + (SIDE_OF_FIELD + 4) * currBuilding.getI(), // startFieldPosX + (SIDE_OF_FIELD + 4) * currBuilding.getI()
-                        startFieldPosY + (SIDE_OF_FIELD + 4) * currBuilding.getJ(),
-                        SIDE_OF_FIELD, SIDE_OF_FIELD)) {
-                    miniWindowActivated(currBuilding);
-                }
-            }
-            bitmapFont.draw(batch, "menu", menuX, BOTTOM_BUTTONS_TEXT_Y);
-            bitmapFont.draw(batch, "inventory", inventoryX, BOTTOM_BUTTONS_TEXT_Y);
-
-            // Шкала кликкера
-            downNinePatch.draw(batch, 0,
-                    productivityLabelY, startFieldPosX - 5, productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
-            downNinePatch.draw(batch, 0,
-                    productivityLabelY, APP_WIDTH *
-                            ((System.currentTimeMillis() - incrementingThreadTime) / (float) 60000),
-                    productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
-            upNinePatch.draw(batch, 0,
-                    productivityLabelY, APP_WIDTH *
-                            (incrementMechanicValue / (float) incrementMechanicMaxValue + 1 / (float) incrementMechanicMaxValue),
-                    productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
-        } else {
-            if (Gdx.input.isTouched()) {
-                lastTouchTime = System.currentTimeMillis();
-                touchedX = Gdx.input.getX();
-                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
-                if (isInPlace(touchedX, touchedY, myButton)) {
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (!myButton.isPressedToSound()) {
-                        buttonDownSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(true);
-                    }
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                }
-            } else {
-                if (isInPlace(touchedX, touchedY, myButton) && lastTouchTime != 0) {
-                    if (myButton.isPressedToSound()) {
-                        buttonUpSound.play(user.getSoundsVolume());
-                        myButton.setPressedToSound(false);
-                    }
-                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                    this.buttonActivated(9);
-                    touchedX = touchedY = -1;
-                } else {
-                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
-                            myButton.getHeight());
-                }
-            }
-            bitmapFont.draw(batch, "cancel", cancelX, BOTTOM_BUTTONS_TEXT_Y);
-        }
+        checkButtonTouches(); // Проверяем кнопки на нажатие.
 
         if (building != null) {
             upNinePatch.draw(batch, 0, productivityLabelY, APP_WIDTH, productivityLabelHigh);
@@ -664,4 +551,121 @@ public class Planet extends BasicScreen {
         }
     }
 
+    @Override
+    protected void checkButtonTouches() {
+        if (building == null) {
+            if (System.currentTimeMillis() - lastMeteorFellTime >= maxMeteorFellTime && !meteorIsActive) {
+                Random random = new Random();
+                meteorBuildingI = random.nextInt(NUMBER_OF_COLUMNS);
+                meteorBuildingJ = random.nextInt(NUMBER_OF_ROWS);
+                meteorSpeedX = (APP_WIDTH - (startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI)) / 50; // meteorSpeedX = (APP_WIDTH - (startFieldPosX + (SIDE_OF_FIELD + 4) * meteorBuildingI)) / 50;
+                meteorSpeedY = (APP_HEIGHT - (startFieldPosY + (SIDE_OF_FIELD + 4) * meteorBuildingJ)) / 50;
+                lastMeteorFellTime = System.currentTimeMillis();
+                meteorFallingTime = System.currentTimeMillis();
+                for (int i = 0; i < buildingsOnFields.get(currentPlanet).size(); i++) {
+                    if (buildingsOnFields.get(currentPlanet).get(i).getI() == meteorBuildingI && buildingsOnFields.get(currentPlanet).get(i).getJ() == meteorBuildingJ) {
+                        currMeteorBuilding = buildingsOnFields.get(currentPlanet).get(i);
+                    }
+                }
+                meteorIsActive = true;
+            }
+
+            for (int i = 0; i < myButtons.size(); i++) {
+                myButton = myButtons.get(i);
+                if (Gdx.input.isTouched()) {
+                    lastTouchTime = System.currentTimeMillis();
+                    touchedX = Gdx.input.getX();
+                    touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
+                    if (isInPlace(touchedX, touchedY, myButton)) {
+                        downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
+                                myButton.getHeight());
+                        if (!myButton.isPressedToSound()) {
+                            buttonDownSound.play(user.getSoundsVolume());
+                            myButton.setPressedToSound(true);
+                        }
+                    } else {
+                        upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
+                                myButton.getHeight());
+                        if (myButton.isPressedToSound()) {
+                            buttonUpSound.play(user.getSoundsVolume());
+                            myButton.setPressedToSound(false);
+                        }
+                    }
+                } else {
+                    if (isInPlace(touchedX, touchedY, myButton) && lastTouchTime != 0) {
+                        if (myButton.isPressedToSound()) {
+                            buttonUpSound.play(user.getSoundsVolume());
+                            myButton.setPressedToSound(false);
+                        }
+                        downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
+                                myButton.getHeight());
+                        this.buttonActivated(i);
+                        touchedX = touchedY = -1;
+                    } else {
+                        upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
+                                myButton.getHeight());
+                    }
+                }
+            }
+            for (int i = 0; i < buildingsOnFields.get(currentPlanet).size(); i++) {
+                currBuilding = buildingsOnFields.get(currentPlanet).get(i);
+                if (!Gdx.input.isTouched() && isInPlaceMain(touchedX, touchedY,
+                        startFieldPosX + (SIDE_OF_FIELD + 4) * currBuilding.getI(), // startFieldPosX + (SIDE_OF_FIELD + 4) * currBuilding.getI()
+                        startFieldPosY + (SIDE_OF_FIELD + 4) * currBuilding.getJ(),
+                        SIDE_OF_FIELD, SIDE_OF_FIELD)) {
+                    miniWindowActivated(currBuilding);
+                }
+            }
+            bitmapFont.draw(batch, "menu", menuX, BOTTOM_BUTTONS_TEXT_Y);
+            bitmapFont.draw(batch, "inventory", inventoryX, BOTTOM_BUTTONS_TEXT_Y);
+
+            // Шкала кликкера
+            unknownNinePatch.draw(batch, 0,
+                    productivityLabelY, APP_WIDTH, productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
+            downNinePatch.draw(batch, 0,
+                    productivityLabelY, APP_WIDTH *
+                            ((System.currentTimeMillis() - incrementingThreadTime) / (float) 60000),
+                    productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
+            upNinePatch.draw(batch, 0,
+                    productivityLabelY, APP_WIDTH *
+                            (incrementMechanicValue / (float) incrementMechanicMaxValue + 1 / (float) incrementMechanicMaxValue),
+                    productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
+        } else {
+            if (Gdx.input.isTouched()) {
+                lastTouchTime = System.currentTimeMillis();
+                touchedX = Gdx.input.getX();
+                touchedY = Gdx.graphics.getHeight() - Gdx.input.getY();
+                if (isInPlace(touchedX, touchedY, myButton)) {
+                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
+                            myButton.getHeight());
+                    if (!myButton.isPressedToSound()) {
+                        buttonDownSound.play(user.getSoundsVolume());
+                        myButton.setPressedToSound(true);
+                    }
+                } else {
+                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
+                            myButton.getHeight());
+                    if (myButton.isPressedToSound()) {
+                        buttonUpSound.play(user.getSoundsVolume());
+                        myButton.setPressedToSound(false);
+                    }
+                }
+            } else {
+                if (isInPlace(touchedX, touchedY, myButton) && lastTouchTime != 0) {
+                    if (myButton.isPressedToSound()) {
+                        buttonUpSound.play(user.getSoundsVolume());
+                        myButton.setPressedToSound(false);
+                    }
+                    downNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
+                            myButton.getHeight());
+                    this.buttonActivated(9);
+                    touchedX = touchedY = -1;
+                } else {
+                    upNinePatch.draw(batch, myButton.getX1(), myButton.getY1(), myButton.getWidth(),
+                            myButton.getHeight());
+                }
+            }
+            bitmapFont.draw(batch, "cancel", cancelX, BOTTOM_BUTTONS_TEXT_Y);
+        }
+    }
 }

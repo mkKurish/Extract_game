@@ -3,10 +3,8 @@ package com.extractss.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.extractss.game.SimpleClasses.Building;
 import com.extractss.game.ClassesForLists.BuildingsOnField;
 import com.extractss.game.ExtractSolarSys;
 import com.extractss.game.SimpleClasses.MyButtons;
@@ -19,10 +17,7 @@ import static com.extractss.game.ExtractSolarSys.backgroundsOther;
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
 import static com.extractss.game.ExtractSolarSys.buildingsOnFields;
-import static com.extractss.game.ExtractSolarSys.buttonDownSound;
-import static com.extractss.game.ExtractSolarSys.buttonUpSound;
 import static com.extractss.game.ExtractSolarSys.currentPlanet;
-import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.incrementEnergy;
 import static com.extractss.game.ExtractSolarSys.incrementMetal;
@@ -34,15 +29,11 @@ import static com.extractss.game.ExtractSolarSys.maxMoney;
 import static com.extractss.game.ExtractSolarSys.metalTexture;
 import static com.extractss.game.ExtractSolarSys.moneyTexture;
 import static com.extractss.game.ExtractSolarSys.screenManager;
-import static com.extractss.game.ExtractSolarSys.successSound;
 import static com.extractss.game.ExtractSolarSys.upNinePatch;
 import static com.extractss.game.utils.Constants.APP_HEIGHT;
 import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
-import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Constants.SMALLER_SCALE;
-import static com.extractss.game.utils.Operations.isEnableToBuy;
-import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
 final public class MiniWindowDeletingBuildingFromField extends BasicBuildingMiniWindow {
@@ -71,6 +62,8 @@ final public class MiniWindowDeletingBuildingFromField extends BasicBuildingMini
         myButtons.add(new MyButtons(0, APP_WIDTH / 2, APP_HEIGHT / 40, BUTTON_HEIGHT));
         myButtons.add(new MyButtons(APP_WIDTH / 2, APP_WIDTH / 2, APP_HEIGHT / 40,
                 BUTTON_HEIGHT));
+
+        buyAbleButton = 2;
 
         myButton = myButtons.get(0);
 

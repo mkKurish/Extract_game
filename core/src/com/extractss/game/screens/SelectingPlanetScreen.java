@@ -249,7 +249,7 @@ public class SelectingPlanetScreen extends BasicScrollScreen {
 
     @Override
     public void dispose() {
-        //TODO: why I found NOTHING here???
+        batch.dispose();
     }
 
     @Override

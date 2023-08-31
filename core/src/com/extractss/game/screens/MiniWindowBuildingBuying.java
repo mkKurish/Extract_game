@@ -15,23 +15,17 @@ import java.util.ArrayList;
 
 import static com.extractss.game.ExtractSolarSys.backgroundsOther;
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
-import static com.extractss.game.ExtractSolarSys.buttonDownSound;
-import static com.extractss.game.ExtractSolarSys.buttonUpSound;
-import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.inventTexture;
 import static com.extractss.game.ExtractSolarSys.inventoryBuildings;
 import static com.extractss.game.ExtractSolarSys.metalTexture;
 import static com.extractss.game.ExtractSolarSys.moneyTexture;
 import static com.extractss.game.ExtractSolarSys.screenManager;
-import static com.extractss.game.ExtractSolarSys.successSound;
 import static com.extractss.game.ExtractSolarSys.upNinePatch;
 import static com.extractss.game.utils.Constants.APP_HEIGHT;
 import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
 import static com.extractss.game.utils.Constants.MEDIUM_LEST_ELEMENT_HEIGHT;
-import static com.extractss.game.utils.Operations.isEnableToBuy;
-import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
 public class MiniWindowBuildingBuying extends BasicBuildingMiniWindow {
@@ -50,6 +44,8 @@ public class MiniWindowBuildingBuying extends BasicBuildingMiniWindow {
         myButtons.add(new MyButtons(0, APP_WIDTH / 2, APP_HEIGHT / 40, BUTTON_HEIGHT));
         myButtons.add(new MyButtons(APP_WIDTH / 2, APP_WIDTH / 2, APP_HEIGHT / 40,
                 BUTTON_HEIGHT));
+
+        buyAbleButton = 1;
 
         myButton = myButtons.get(0);
 
