@@ -54,7 +54,6 @@ public class TrainingScreen extends BasicScreen {
         prevX = APP_WIDTH / 4 - "prev".length() * 11 * SCALEXY_NEW;
         nextX = APP_WIDTH / 2 + APP_WIDTH / 4 - "next".length() * 11 * SCALEXY_NEW;
         finishX = APP_WIDTH / 2 + APP_WIDTH / 4 - "finish".length() * 11 * SCALEXY_NEW;
-        //TODO: update screens
         texts = new ArrayList<>();
         texts.add("hello!\n" +
                 "it is training guide to\n" +
@@ -63,9 +62,8 @@ public class TrainingScreen extends BasicScreen {
                 "game: construct + inventory,\n" +
                 "research, planet, shop");
         texts.add("to buy a building in\n" +
-                "construct, click on the\n" +
-                "button on the left and\n" +
-                "click on the building");
+                "construct, click\n" +
+                "on the building");
         texts.add("the purchased building will\n" +
                 "be in inventory (click\n" +
                 "the building again to place)");
@@ -78,7 +76,7 @@ public class TrainingScreen extends BasicScreen {
         texts.add("if you are having\n" +
                 "problems with resources,\n" +
                 "go to the shop");
-        texts.add("click the left\n" +
+        texts.add("click the resources\n" +
                 "button on the planet to\n" +
                 "take resources faster");
         texts.add("you can change planet\n" +
@@ -163,91 +161,91 @@ public class TrainingScreen extends BasicScreen {
          */
         switch (iterator) {
             case 0:
-                upNinePatch.draw(batch, normalScreenshotX - 10, BUTTON_HEIGHT + SIDE_INDENT / 2 - 10,
+                upNinePatch.draw(batch, normalScreenshotX - 10, (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2 - 10,
                         normalScreenshotWidth + 20, normalScreenshotHeight + 20);
-                batch.draw(screenshots.get(0), normalScreenshotX, BUTTON_HEIGHT + SIDE_INDENT / 2,
+                batch.draw(screenshots.get(0), normalScreenshotX, (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2,
                         normalScreenshotWidth, normalScreenshotHeight);
                 break;
             case 1:
-                upNinePatch.draw(batch, APP_WIDTH / 2 - miniScreenshotWidth - SIDE_INDENT / 4 - 5, BUTTON_HEIGHT + SIDE_INDENT / 2 + miniScreenshotHeight + 10 - 5,
+                upNinePatch.draw(batch, APP_WIDTH / 2 - miniScreenshotWidth - SIDE_INDENT / 4 - 5, (APP_HEIGHT - miniScreenshotHeight - BUTTON_HEIGHT) / 2 - 5,
                         miniScreenshotWidth + 10, miniScreenshotHeight + 10);
-                upNinePatch.draw(batch, APP_WIDTH / 2 + SIDE_INDENT / 4 - 5, BUTTON_HEIGHT + SIDE_INDENT / 2 + miniScreenshotHeight + 10 - 5,
-                        miniScreenshotWidth + 10, miniScreenshotHeight + 10);
-                upNinePatch.draw(batch, APP_WIDTH / 2 - miniScreenshotWidth / 2 - 5, BUTTON_HEIGHT + SIDE_INDENT / 2 - 5,
+                upNinePatch.draw(batch, APP_WIDTH / 2 + SIDE_INDENT / 4 - 5, (APP_HEIGHT - miniScreenshotHeight - BUTTON_HEIGHT) / 2 - 5,
                         miniScreenshotWidth + 10, miniScreenshotHeight + 10);
 
                 batch.draw(screenshots.get(1), APP_WIDTH / 2 - miniScreenshotWidth - SIDE_INDENT / 4,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2 + miniScreenshotHeight + 10, miniScreenshotWidth, miniScreenshotHeight);
+                        (APP_HEIGHT - miniScreenshotHeight - BUTTON_HEIGHT) / 2, miniScreenshotWidth, miniScreenshotHeight);
                 batch.draw(screenshots.get(2), APP_WIDTH / 2 + SIDE_INDENT / 4,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2 + miniScreenshotHeight + 10, miniScreenshotWidth, miniScreenshotHeight);
-                batch.draw(screenshots.get(3), APP_WIDTH / 2 - miniScreenshotWidth / 2,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2, miniScreenshotWidth, miniScreenshotHeight);
+                        (APP_HEIGHT - miniScreenshotHeight - BUTTON_HEIGHT) / 2, miniScreenshotWidth, miniScreenshotHeight);
                 break;
             case 2:
-                upNinePatch.draw(batch, APP_WIDTH / 2 - miniScreenshotWidth - SIDE_INDENT / 4 - 5, BUTTON_HEIGHT + SIDE_INDENT / 2 + miniScreenshotHeight + 10 - 5,
+                upNinePatch.draw(batch, APP_WIDTH / 2 - miniScreenshotWidth - SIDE_INDENT / 4 - 5, (APP_HEIGHT - BUTTON_HEIGHT) / 2 - 5 + SIDE_INDENT / 4,
                         miniScreenshotWidth + 10, miniScreenshotHeight + 10);
-                upNinePatch.draw(batch, APP_WIDTH / 2 + SIDE_INDENT / 4 - 5, BUTTON_HEIGHT + SIDE_INDENT / 2 + miniScreenshotHeight + 10 - 5,
+                upNinePatch.draw(batch, APP_WIDTH / 2 + SIDE_INDENT / 4 - 5, (APP_HEIGHT - BUTTON_HEIGHT) / 2 - 5 + SIDE_INDENT / 4,
                         miniScreenshotWidth + 10, miniScreenshotHeight + 10);
-                upNinePatch.draw(batch, APP_WIDTH / 2 - miniScreenshotWidth / 2 - 5, BUTTON_HEIGHT + SIDE_INDENT / 2 - 5,
+                upNinePatch.draw(batch, APP_WIDTH / 2 - miniScreenshotWidth - SIDE_INDENT / 4 - 5, (APP_HEIGHT - BUTTON_HEIGHT) / 2 - miniScreenshotHeight - 5,
+                        miniScreenshotWidth + 10, miniScreenshotHeight + 10);
+                upNinePatch.draw(batch, APP_WIDTH / 2 + SIDE_INDENT / 4 - 5, (APP_HEIGHT - BUTTON_HEIGHT) / 2 - miniScreenshotHeight - 5,
                         miniScreenshotWidth + 10, miniScreenshotHeight + 10);
 
-                batch.draw(screenshots.get(4), APP_WIDTH / 2 - miniScreenshotWidth - SIDE_INDENT / 4,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2 + miniScreenshotHeight + 10, miniScreenshotWidth, miniScreenshotHeight);
-                batch.draw(screenshots.get(5), APP_WIDTH / 2 + SIDE_INDENT / 4,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2 + miniScreenshotHeight + 10, miniScreenshotWidth, miniScreenshotHeight);
-                batch.draw(screenshots.get(6), APP_WIDTH / 2 - miniScreenshotWidth / 2,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2, miniScreenshotWidth, miniScreenshotHeight);
+                batch.draw(screenshots.get(3), APP_WIDTH / 2 - miniScreenshotWidth - SIDE_INDENT / 4,
+                        (APP_HEIGHT - BUTTON_HEIGHT) / 2 + SIDE_INDENT / 4, miniScreenshotWidth, miniScreenshotHeight);
+                batch.draw(screenshots.get(4), APP_WIDTH / 2 + SIDE_INDENT / 4,
+                        (APP_HEIGHT - BUTTON_HEIGHT) / 2 + SIDE_INDENT / 4, miniScreenshotWidth, miniScreenshotHeight);
+                batch.draw(screenshots.get(5), APP_WIDTH / 2 - miniScreenshotWidth - SIDE_INDENT / 4,
+                        (APP_HEIGHT - BUTTON_HEIGHT) / 2 - miniScreenshotHeight, miniScreenshotWidth, miniScreenshotHeight);
+                batch.draw(screenshots.get(6), APP_WIDTH / 2 + SIDE_INDENT / 4,
+                        (APP_HEIGHT - BUTTON_HEIGHT) / 2 - miniScreenshotHeight, miniScreenshotWidth, miniScreenshotHeight);
                 break;
             case 3:
-                upNinePatch.draw(batch, normalScreenshotX - 10, BUTTON_HEIGHT + SIDE_INDENT / 2 - 10,
+                upNinePatch.draw(batch, normalScreenshotX - 10, (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2 - 10,
                         normalScreenshotWidth + 20, normalScreenshotHeight + 20);
                 batch.draw(screenshots.get(11), normalScreenshotX,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2, normalScreenshotWidth, normalScreenshotHeight);
+                        (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2, normalScreenshotWidth, normalScreenshotHeight);
                 break;
             case 4:
-                upNinePatch.draw(batch, normalScreenshotX - 10, BUTTON_HEIGHT + SIDE_INDENT / 2 - 10,
+                upNinePatch.draw(batch, normalScreenshotX - 10, (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2 - 10,
                         normalScreenshotWidth + 20, normalScreenshotHeight + 20);
                 batch.draw(screenshots.get(7), normalScreenshotX,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2, normalScreenshotWidth, normalScreenshotHeight);
+                        (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2, normalScreenshotWidth, normalScreenshotHeight);
                 break;
             case 5:
-                upNinePatch.draw(batch, normalScreenshotX - 10, BUTTON_HEIGHT + SIDE_INDENT / 2 - 10,
+                upNinePatch.draw(batch, normalScreenshotX - 10, (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2 - 10,
                         normalScreenshotWidth + 20, normalScreenshotHeight + 20);
                 batch.draw(screenshots.get(8), normalScreenshotX,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2, normalScreenshotWidth, normalScreenshotHeight);
+                        (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2, normalScreenshotWidth, normalScreenshotHeight);
                 break;
             case 6:
-                upNinePatch.draw(batch, normalScreenshotX - 10, BUTTON_HEIGHT + SIDE_INDENT / 2 - 10,
+                upNinePatch.draw(batch, normalScreenshotX - 10, (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2 - 10,
                         normalScreenshotWidth + 20, normalScreenshotHeight + 20);
                 batch.draw(screenshots.get(6), normalScreenshotX,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2, normalScreenshotWidth, normalScreenshotHeight);
+                        (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2, normalScreenshotWidth, normalScreenshotHeight);
                 break;
             case 7:
-                upNinePatch.draw(batch, APP_WIDTH / 2 - miniScreenshotWidth - SIDE_INDENT / 4 - 5, BUTTON_HEIGHT + SIDE_INDENT / 2 + miniScreenshotHeight + 10 - 5,
+                upNinePatch.draw(batch, APP_WIDTH / 2 - miniScreenshotWidth - SIDE_INDENT / 4 - 5, (APP_HEIGHT - BUTTON_HEIGHT) / 2 - 5 + SIDE_INDENT / 4,
                         miniScreenshotWidth + 10, miniScreenshotHeight + 10);
-                upNinePatch.draw(batch, APP_WIDTH / 2 + SIDE_INDENT / 4 - 5, BUTTON_HEIGHT + SIDE_INDENT / 2 + miniScreenshotHeight + 10 - 5,
+                upNinePatch.draw(batch, APP_WIDTH / 2 + SIDE_INDENT / 4 - 5, (APP_HEIGHT - BUTTON_HEIGHT) / 2 - 5 + SIDE_INDENT / 4,
                         miniScreenshotWidth + 10, miniScreenshotHeight + 10);
-                upNinePatch.draw(batch, APP_WIDTH / 2 - miniScreenshotWidth / 2 - 5, BUTTON_HEIGHT + SIDE_INDENT / 2 - 5,
+                upNinePatch.draw(batch, APP_WIDTH / 2 - miniScreenshotWidth / 2 - 5, (APP_HEIGHT - BUTTON_HEIGHT) / 2 - miniScreenshotHeight - 5,
                         miniScreenshotWidth + 10, miniScreenshotHeight + 10);
 
                 batch.draw(screenshots.get(12), APP_WIDTH / 2 - miniScreenshotWidth - SIDE_INDENT / 4,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2 + miniScreenshotHeight + 10, miniScreenshotWidth, miniScreenshotHeight);
+                        (APP_HEIGHT - BUTTON_HEIGHT) / 2 + SIDE_INDENT / 4, miniScreenshotWidth, miniScreenshotHeight);
                 batch.draw(screenshots.get(13), APP_WIDTH / 2 + SIDE_INDENT / 4,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2 + miniScreenshotHeight + 10, miniScreenshotWidth, miniScreenshotHeight);
+                        (APP_HEIGHT - BUTTON_HEIGHT) / 2 + SIDE_INDENT / 4, miniScreenshotWidth, miniScreenshotHeight);
                 batch.draw(screenshots.get(14), APP_WIDTH / 2 - miniScreenshotWidth / 2,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2, miniScreenshotWidth, miniScreenshotHeight);
+                        (APP_HEIGHT - BUTTON_HEIGHT) / 2 - miniScreenshotHeight, miniScreenshotWidth, miniScreenshotHeight);
                 break;
             case 8:
-                upNinePatch.draw(batch, normalScreenshotX - 10, BUTTON_HEIGHT + SIDE_INDENT / 2 - 10,
+                upNinePatch.draw(batch, normalScreenshotX - 10, (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2 - 10,
                         normalScreenshotWidth + 20, normalScreenshotHeight + 20);
                 batch.draw(screenshots.get(10), normalScreenshotX,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2, normalScreenshotWidth, normalScreenshotHeight);
+                        (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2, normalScreenshotWidth, normalScreenshotHeight);
                 break;
             case 9:
-                upNinePatch.draw(batch, normalScreenshotX - 10, BUTTON_HEIGHT + SIDE_INDENT / 2 - 10,
+                upNinePatch.draw(batch, normalScreenshotX - 10, (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2 - 10,
                         normalScreenshotWidth + 20, normalScreenshotHeight + 20);
                 batch.draw(screenshots.get(9), normalScreenshotX,
-                        BUTTON_HEIGHT + SIDE_INDENT / 2, normalScreenshotWidth, normalScreenshotHeight);
+                        (APP_HEIGHT - normalScreenshotHeight - BUTTON_HEIGHT) / 2, normalScreenshotWidth, normalScreenshotHeight);
                 break;
         }
 
