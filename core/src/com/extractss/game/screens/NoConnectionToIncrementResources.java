@@ -2,7 +2,6 @@ package com.extractss.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.extractss.game.ExtractSolarSys;
 import com.extractss.game.SimpleClasses.MyButtons;
@@ -19,9 +18,6 @@ import static com.extractss.game.ExtractSolarSys.incrementTimeValue;
 import static com.extractss.game.ExtractSolarSys.backgroundsOther;
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
-import static com.extractss.game.ExtractSolarSys.buttonDownSound;
-import static com.extractss.game.ExtractSolarSys.buttonUpSound;
-import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.isIncrementNormalModeAllowed;
 import static com.extractss.game.ExtractSolarSys.metalTexture;
@@ -31,8 +27,6 @@ import static com.extractss.game.utils.Constants.APP_HEIGHT;
 import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
 import static com.extractss.game.utils.Constants.MAX_INCREMENT_TIME_ALLOWED;
-import static com.extractss.game.utils.Constants.SCALEXY_NEW;
-import static com.extractss.game.utils.Operations.isInPlace;
 
 public class NoConnectionToIncrementResources extends BasicScreen {
     private static float frameX;
@@ -103,20 +97,7 @@ public class NoConnectionToIncrementResources extends BasicScreen {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        /*
-        Производим анимацию фона.
-         */
-        if (System.currentTimeMillis() - lastAnimationTime >= 550) {
-            switch (curScreenAnimation) {
-                case 0:
-                    curScreenAnimation = 1;
-                    break;
-                case 1:
-                    curScreenAnimation = 0;
-                    break;
-            }
-            lastAnimationTime = System.currentTimeMillis();
-        }
+        doAnimationChange(); // Производим анимацию фона.
 
         batch.begin();
 

@@ -3,7 +3,6 @@ package com.extractss.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.extractss.game.ClassesForLists.BuildingsInInventory;
 import com.extractss.game.SimpleClasses.Building;
 import com.extractss.game.ExtractSolarSys;
@@ -18,11 +17,8 @@ import static com.extractss.game.ExtractSolarSys.bitmapFont;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
 import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
-import static com.extractss.game.ExtractSolarSys.incrementingThreadTime;
 import static com.extractss.game.ExtractSolarSys.metalTexture;
 import static com.extractss.game.ExtractSolarSys.moneyTexture;
-import static com.extractss.game.ExtractSolarSys.progressBarKnobNinePatch;
-import static com.extractss.game.ExtractSolarSys.progressBarBackNinePatch;
 import static com.extractss.game.ExtractSolarSys.screenManager;
 import static com.extractss.game.ExtractSolarSys.unknownNinePatch;
 import static com.extractss.game.ExtractSolarSys.upNinePatch;
@@ -31,9 +27,6 @@ import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BOTTOM_BUTTONS_TEXT_Y;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
 import static com.extractss.game.utils.Constants.HEIGHT_FOR_RESOURCES;
-import static com.extractss.game.utils.Constants.HEIGHT_RESOURCES_TABLE;
-import static com.extractss.game.utils.Constants.KNOB_WIDTH;
-import static com.extractss.game.utils.Constants.KNOB_X;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_SIZE;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_TITLE_X_CENTER;
 import static com.extractss.game.utils.Constants.LIST_HEIGHT;
@@ -43,9 +36,7 @@ import static com.extractss.game.utils.Constants.MEDIUM_LEST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Constants.SMALLER_SCALE;
 import static com.extractss.game.utils.Constants.TOP_BUTTONS_TEXT_Y;
-import static com.extractss.game.utils.Constants.Y_RESOURCES_TABLE;
 import static com.extractss.game.utils.Operations.isEnableToBuy;
-import static com.extractss.game.utils.Operations.isInPlaceMain;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 import static com.extractss.game.utils.Operations.totalListHeight;
 
@@ -180,43 +171,21 @@ public class Construction extends BasicScrollScreen {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        /*
-        Проверяем, прошла ли минута, чтобы увеличить значение внутриигровых рерурсов.
-         */
-        if (System.currentTimeMillis() - incrementingThreadTime > 60000) {
-            incrementResourcesTimeCheck.test();
-            incrementingThreadTime = System.currentTimeMillis();
-        }
+        checkMinuteToIncrementResources(); //Проверяем, прошла ли минута, чтобы увеличить значение внутриигровых рерурсов.
 
-        /*
-        Производим анимацию фона.
-         */
-        if (System.currentTimeMillis() - lastAnimationTime >= 550) {
-            switch (curScreenAnimation) {
-                case 0:
-                    curScreenAnimation = 1;
-                    break;
-                case 1:
-                    curScreenAnimation = 0;
-                    break;
-            }
-            lastAnimationTime = System.currentTimeMillis();
-        }
+        doAnimationChange(); // Производим анимацию фона.
 
         batch.begin();
 
         batch.draw(backgroundsOther.get(curScreenAnimation), 0, 0, APP_WIDTH, APP_HEIGHT);
 
         /*
-        Прокручиваем список зданий, если палец скользит по списку.
-         */
+        Отрисовываем каждый элемент списка, который помещается на экран.
+        */
         scrollTouchMechanic(listItems);
 
         for (int i = 0; i < listItems.size(); i++) {
             listElementForCycle = listItems.get(i);
-            /*
-            Отрисовываем каждый элемент списка, который помещается на экран.
-             */
             if ((listElementForCycle.y < APP_HEIGHT + BUTTON_HEIGHT && listElementForCycle.y > -listElementForCycle.elementHeight)) {
                 if (isEnableToBuy(user, listElementForCycle)) {
                     upNinePatch.draw(batch, 0, listElementForCycle.y, LIST_WIDTH, listElementForCycle.elementHeight);
@@ -258,56 +227,13 @@ public class Construction extends BasicScrollScreen {
             }
         }
 
-        /*
-        Ограничиваем размер списка на экране.
-         */
-        batch.draw(new TextureRegion(backgroundsOther.get(curScreenAnimation), 0,
-                        19 * backgroundsOther.get(curScreenAnimation).getHeight() / 9,
-                        backgroundsOther.get(curScreenAnimation).getWidth(),
-                        backgroundsOther.get(curScreenAnimation).getHeight() / 9), 0,
-                APP_HEIGHT - BUTTON_HEIGHT - 2 * bitmapFontSmall.getCapHeight(), APP_WIDTH,
-                BUTTON_HEIGHT + 2 * bitmapFont.getCapHeight());
-        batch.draw(new TextureRegion(backgroundsOther.get(curScreenAnimation), 0, 0,
-                        backgroundsOther.get(curScreenAnimation).getWidth(),
-                        backgroundsOther.get(curScreenAnimation).getHeight() / 9), 0, 0,
-                APP_WIDTH, BUTTON_HEIGHT);
+        limitListSizeOnScreen(); // Ограничиваем размер списка на экране.
 
-        upNinePatch.draw(batch, 0, Y_RESOURCES_TABLE, APP_WIDTH, HEIGHT_RESOURCES_TABLE);
-        batch.draw(moneyTexture, moneyTextureX, yForIcons, widthForIcons, heightForIcons);
-        batch.draw(metalTexture, metalTextureX, yForIcons, widthForIcons, heightForIcons);
-        batch.draw(energyTexture, energyTextureX, yForIcons, widthForIcons, heightForIcons);
-        bitmapFontSmall.draw(batch, String.valueOf(user.getMoney()),
-                moneyValueX, yForResourcesText);
-        bitmapFontSmall.draw(batch, String.valueOf(user.getMetal()),
-                metalValueX, yForResourcesText);
-        bitmapFontSmall.draw(batch, String.valueOf(user.getEnergy()),
-                energyValueX, yForResourcesText);
+        drawResourcesLabel(); // Рисуем табличку с ресурсами игрока.
 
         checkButtonTouches(); // Проверяем кнопки на нажатие.
 
-        /*
-        Отрисовываем ползунок, показывающий место в списке, в котором мы находимся.
-         */
-        progressBarBackNinePatch.draw(batch, KNOB_X, BUTTON_HEIGHT, KNOB_WIDTH, LIST_HEIGHT);
-        progressBarKnobNinePatch.draw(batch, KNOB_X, BUTTON_HEIGHT -
-                knobHeight * (listItems.get(0).y - BUTTON_HEIGHT) / LIST_HEIGHT, KNOB_WIDTH, knobHeight);
-
-
-        /*
-        Если нажать на ползунок, мы переместимся в ту часть списка, в какую часть ползунка мы нажали.
-         */
-        if (Gdx.input.isTouched() && isInPlaceMain(touchedX, touchedY, KNOB_X, BUTTON_HEIGHT, KNOB_WIDTH, LIST_HEIGHT)) {
-            if (touchedY + knobHeight / 2 > LIST_HEIGHT + BUTTON_HEIGHT) {
-                touchedY = LIST_HEIGHT + BUTTON_HEIGHT - knobHeight / 2;
-            } else if (touchedY - knobHeight / 2 < BUTTON_HEIGHT) {
-                touchedY = BUTTON_HEIGHT + knobHeight / 2;
-            }
-            deltaFirstElementY = -listItems.get(0).y + (LIST_HEIGHT *
-                    (BUTTON_HEIGHT - touchedY + knobHeight / 2) / knobHeight + BUTTON_HEIGHT);
-            for (int i = 0; i < listItems.size(); i++) {
-                listItems.get(i).y += deltaFirstElementY;
-            }
-        }
+        drawAndCheckKnob(listItems); //Отрисовываем ползунок, показывающий место в списке, в котором мы находимся.
 
         bitmapFont.draw(batch, "menu", menuX, BOTTOM_BUTTONS_TEXT_Y);
         bitmapFont.draw(batch, "inventory", inventoryX, BOTTOM_BUTTONS_TEXT_Y);
@@ -353,6 +279,11 @@ public class Construction extends BasicScrollScreen {
 
     @Override
     protected void miniWindowActivated(BuildingsInInventory building) {
+
+    }
+
+    @Override
+    protected void miniWindowActivated(int typeRes, boolean isAds){
 
     }
 

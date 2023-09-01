@@ -2,7 +2,6 @@ package com.extractss.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.extractss.game.ExtractSolarSys;
 import com.extractss.game.SimpleClasses.MyButtons;
@@ -13,21 +12,15 @@ import java.util.ArrayList;
 
 import static com.extractss.game.ExtractSolarSys.backgroundsMain;
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
-import static com.extractss.game.ExtractSolarSys.buttonDownSound;
-import static com.extractss.game.ExtractSolarSys.buttonUpSound;
-import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.gameLogo;
 import static com.extractss.game.ExtractSolarSys.helpButtonSign;
 import static com.extractss.game.ExtractSolarSys.screenManager;
 import static com.extractss.game.ExtractSolarSys.settingsButtonSign;
-import static com.extractss.game.ExtractSolarSys.upNinePatch;
 import static com.extractss.game.utils.Constants.APP_HEIGHT;
 import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BUTTONS_VOID;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
 import static com.extractss.game.utils.Constants.BUTTON_WIDTH;
-import static com.extractss.game.utils.Constants.SCALEXY_NEW;
-import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
 public class MainScreen extends BasicScreen {
@@ -116,20 +109,7 @@ public class MainScreen extends BasicScreen {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl20.glClearColor(0, 0, 0, 1);
 
-        /*
-        Производим анимацию фона.
-         */
-        if (System.currentTimeMillis() - lastAnimationTime >= 550) {
-            switch (curScreenAnimation) {
-                case 0:
-                    curScreenAnimation = 1;
-                    break;
-                case 1:
-                    curScreenAnimation = 0;
-                    break;
-            }
-            lastAnimationTime = System.currentTimeMillis();
-        }
+        doAnimationChange(); // Производим анимацию фона.
 
         batch.begin();
 

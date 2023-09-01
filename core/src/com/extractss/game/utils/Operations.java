@@ -38,6 +38,7 @@ import static com.extractss.game.ExtractSolarSys.incrementEnergy;
 import static com.extractss.game.ExtractSolarSys.incrementMechanicMaxValue;
 import static com.extractss.game.ExtractSolarSys.incrementMetal;
 import static com.extractss.game.ExtractSolarSys.incrementMoney;
+import static com.extractss.game.ExtractSolarSys.incrementingThreadTime;
 import static com.extractss.game.ExtractSolarSys.inventTexture;
 import static com.extractss.game.ExtractSolarSys.inventoryBuildings;
 import static com.extractss.game.ExtractSolarSys.isTrainingComplete;

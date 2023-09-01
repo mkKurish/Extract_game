@@ -334,20 +334,7 @@ public class Planet extends BasicScreen {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl20.glClearColor(0, 0, 0, 1);
 
-        /*
-        Производим анимацию фона.
-         */
-        if (System.currentTimeMillis() - lastAnimationTime >= 550) {
-            switch (curScreenAnimation) {
-                case 0:
-                    curScreenAnimation = 1;
-                    break;
-                case 1:
-                    curScreenAnimation = 0;
-                    break;
-            }
-            lastAnimationTime = System.currentTimeMillis();
-        }
+        doAnimationChange(); // Производим анимацию фона.
 
         /*
         Проверяем, прошла ли минута, чтобы увеличить значение внутриигровых рерурсов.
@@ -374,7 +361,7 @@ public class Planet extends BasicScreen {
                         && lastTouchTime != 0
                         && !Gdx.input.isTouched()
                         && isInPlaceMain(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                        startFieldPosX + (SIDE_OF_FIELD + 4) * i, // startFieldPosX + (SIDE_OF_FIELD + 4) * i,
+                        startFieldPosX + (SIDE_OF_FIELD + 4) * i,
                         startFieldPosY + (SIDE_OF_FIELD + 4) * j, SIDE_OF_FIELD, SIDE_OF_FIELD)) {
                     if (building.isProductiveType()) {
                         incrementMoney += building.getUsefulMoney();

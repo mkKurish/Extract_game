@@ -16,15 +16,11 @@ import static com.extractss.game.ExtractSolarSys.backgroundsOther;
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
 import static com.extractss.game.ExtractSolarSys.bitmapFontReversedColorSmall;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
-import static com.extractss.game.ExtractSolarSys.buttonDownSound;
-import static com.extractss.game.ExtractSolarSys.buttonUpSound;
-import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.lastMeteorFellTime;
 import static com.extractss.game.ExtractSolarSys.maxMeteorFellTime;
 import static com.extractss.game.ExtractSolarSys.musicTexture;
 import static com.extractss.game.ExtractSolarSys.progressBarBackNinePatch;
 import static com.extractss.game.ExtractSolarSys.progressBarKnobNinePatch;
-import static com.extractss.game.ExtractSolarSys.resetButtonDown;
 import static com.extractss.game.ExtractSolarSys.resetButtonUp;
 import static com.extractss.game.ExtractSolarSys.screenManager;
 import static com.extractss.game.ExtractSolarSys.soundTexture;
@@ -35,7 +31,6 @@ import static com.extractss.game.utils.Constants.BUTTONS_VOID;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
 import static com.extractss.game.utils.Constants.BUTTON_WIDTH;
 import static com.extractss.game.utils.Constants.SMALLER_SCALE;
-import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.isInPlaceMain;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
@@ -113,20 +108,7 @@ public class Settings extends BasicScreen {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl20.glClearColor(0, 0, 0, 1);
 
-        /*
-        Производим анимацию фона.
-         */
-        if (System.currentTimeMillis() - lastAnimationTime >= 550) {
-            switch (curScreenAnimation) {
-                case 0:
-                    curScreenAnimation = 1;
-                    break;
-                case 1:
-                    curScreenAnimation = 0;
-                    break;
-            }
-            lastAnimationTime = System.currentTimeMillis();
-        }
+        doAnimationChange(); // Производим анимацию фона.
 
         /*
         Рассчитываем размер ползунка громкости в зависимости от настройки громкости музыки и звука.

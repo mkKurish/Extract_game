@@ -88,4 +88,18 @@ public abstract class BasicScreen implements Screen {
     }
 
     abstract void buttonActivated(int i);
+
+    protected void doAnimationChange(){
+        if (System.currentTimeMillis() - lastAnimationTime >= 550) {
+            switch (curScreenAnimation) {
+                case 0:
+                    curScreenAnimation = 1;
+                    break;
+                case 1:
+                    curScreenAnimation = 0;
+                    break;
+            }
+            lastAnimationTime = System.currentTimeMillis();
+        }
+    }
 }

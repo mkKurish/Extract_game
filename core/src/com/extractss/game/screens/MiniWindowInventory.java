@@ -14,9 +14,6 @@ import java.util.ArrayList;
 
 import static com.extractss.game.ExtractSolarSys.backgroundsOther;
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
-import static com.extractss.game.ExtractSolarSys.buttonDownSound;
-import static com.extractss.game.ExtractSolarSys.buttonUpSound;
-import static com.extractss.game.ExtractSolarSys.downNinePatch;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.inventTexture;
 import static com.extractss.game.ExtractSolarSys.metalTexture;
@@ -26,7 +23,6 @@ import static com.extractss.game.ExtractSolarSys.upNinePatch;
 import static com.extractss.game.utils.Constants.APP_HEIGHT;
 import static com.extractss.game.utils.Constants.APP_WIDTH;
 import static com.extractss.game.utils.Constants.BUTTON_HEIGHT;
-import static com.extractss.game.utils.Operations.isInPlace;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
 public class MiniWindowInventory extends BasicBuildingMiniWindow {
@@ -103,20 +99,7 @@ public class MiniWindowInventory extends BasicBuildingMiniWindow {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        /*
-        Производим анимацию фона.
-         */
-        if (System.currentTimeMillis() - lastAnimationTime >= 550) {
-            switch (curScreenAnimation) {
-                case 0:
-                    curScreenAnimation = 1;
-                    break;
-                case 1:
-                    curScreenAnimation = 0;
-                    break;
-            }
-            lastAnimationTime = System.currentTimeMillis();
-        }
+        doAnimationChange(); // Производим анимацию фона.
 
         batch.begin();
 
