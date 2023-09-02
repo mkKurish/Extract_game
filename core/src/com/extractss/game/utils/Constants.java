@@ -3,14 +3,12 @@ package com.extractss.game.utils;
 import com.badlogic.gdx.Gdx;
 
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
-import static com.extractss.game.ExtractSolarSys.bitmapFontReversedColorSmall;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
 
 public class Constants {
     public static int NUMBER_OF_ROWS = 7;
     public static int NUMBER_OF_COLUMNS = 5;
     public static float SIDE_INDENT;
-    public static int MAX_INCREMENT_TIME_ALLOWED = 86400;
     public static float APP_WIDTH;
     public static float APP_HEIGHT;
     public static float BUTTONS_VOID;
@@ -56,7 +54,6 @@ public class Constants {
 
         bitmapFontSmall.getData().setScale(SMALLER_SCALE);
         bitmapFont.getData().setScale(SCALEXY_NEW, SCALEXY_NEW);
-        bitmapFontReversedColorSmall.getData().setScale(SMALLER_SCALE);
 
         MEDIUM_LEST_ELEMENT_HEIGHT = 8 * bitmapFontSmall.getCapHeight();
         LIST_WIDTH = APP_WIDTH - 2 * SIDE_INDENT;
@@ -71,8 +68,7 @@ public class Constants {
 
         LIST_ELEMENT_PIC_X = SIDE_INDENT;
         LIST_ELEMENT_PIC_SIZE = 8 * MEDIUM_LEST_ELEMENT_HEIGHT / 10;
-        LIST_ELEMENT_TITLE_X_CENTER = SIDE_INDENT + 9 * MEDIUM_LEST_ELEMENT_HEIGHT / 10 +
-                (LIST_WIDTH - 9 * MEDIUM_LEST_ELEMENT_HEIGHT / 10) / 2f;
+        LIST_ELEMENT_TITLE_X_CENTER = LIST_ELEMENT_PIC_X + LIST_ELEMENT_PIC_SIZE + (APP_WIDTH - LIST_ELEMENT_PIC_X - LIST_ELEMENT_PIC_SIZE - KNOB_WIDTH) / 2f;
 
         BOTTOM_BUTTONS_TEXT_Y = BUTTON_HEIGHT / 2 + bitmapFont.getCapHeight() / 2;
         TOP_BUTTONS_TEXT_Y = APP_HEIGHT - BUTTON_HEIGHT / 2 + bitmapFont.getCapHeight() / 2;

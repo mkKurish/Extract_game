@@ -17,60 +17,44 @@ import com.extractss.game.SimpleClasses.User;
 import com.extractss.game.utils.AdsController;
 import com.extractss.game.utils.IncrementResourcesTimeCheck;
 import com.extractss.game.utils.ScreenManager;
+import com.extractss.game.utils.URIOpenner;
 
 import java.util.ArrayList;
 
 import static com.extractss.game.utils.Constants.AVERAGE_VALUE_TO_BUY_RES;
-import static com.extractss.game.utils.Constants.MAX_INCREMENT_TIME_ALLOWED;
 import static com.extractss.game.utils.Constants.defineVariables;
-import static com.extractss.game.utils.Operations.getServerTime;
 import static com.extractss.game.utils.Operations.initializeSelectingPlanetArrayList;
 
 public class ExtractSolarSys extends Game {
     static User user;
-
     public static ScreenManager screenManager;
-
     public static ArrayList<BuildingsInInventory> inventoryBuildings;
-
     public static ArrayList<ArrayList<com.extractss.game.ClassesForLists.BuildingsOnField>> buildingsOnFields;
     public static int currentPlanet;
-
     public static ArrayList<ItemSelectingPlanet> selectingPlanetArrayList;
-
-    public static boolean isIncrementNormalModeAllowed = true;
-    public static boolean isIncrementSuperModeAllowed = false;
-
     public static boolean isTrainingComplete;
-
     public static int incrementMechanicValue = 0;
     public static int incrementMechanicMaxValue;
     public static int getIncrementMechanicUpgradeCost;
-
     public static long lastMeteorFellTime;
     public static long maxMeteorFellTime = 3600000;
     public static boolean meteorIsActive = false;
-
     public static int incrementMoney;
     public static int incrementMetal;
     public static int incrementEnergy;
     public static int maxMoney;
     public static int maxMetal;
     public static int maxEnergy;
-    public static long lastIncrementGatherTime;
+    public static int lastIncrementGatherTime;
     public static long incrementTimeValue;
-    public static long incrementingThreadTime;
-
     public static Music backgroundMusic;
     public static Sound buttonDownSound;
     public static Sound buttonUpSound;
     public static Sound successSound;
     public static Sound crushSound;
     public static Sound defenseSound;
-
     public static Texture soundTexture;
     public static Texture musicTexture;
-
     public static ArrayList<Texture> backgroundsMain;
     public static ArrayList<Texture> backgroundsOther;
 
@@ -79,7 +63,6 @@ public class ExtractSolarSys extends Game {
     public static Texture energyTexture;
     public static Texture inventTexture;
     public static Texture meteorTexture;
-
     public static TextureRegion earthTexture;
     public static TextureRegion marsTexture;
     public static TextureRegion venusTexture;
@@ -91,8 +74,6 @@ public class ExtractSolarSys extends Game {
 
     public static BitmapFont bitmapFont;
     public static BitmapFont bitmapFontSmall;
-    public static BitmapFont bitmapFontReversedColorSmall;
-
     public static NinePatch progressBarBackNinePatch;
     public static NinePatch progressBarKnobNinePatch;
     public static NinePatch upNinePatch;
@@ -101,24 +82,21 @@ public class ExtractSolarSys extends Game {
     public static NinePatch listButtonDown;
     public static NinePatch resetButtonDown;
     public static NinePatch resetButtonUp;
-
     public static NinePatch unknownNinePatch;
-
     public static Texture gameLogo;
     public static Texture helpButtonSign;
     public static Texture settingsButtonSign;
-
     public static Texture backFieldAtlas;
-
     public static ArrayList<Texture> planetFieldsBackgrounds;
     public static NinePatch planetFieldsBackground;
-
     private final AdsController adsController;
-
+    public final URIOpenner uriOpenner;
     public static long lastAdNonRewardedShown;
+    public static ArrayList<Integer> boughtPlanetsIds;
 
-    public ExtractSolarSys(AdsController adsController) {
+    public ExtractSolarSys(AdsController adsController, URIOpenner uriOpenner) {
         this.adsController = adsController;
+        this.uriOpenner = uriOpenner;
     }
 
     public void showAd(int typeRes, int rewardValue, User user) {
@@ -144,6 +122,8 @@ public class ExtractSolarSys extends Game {
         for (int i = 0; i < 8; i++) {
             buildingsOnFields.add(new ArrayList<BuildingsOnField>());
         }
+
+        boughtPlanetsIds = new ArrayList<>(8);
         selectingPlanetArrayList = new ArrayList<>();
 
         backFieldAtlas = new Texture(Gdx.files.internal("pngFiles\\PlanetTextures.png"));
@@ -170,14 +150,12 @@ public class ExtractSolarSys extends Game {
         производим загрузку для самого начала игры.
          */
         Preferences preferences = Gdx.app.getPreferences("com.extractss.GameProgress");
-
         if (!preferences.contains("money")) {
-            lastIncrementGatherTime = 0;
             user = new com.extractss.game.SimpleClasses.User(40, 40, 40, 0);
 
-            incrementMoney = 0;
-            incrementMetal = 0;
-            incrementEnergy = 0;
+            incrementMoney = 1;
+            incrementMetal = 1;
+            incrementEnergy = 1;
 
             maxMoney = 1000;
             maxMetal = 1000;
@@ -195,16 +173,11 @@ public class ExtractSolarSys extends Game {
 
             lastAdNonRewardedShown = System.currentTimeMillis();
 
-            selectingPlanetArrayList = initializeSelectingPlanetArrayList(selectingPlanetArrayList);
-
             isTrainingComplete = false;
-            try {
-                lastIncrementGatherTime = getServerTime();
-            } catch (Exception e) {
-                lastIncrementGatherTime = System.currentTimeMillis();
-            }
+
+            lastIncrementGatherTime = (int) (System.nanoTime() / 1_000_000_000L);
         } else {
-            lastIncrementGatherTime = preferences.getLong("lastIncrementGatherTime");
+            lastIncrementGatherTime = preferences.getInteger("lastIncrementGatherTime");
 
             maxMoney = preferences.getInteger("maxMoney");
             maxMetal = preferences.getInteger("maxMetal");
@@ -269,46 +242,10 @@ public class ExtractSolarSys extends Game {
                                         buildingsOnFields.get(j).get(i).getBuilding().getName() + ".png")));
                 }
             }
-
-            for (int i = 0; i < 8; i++) {
-                TextureRegion thisTexture;
-                switch (i){
-                    case 0:
-                        thisTexture = new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\earth.png")));
-                        break;
-                    case 1:
-                        thisTexture = new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\mars.png")));
-                        break;
-                    case 2:
-                        thisTexture = new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\venus.png")));
-                        break;
-                    case 3:
-                        thisTexture = new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\mercury.png")));
-                        break;
-                    case 4:
-                        thisTexture = new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\jupiter.png")));
-                        break;
-                    case 5:
-                        thisTexture = new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\saturn.png")));
-                        break;
-                    case 6:
-                        thisTexture = new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\uranus.png")));
-                        break;
-                    case 7:
-                        thisTexture = new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\neptune.png")));
-                        break;
-                    default:
-                        thisTexture = null;
-                }
-                selectingPlanetArrayList.add(new ItemSelectingPlanet(
-                        preferences.getString(i + "selectingPlanetArrayList" + "name"),
-                        thisTexture,
-                        preferences.getInteger(i + "selectingPlanetArrayList" + "money"),
-                        preferences.getInteger(i + "selectingPlanetArrayList" + "metal"),
-                        preferences.getInteger(i + "selectingPlanetArrayList" + "energy"),
-                        preferences.getInteger(i + "selectingPlanetArrayList" + "invent"),
-                        preferences.getFloat(i + "selectingPlanetArrayList" + "y"),
-                        preferences.getFloat(i + "selectingPlanetArrayList" + "elementHeight")));
+            int iter = 0;
+            while (preferences.contains(iter + "planetsIdList")) {
+                boughtPlanetsIds.add(iter, preferences.getInteger(iter + "planetsIdList"));
+                iter++;
             }
 
             user.setSoundsActive(preferences.getBoolean("soundsActive"));
@@ -331,6 +268,8 @@ public class ExtractSolarSys extends Game {
 
             preferences.flush();
         }
+
+        initializeSelectingPlanetArrayList(selectingPlanetArrayList);
 
         if (System.currentTimeMillis() - lastAdNonRewardedShown > 21600000) {
             showNonRewardedAd();
@@ -369,8 +308,7 @@ public class ExtractSolarSys extends Game {
         meteorTexture = new Texture(Gdx.files.internal("pngFiles\\meteor.png"));
 
         bitmapFont = new BitmapFont(Gdx.files.internal("fontFiles\\ExtractFont.fnt"));
-        bitmapFontSmall = new BitmapFont(Gdx.files.internal("fontFiles\\ExtractFont.fnt"));
-        bitmapFontReversedColorSmall = new BitmapFont(Gdx.files.internal("fontFiles\\ExtractFontReversedColor.fnt"));
+        bitmapFontSmall = new BitmapFont(Gdx.files.internal("fontFiles\\ExtractFontSmall.fnt"));
 
         progressBarBackNinePatch = new NinePatch(new Texture(Gdx.files.internal(
                 "interactive\\interactiveBlueDown.png")), 14, 14, 14, 14);
@@ -415,8 +353,6 @@ public class ExtractSolarSys extends Game {
          */
         defineVariables();
 
-        incrementingThreadTime = System.currentTimeMillis();
-
         /*
         Инициализируем сразу все экраны, которые можем, чтобы это не занимало лишнего времени
         в течение игры.
@@ -429,11 +365,9 @@ public class ExtractSolarSys extends Game {
          */
         if (isTrainingComplete) {
             IncrementResourcesTimeCheck incrementResourcesTimeCheck =
-                    new IncrementResourcesTimeCheck(this, user);
-            incrementResourcesTimeCheck.test();
-
-            if (incrementTimeValue <= MAX_INCREMENT_TIME_ALLOWED * 1000L)
-                this.setScreen(screenManager.getMainScreen());
+                    new IncrementResourcesTimeCheck(user);
+            incrementResourcesTimeCheck.checkToIncrement();
+            this.setScreen(screenManager.getMainScreen());
         } else {
             this.setScreen(screenManager.getTrainingScreen());
         }

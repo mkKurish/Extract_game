@@ -33,9 +33,11 @@ import static com.extractss.game.utils.Constants.LIST_ELEMENT_PIC_X;
 import static com.extractss.game.utils.Constants.LIST_ELEMENT_TITLE_X_CENTER;
 import static com.extractss.game.utils.Constants.LIST_HEIGHT;
 import static com.extractss.game.utils.Constants.LIST_WIDTH;
+import static com.extractss.game.utils.Constants.MEDIUM_LEST_ELEMENT_HEIGHT;
 import static com.extractss.game.utils.Constants.SCALEXY_NEW;
 import static com.extractss.game.utils.Constants.SMALLER_SCALE;
 import static com.extractss.game.utils.Constants.TOP_BUTTONS_TEXT_Y;
+import static com.extractss.game.utils.Operations.initializeSelectingPlanetArrayList;
 import static com.extractss.game.utils.Operations.isEnableToBuy;
 import static com.extractss.game.utils.Operations.totalListHeight;
 
@@ -72,9 +74,16 @@ public class SelectingPlanetScreen extends BasicScrollScreen {
         cancelX = APP_WIDTH / 2f - "cancel".length() * 11 * SCALEXY_NEW;
         researchX = APP_WIDTH / 2f - "research".length() * 11 * SCALEXY_NEW;
 
-        incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(sys, user);
+        incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(user);
 
         lastAnimationTime = System.currentTimeMillis();
+    }
+
+    @Override
+    public void show() {
+        if (selectingPlanetArrayList.get(0).y == selectingPlanetArrayList.get(1).y){ // Basic bug
+            initializeSelectingPlanetArrayList(selectingPlanetArrayList);
+        }
     }
 
     @Override
@@ -82,7 +91,7 @@ public class SelectingPlanetScreen extends BasicScrollScreen {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        checkMinuteToIncrementResources(); //Проверяем, прошла ли минута, чтобы увеличить значение внутриигровых рерурсов.
+        incrementResourcesTimeCheck.checkToIncrement(); //Проверяем, прошла ли минута, чтобы увеличить значение внутриигровых рерурсов.
 
         doAnimationChange(); // Производим анимацию фона.
 

@@ -78,7 +78,7 @@ public class Inventory extends BasicScrollScreen {
         researchX = APP_WIDTH / 4 - "research".length() * 11 * SCALEXY_NEW;
         constructX = 3 * APP_WIDTH / 4 - "construct".length() * 11.3f * SCALEXY_NEW;
 
-        incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(sys, user);
+        incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(user);
 
         lastAnimationTime = System.currentTimeMillis();
     }
@@ -100,7 +100,7 @@ public class Inventory extends BasicScrollScreen {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        checkMinuteToIncrementResources(); //Проверяем, прошла ли минута, чтобы увеличить значение внутриигровых рерурсов.
+        incrementResourcesTimeCheck.checkToIncrement(); //Проверяем, прошла ли минута, чтобы увеличить значение внутриигровых рерурсов.
 
         doAnimationChange(); // Производим анимацию фона.
 

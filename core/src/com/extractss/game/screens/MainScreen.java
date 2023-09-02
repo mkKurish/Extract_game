@@ -24,10 +24,6 @@ import static com.extractss.game.utils.Constants.BUTTON_WIDTH;
 import static com.extractss.game.utils.Operations.parseAndSavePrefsBuildings;
 
 public class MainScreen extends BasicScreen {
-    private static float aspectRatioLogo;
-    private static float aspectRatioReal;
-    private static float remainingSpaceY;
-    private static float remainingSpaceHigh;
     private static float logoX;
     private static float logoY;
     private static float logoWidth;
@@ -59,19 +55,19 @@ public class MainScreen extends BasicScreen {
                 BUTTONS_VOID * 3 + BUTTON_HEIGHT * 2, BUTTON_HEIGHT));
         myButtons.add(new MyButtons(APP_WIDTH / 10, BUTTON_WIDTH,
                 BUTTONS_VOID * 4 + BUTTON_HEIGHT * 3, BUTTON_HEIGHT));
-        myButtons.add(new MyButtons(APP_WIDTH / 10, BUTTON_HEIGHT,
+        myButtons.add(new MyButtons(APP_WIDTH / 10, BUTTON_HEIGHT, // Square button
                 APP_HEIGHT - BUTTONS_VOID - BUTTON_HEIGHT, BUTTON_HEIGHT));
-        myButtons.add(new MyButtons(9 * APP_WIDTH / 10 - BUTTON_HEIGHT, BUTTON_HEIGHT,
+        myButtons.add(new MyButtons(9 * APP_WIDTH / 10 - BUTTON_HEIGHT, BUTTON_HEIGHT, // Square button
                 APP_HEIGHT - BUTTONS_VOID - BUTTON_HEIGHT, BUTTON_HEIGHT));
         myButton = myButtons.get(3);
 
         /*
         Делаем адаптивную разметку для логотипа.
          */
-        aspectRatioLogo = gameLogo.getWidth() / (float) gameLogo.getHeight();
-        remainingSpaceY = myButton.getY1() + BUTTON_HEIGHT + BUTTONS_VOID;
-        remainingSpaceHigh = APP_HEIGHT - remainingSpaceY - BUTTONS_VOID * 2 - BUTTON_HEIGHT;
-        aspectRatioReal = (APP_WIDTH - BUTTONS_VOID * 2) / remainingSpaceHigh;
+        float aspectRatioLogo = gameLogo.getWidth() / (float) gameLogo.getHeight();
+        float remainingSpaceY = myButton.getY1() + BUTTON_HEIGHT + BUTTONS_VOID;
+        float remainingSpaceHigh = APP_HEIGHT - remainingSpaceY - BUTTONS_VOID * 2 - BUTTON_HEIGHT;
+        float aspectRatioReal = (APP_WIDTH - BUTTONS_VOID * 2) / remainingSpaceHigh;
         if (aspectRatioReal > aspectRatioLogo) {
             logoY = remainingSpaceY;
             logoHigh = remainingSpaceHigh;

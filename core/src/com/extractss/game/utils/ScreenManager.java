@@ -10,7 +10,6 @@ import com.extractss.game.screens.MiniWindowBuildingBuying;
 import com.extractss.game.screens.MiniWindowDeletingBuildingFromField;
 import com.extractss.game.screens.MiniWindowInventory;
 import com.extractss.game.screens.MiniWindowResetConfirmation;
-import com.extractss.game.screens.NoConnectionToIncrementResources;
 import com.extractss.game.screens.Planet;
 import com.extractss.game.screens.Research;
 import com.extractss.game.screens.SelectingPlanetScreen;
@@ -34,7 +33,6 @@ public class ScreenManager {
     private MiniWindowDeletingBuildingFromField miniWindowDeletingBuildingFromFieldScreen;
     private MiniWindowInventory miniWindowInventoryScreen;
     private MiniWindowResetConfirmation miniWindowResetConfirmationScreen;
-    private NoConnectionToIncrementResources noConnectionToIncrementResourcesScreen;
 
     public ScreenManager(ExtractSolarSys sys, User user) {
         mainScreen = new MainScreen(sys, user);
@@ -131,14 +129,7 @@ public class ScreenManager {
         return trainingScreen;
     }
 
-    public NoConnectionToIncrementResources getNoConnectionToIncrementResourcesScreen() {
-        return noConnectionToIncrementResourcesScreen;
-    }
 
-    public void setNoConnectionToIncrementResourcesScreen(
-            NoConnectionToIncrementResources noConnectionToIncrementResourcesScreen) {
-        this.noConnectionToIncrementResourcesScreen = noConnectionToIncrementResourcesScreen;
-    }
 
     public GameOverScreen getGameOverScreen() {
         return gameOverScreen;

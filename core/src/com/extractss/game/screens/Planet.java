@@ -35,7 +35,7 @@ import static com.extractss.game.ExtractSolarSys.incrementMechanicValue;
 import static com.extractss.game.ExtractSolarSys.incrementEnergy;
 import static com.extractss.game.ExtractSolarSys.incrementMetal;
 import static com.extractss.game.ExtractSolarSys.incrementMoney;
-import static com.extractss.game.ExtractSolarSys.incrementingThreadTime;
+import static com.extractss.game.ExtractSolarSys.incrementTimeValue;
 import static com.extractss.game.ExtractSolarSys.inventTexture;
 import static com.extractss.game.ExtractSolarSys.inventoryBuildings;
 import static com.extractss.game.ExtractSolarSys.jupiterTexture;
@@ -219,7 +219,7 @@ public class Planet extends BasicScreen {
         meteorX = APP_WIDTH;
         meteorY = APP_HEIGHT;
 
-        incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(sys, user);
+        incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(user);
 
         lastAnimationTime = System.currentTimeMillis();
     }
@@ -324,7 +324,7 @@ public class Planet extends BasicScreen {
         meteorX = APP_WIDTH;
         meteorY = APP_HEIGHT;
 
-        incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(sys, user);
+        incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(user);
 
         lastAnimationTime = System.currentTimeMillis();
     }
@@ -339,10 +339,7 @@ public class Planet extends BasicScreen {
         /*
         Проверяем, прошла ли минута, чтобы увеличить значение внутриигровых рерурсов.
          */
-        if (System.currentTimeMillis() - incrementingThreadTime > 60000) {
-            incrementResourcesTimeCheck.test();
-            incrementingThreadTime = System.currentTimeMillis();
-        }
+        incrementResourcesTimeCheck.checkToIncrement();
 
         batch.begin();
 
@@ -523,9 +520,9 @@ public class Planet extends BasicScreen {
                 incrementMechanicValue++;
                 if (incrementMechanicValue == incrementMechanicMaxValue) {
                     incrementMechanicValue = 0;
-                    user.setMoney(incrementMoney != 0 ? user.getMoney() + incrementMoney : user.getMoney() + 1);
-                    user.setMetal(incrementMetal != 0 ? user.getMetal() + incrementMetal : user.getMetal() + 1);
-                    user.setEnergy(incrementEnergy != 0 ? user.getEnergy() + incrementEnergy : user.getEnergy() + 1);
+                    user.setMoney(user.getMoney() + incrementMoney);
+                    user.setMetal(user.getMetal() + incrementMetal);
+                    user.setEnergy(user.getEnergy() + incrementEnergy);
                     if (user.getMoney() > maxMoney) user.setMoney(maxMoney);
                     if (user.getMetal() > maxMetal) user.setMetal(maxMetal);
                     if (user.getEnergy() > maxEnergy) user.setEnergy(maxEnergy);
@@ -611,7 +608,7 @@ public class Planet extends BasicScreen {
                     productivityLabelY, APP_WIDTH, productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
             downNinePatch.draw(batch, 0,
                     productivityLabelY, APP_WIDTH *
-                            ((System.currentTimeMillis() - incrementingThreadTime) / (float) 60000),
+                            ((incrementTimeValue) / (float) 60),
                     productivityLabelHigh - (APP_HEIGHT - productivityTitleY + bitmapFontSmall.getCapHeight() * 1.9f));
             upNinePatch.draw(batch, 0,
                     productivityLabelY, APP_WIDTH *

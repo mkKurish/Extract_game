@@ -16,7 +16,7 @@ buildscript {
 allprojects {
     apply plugin: "eclipse"
 
-    version = '1.0'
+    version = '2.0'
     ext {
         appName = "Extract: Solar system"
         gdxVersion = '1.9.12'

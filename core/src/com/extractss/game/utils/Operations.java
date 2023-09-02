@@ -26,6 +26,7 @@ import static com.extractss.game.ExtractSolarSys.backgroundsMain;
 import static com.extractss.game.ExtractSolarSys.backgroundsOther;
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
+import static com.extractss.game.ExtractSolarSys.boughtPlanetsIds;
 import static com.extractss.game.ExtractSolarSys.buildingsOnFields;
 import static com.extractss.game.ExtractSolarSys.buttonDownSound;
 import static com.extractss.game.ExtractSolarSys.buttonUpSound;
@@ -38,7 +39,6 @@ import static com.extractss.game.ExtractSolarSys.incrementEnergy;
 import static com.extractss.game.ExtractSolarSys.incrementMechanicMaxValue;
 import static com.extractss.game.ExtractSolarSys.incrementMetal;
 import static com.extractss.game.ExtractSolarSys.incrementMoney;
-import static com.extractss.game.ExtractSolarSys.incrementingThreadTime;
 import static com.extractss.game.ExtractSolarSys.inventTexture;
 import static com.extractss.game.ExtractSolarSys.inventoryBuildings;
 import static com.extractss.game.ExtractSolarSys.isTrainingComplete;
@@ -121,7 +121,7 @@ public class Operations {
         prefs.putInteger("metal", user.getMetal());
         prefs.putInteger("energy", user.getEnergy());
         prefs.putInteger("invents", user.getInvents());
-        prefs.putLong("lastIncrementGatherTime", lastIncrementGatherTime);
+        prefs.putInteger("lastIncrementGatherTime", lastIncrementGatherTime);
         prefs.putInteger("incrementMoney", incrementMoney);
         prefs.putInteger("incrementMetal", incrementMetal);
         prefs.putInteger("incrementEnergy", incrementEnergy);
@@ -183,14 +183,8 @@ public class Operations {
             }
         }
 
-        for (int i = 0; i < selectingPlanetArrayList.size(); i++) {
-            prefs.putString(i + "selectingPlanetArrayList" + "name", selectingPlanetArrayList.get(i).getName());
-            prefs.putInteger(i + "selectingPlanetArrayList" + "money", selectingPlanetArrayList.get(i).getCostMoney());
-            prefs.putInteger(i + "selectingPlanetArrayList" + "metal", selectingPlanetArrayList.get(i).getCostMetal());
-            prefs.putInteger(i + "selectingPlanetArrayList" + "energy", selectingPlanetArrayList.get(i).getCostEnergy());
-            prefs.putInteger(i + "selectingPlanetArrayList" + "invent", selectingPlanetArrayList.get(i).getInventLvl());
-            prefs.putFloat(i + "selectingPlanetArrayList" + "y", selectingPlanetArrayList.get(i).y);
-            prefs.putFloat(i + "selectingPlanetArrayList" + "elementHeight", selectingPlanetArrayList.get(i).elementHeight);
+        for (int i = 0; i < boughtPlanetsIds.size(); i++){
+            prefs.putInteger(i + "planetsIdList", boughtPlanetsIds.get(i));
         }
 
         prefs.putBoolean("soundsActive", user.isSoundsActive());
@@ -312,9 +306,23 @@ public class Operations {
         return false;
     }
 
-    public static ArrayList<ItemSelectingPlanet> initializeSelectingPlanetArrayList (ArrayList<ItemSelectingPlanet> listItems){
+    public static void initializeSelectingPlanetArrayList (ArrayList<ItemSelectingPlanet> listItems){
+        int[] basicPricesMoney = {0, 167, 1243, 7567, 10743, 30278, 58345, 112345};
+        int[] basicPricesMetal = {0, 348, 843, 3125, 15342, 37152, 64375, 75682};
+        int[] basicPricesEnergy = {0, 243, 2134, 4657, 13467, 42057, 49835, 87351};
+        for (int i = 0; i < 8; i++){
+            if (boughtPlanetsIds.contains(i)){
+                basicPricesMoney[i] = 0;
+                basicPricesMetal[i] = 0;
+                basicPricesEnergy[i] = 0;
+            }
+        }
+        initializeSelectingPlanetArrayList(listItems, basicPricesMoney, basicPricesMetal, basicPricesEnergy);
+    }
+    private static void initializeSelectingPlanetArrayList (ArrayList<ItemSelectingPlanet> listItems, int [] moneyPlanets, int[] metalPlanets, int[] energyPlanets){
+        listItems.clear();
         listItems.add(new ItemSelectingPlanet("earth", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\earth.png"))),
-                0, 0, 0, 0,
+                moneyPlanets[0], metalPlanets[0], energyPlanets[0], 0,
                 BUTTON_HEIGHT, MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("mars", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\mars.png"))),
                 167, 348, 243, 1,
@@ -344,7 +352,6 @@ public class Operations {
                 112345, 75682, 87351, 5,
                 listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
                 MEDIUM_LEST_ELEMENT_HEIGHT));
-        return listItems;
     }
 
     public static float totalListHeight(ArrayList<? extends BasicListItem> lst){

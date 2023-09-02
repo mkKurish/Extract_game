@@ -110,7 +110,7 @@ public class Research extends BasicScrollScreen {
         inventoryX = 3 * APP_WIDTH / 4f - "inventory".length() * 11 * SCALEXY_NEW;
         shopX = APP_WIDTH / 2f - "shop".length() * 11 * SCALEXY_NEW;
 
-        incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(sys, user);
+        incrementResourcesTimeCheck = new IncrementResourcesTimeCheck(user);
 
         lastAnimationTime = System.currentTimeMillis();
     }
@@ -120,7 +120,7 @@ public class Research extends BasicScrollScreen {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        checkMinuteToIncrementResources(); //Проверяем, прошла ли минута, чтобы увеличить значение внутриигровых рерурсов.
+        incrementResourcesTimeCheck.checkToIncrement(); //Проверяем, прошла ли минута, чтобы увеличить значение внутриигровых рерурсов.
 
         doAnimationChange(); // Производим анимацию фона.
 

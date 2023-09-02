@@ -1,19 +1,21 @@
 package com.extractss.game;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.extractss.game.SimpleClasses.User;
 import com.extractss.game.utils.AdsController;
+import com.extractss.game.utils.URIOpenner;
 /*import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;*/
 
-public class AndroidLauncher extends AndroidApplication implements AdsController { // , RewardedVideoAdListener
+public class AndroidLauncher extends AndroidApplication implements AdsController, URIOpenner { // , RewardedVideoAdListener
     User user;
     int typeRes;
     int rewardValue;
@@ -24,11 +26,12 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        initialize(new ExtractSolarSys(this), config);
-
+        initialize(new ExtractSolarSys(this, this), config);
         //rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         //rewardedVideoAd.setRewardedVideoAdListener(this);
     }
+
+
 
     @Override
     public void showRewardedVideo(int typeRes, int rewardValue, User user) {
@@ -115,5 +118,11 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 //    @Override
     public void onRewardedVideoCompleted() {
 
+    }
+
+    @Override
+    public void openURI_inBrowser(String uri) {
+        Intent intentURI = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        startActivity(intentURI);
     }
 }

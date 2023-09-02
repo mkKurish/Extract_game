@@ -7,7 +7,7 @@ import com.extractss.game.ExtractSolarSys;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new ExtractSolarSys(null), config);
+		new LwjglApplication(new ExtractSolarSys(null, null), config);
 		config.resizable = false;
 
 		//Original size
@@ -43,7 +43,7 @@ public class DesktopLauncher {
 //		config.width = 900;
 
 		//experimental
-		config.height = 1250;
-		config.width = 700;
+		config.height = 1150;
+		config.width = 900;
 	}
 }

@@ -8,13 +8,11 @@ import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.getIncrementMechanicUpgradeCost;
 import static com.extractss.game.ExtractSolarSys.incrementMechanicMaxValue;
 import static com.extractss.game.ExtractSolarSys.incrementMechanicValue;
-import static com.extractss.game.ExtractSolarSys.incrementingThreadTime;
 import static com.extractss.game.ExtractSolarSys.metalTexture;
 import static com.extractss.game.ExtractSolarSys.moneyTexture;
 import static com.extractss.game.ExtractSolarSys.progressBarBackNinePatch;
 import static com.extractss.game.ExtractSolarSys.progressBarKnobNinePatch;
 import static com.extractss.game.ExtractSolarSys.screenManager;
-import static com.extractss.game.ExtractSolarSys.selectingPlanetArrayList;
 import static com.extractss.game.ExtractSolarSys.successSound;
 import static com.extractss.game.ExtractSolarSys.upNinePatch;
 import static com.extractss.game.utils.Constants.APP_HEIGHT;
@@ -274,13 +272,6 @@ abstract public class BasicScrollScreen extends BasicScreen {
     protected abstract void miniWindowActivated(BuildingsInInventory buildingInInventory);
 
     protected abstract void miniWindowActivated(int typeRes, boolean isAds);
-
-    public void checkMinuteToIncrementResources(){
-        if (System.currentTimeMillis() - incrementingThreadTime > 60000) {
-            incrementResourcesTimeCheck.test();
-            incrementingThreadTime = System.currentTimeMillis();
-        }
-    }
 
     protected void drawResourcesLabel(){
         upNinePatch.draw(batch, 0, Y_RESOURCES_TABLE, APP_WIDTH, HEIGHT_RESOURCES_TABLE);
