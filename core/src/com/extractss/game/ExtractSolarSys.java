@@ -123,7 +123,7 @@ public class ExtractSolarSys extends Game {
             buildingsOnFields.add(new ArrayList<BuildingsOnField>());
         }
 
-        boughtPlanetsIds = new ArrayList<>(8);
+        boughtPlanetsIds = new ArrayList<>();
         selectingPlanetArrayList = new ArrayList<>();
 
         backFieldAtlas = new Texture(Gdx.files.internal("pngFiles\\PlanetTextures.png"));
@@ -244,7 +244,7 @@ public class ExtractSolarSys extends Game {
             }
             int iter = 0;
             while (preferences.contains(iter + "planetsIdList")) {
-                boughtPlanetsIds.add(iter, preferences.getInteger(iter + "planetsIdList"));
+                boughtPlanetsIds.add(preferences.getInteger(iter + "planetsIdList"));
                 iter++;
             }
 

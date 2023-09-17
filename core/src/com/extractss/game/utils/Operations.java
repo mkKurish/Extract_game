@@ -325,31 +325,31 @@ public class Operations {
                 moneyPlanets[0], metalPlanets[0], energyPlanets[0], 0,
                 BUTTON_HEIGHT, MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("mars", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\mars.png"))),
-                167, 348, 243, 1,
+                moneyPlanets[1], metalPlanets[1], energyPlanets[1],1,
                 listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
                 MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("venus", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\venus.png"))),
-                1243, 843, 2134, 1,
+                moneyPlanets[2], metalPlanets[2], energyPlanets[2],1,
                 listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
                 MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("mercury", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\mercury.png"))),
-                7567, 3125, 4657, 2,
+                moneyPlanets[3], metalPlanets[3], energyPlanets[3],2,
                 listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
                 MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("jupiter", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\jupiter.png"))),
-                10743, 15342, 13467, 3,
+                moneyPlanets[4], metalPlanets[4], energyPlanets[4],3,
                 listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
                 MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("saturn", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\saturn.png"))),
-                30278, 37152, 42057, 3,
+                moneyPlanets[5], metalPlanets[5], energyPlanets[5],3,
                 listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
                 MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("uranus", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\uranus.png"))),
-                58345, 64375, 49835, 4,
+                moneyPlanets[6], metalPlanets[6], energyPlanets[6],4,
                 listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
                 MEDIUM_LEST_ELEMENT_HEIGHT));
         listItems.add(new ItemSelectingPlanet("neptune", new TextureRegion(new Texture(Gdx.files.internal("pngFiles\\planets\\neptune.png"))),
-                112345, 75682, 87351, 5,
+                moneyPlanets[7], metalPlanets[7], energyPlanets[7], 5,
                 listItems.get(listItems.size()-1).y + listItems.get(listItems.size() - 1).elementHeight,
                 MEDIUM_LEST_ELEMENT_HEIGHT));
     }

@@ -3,6 +3,7 @@ package com.extractss.game.screens;
 import static com.extractss.game.ExtractSolarSys.backgroundsOther;
 import static com.extractss.game.ExtractSolarSys.bitmapFont;
 import static com.extractss.game.ExtractSolarSys.bitmapFontSmall;
+import static com.extractss.game.ExtractSolarSys.boughtPlanetsIds;
 import static com.extractss.game.ExtractSolarSys.currentPlanet;
 import static com.extractss.game.ExtractSolarSys.energyTexture;
 import static com.extractss.game.ExtractSolarSys.getIncrementMechanicUpgradeCost;
@@ -41,6 +42,7 @@ import com.extractss.game.SimpleClasses.Building;
 import com.extractss.game.utils.IncrementResourcesTimeCheck;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 abstract public class BasicScrollScreen extends BasicScreen {
     protected float knobHeight;
@@ -76,8 +78,8 @@ abstract public class BasicScrollScreen extends BasicScreen {
         ItemResearch listElementResearch;
         ItemSelectingPlanet listElementSelectingPlanet;
         ItemShop listElementShop;
-        
-        
+
+
         if (arrayList.size() != 0) {
             firstElementY = arrayList.get(0).y;
             lastElementY = arrayList.get(arrayList.size() - 1).y;
@@ -119,11 +121,11 @@ abstract public class BasicScrollScreen extends BasicScreen {
                         if (touchedY > arrayList.get(i).y
                                 && touchedY < arrayList.get(i).y + arrayList.get(i).elementHeight) {
                             if ((this instanceof Construction || this instanceof Inventory)
-                                    && user.getInvents() >= arrayList.get(i).getInventLvl()){
+                                    && user.getInvents() >= arrayList.get(i).getInventLvl()) {
                                 miniWindowSwitch(arrayList.get(i));
                                 break;
                             } else if (this instanceof Research && isEnableToBuy(user, (ItemResearch) arrayList.get(i))) {
-                                listElementResearch = (ItemResearch)arrayList.get(i);
+                                listElementResearch = (ItemResearch) arrayList.get(i);
                                 user.addInvents();
                                 user.setMoney(user.getMoney() - listElementResearch.getCostMoney());
                                 user.setMetal(user.getMetal() - listElementResearch.getCostMetal());
@@ -131,8 +133,9 @@ abstract public class BasicScrollScreen extends BasicScreen {
                                 parseAndSavePrefsBuildings(user);
                                 successSound.play(user.getSoundsVolume());
                                 break;
-                            }else if (this instanceof SelectingPlanetScreen && isEnableToBuy(user, (ItemSelectingPlanet) arrayList.get(i))) {
-                                listElementSelectingPlanet = (ItemSelectingPlanet)arrayList.get(i);
+                            } else if (this instanceof SelectingPlanetScreen && isEnableToBuy(user, (ItemSelectingPlanet) arrayList.get(i))) {
+                                listElementSelectingPlanet = (ItemSelectingPlanet) arrayList.get(i);
+                                if (!boughtPlanetsIds.contains(i)) boughtPlanetsIds.add(i);
                                 user.setMoney(user.getMoney() - listElementSelectingPlanet.getCostMoney());
                                 user.setMetal(user.getMetal() - listElementSelectingPlanet.getCostMetal());
                                 user.setEnergy(user.getEnergy() - listElementSelectingPlanet.getCostEnergy());
@@ -145,28 +148,35 @@ abstract public class BasicScrollScreen extends BasicScreen {
                                 screenManager.setPlanetScreen(new Planet(sys, user));
                                 sys.setScreen(screenManager.getPlanetScreen());
                                 break;
-                            }else if (this instanceof Shop) {
-                                listElementShop = (ItemShop)arrayList.get(i);
+                            } else if (this instanceof Shop) {
+                                listElementShop = (ItemShop) arrayList.get(i);
                                 parseAndSavePrefsBuildings(user);
-                                if (listElementShop.getName() == "faster click" && isEnableToBuy(user, listElementShop) && incrementMechanicMaxValue > 2) {
+                                if (Objects.equals(listElementShop.getName(), "faster click") && isEnableToBuy(user, listElementShop) && incrementMechanicMaxValue > 2) {
                                     user.setMoney(user.getMoney() - listElementShop.getCostMoney());
                                     user.setMetal(user.getMetal() - listElementShop.getCostMetal());
                                     user.setEnergy(user.getEnergy() - listElementShop.getCostEnergy());
                                     incrementMechanicMaxValue--;
                                     incrementMechanicValue = 0;
-                                    if (incrementMechanicMaxValue == 2) getIncrementMechanicUpgradeCost = 0;
+                                    if (incrementMechanicMaxValue == 2)
+                                        getIncrementMechanicUpgradeCost = 0;
                                     else getIncrementMechanicUpgradeCost *= 1.5f;
                                     listElementShop.setCostMoney(getIncrementMechanicUpgradeCost);
                                     listElementShop.setCostMetal(getIncrementMechanicUpgradeCost);
                                     listElementShop.setCostEnergy(getIncrementMechanicUpgradeCost);
                                     successSound.play(user.getSoundsVolume());
-                                } else if (listElementShop.getCostMoney() == 1) miniWindowActivated(0, false);
-                                else if (listElementShop.getCostMetal() == 1) miniWindowActivated(1, false);
-                                else if (listElementShop.getCostEnergy() == 1) miniWindowActivated(2, false);
-                                else if (listElementShop.getCostMoney() == 2) miniWindowActivated(0, true);
-                                else if (listElementShop.getCostMetal() == 2) miniWindowActivated(1, true);
-                                else if (listElementShop.getCostEnergy() == 2) miniWindowActivated(2, true);
-                                else if (listElementShop.getCostMoney() == AVERAGE_VALUE_TO_BUY_RES && isEnableToBuy(user, listElementShop)){
+                                } else if (listElementShop.getCostMoney() == 1)
+                                    miniWindowActivated(0, false);
+                                else if (listElementShop.getCostMetal() == 1)
+                                    miniWindowActivated(1, false);
+                                else if (listElementShop.getCostEnergy() == 1)
+                                    miniWindowActivated(2, false);
+                                else if (listElementShop.getCostMoney() == 2)
+                                    miniWindowActivated(0, true);
+                                else if (listElementShop.getCostMetal() == 2)
+                                    miniWindowActivated(1, true);
+                                else if (listElementShop.getCostEnergy() == 2)
+                                    miniWindowActivated(2, true);
+                                else if (listElementShop.getCostMoney() == AVERAGE_VALUE_TO_BUY_RES && isEnableToBuy(user, listElementShop)) {
                                     if (listElementShop.getOutputMetal() != 0) {
                                         user.setMetal(user.getMetal() + listElementShop.getOutputMetal());
                                     } else {
@@ -174,7 +184,7 @@ abstract public class BasicScrollScreen extends BasicScreen {
                                     }
                                     successSound.play(user.getSoundsVolume());
                                     user.setMoney(user.getMoney() - listElementShop.getCostMoney());
-                                } else if (listElementShop.getCostMetal() == AVERAGE_VALUE_TO_BUY_RES && isEnableToBuy(user, listElementShop)){
+                                } else if (listElementShop.getCostMetal() == AVERAGE_VALUE_TO_BUY_RES && isEnableToBuy(user, listElementShop)) {
                                     if (listElementShop.getOutputMoney() != 0) {
                                         user.setMoney(user.getMoney() + listElementShop.getOutputMoney());
                                     } else {
@@ -182,7 +192,7 @@ abstract public class BasicScrollScreen extends BasicScreen {
                                     }
                                     successSound.play(user.getSoundsVolume());
                                     user.setMetal(user.getMetal() - listElementShop.getCostMetal());
-                                } else if (listElementShop.getCostEnergy() == AVERAGE_VALUE_TO_BUY_RES && isEnableToBuy(user, listElementShop)){
+                                } else if (listElementShop.getCostEnergy() == AVERAGE_VALUE_TO_BUY_RES && isEnableToBuy(user, listElementShop)) {
                                     if (listElementShop.getOutputMetal() != 0) {
                                         user.setMetal(user.getMetal() + listElementShop.getOutputMetal());
                                     } else {
@@ -212,11 +222,11 @@ abstract public class BasicScrollScreen extends BasicScreen {
                         arrayList.get(i).y += BUTTON_HEIGHT - firstElementY;
                     }
                 }
-            }else{
+            } else {
                 if (arrayList.size() > 0 && firstElementY != BUTTON_HEIGHT) {
                     arrayList.get(0).y = BUTTON_HEIGHT;
                     for (int i = 1; i < arrayList.size(); i++) {
-                        arrayList.get(i).y = arrayList.get(i-1).y + arrayList.get(i-1).elementHeight;
+                        arrayList.get(i).y = arrayList.get(i - 1).y + arrayList.get(i - 1).elementHeight;
                     }
                 }
             }
@@ -231,7 +241,7 @@ abstract public class BasicScrollScreen extends BasicScreen {
         }
     }
 
-    protected void limitListSizeOnScreen(){
+    protected void limitListSizeOnScreen() {
         batch.draw(new TextureRegion(backgroundsOther.get(curScreenAnimation), 0,
                         19 * backgroundsOther.get(curScreenAnimation).getHeight() / 9,
                         backgroundsOther.get(curScreenAnimation).getWidth(),
@@ -267,13 +277,14 @@ abstract public class BasicScrollScreen extends BasicScreen {
             }
         }
     }
+
     protected abstract void miniWindowActivated(Building building);
 
     protected abstract void miniWindowActivated(BuildingsInInventory buildingInInventory);
 
     protected abstract void miniWindowActivated(int typeRes, boolean isAds);
 
-    protected void drawResourcesLabel(){
+    protected void drawResourcesLabel() {
         upNinePatch.draw(batch, 0, Y_RESOURCES_TABLE, APP_WIDTH, HEIGHT_RESOURCES_TABLE);
         batch.draw(moneyTexture, moneyTextureX, yForIcons, widthForIcons, heightForIcons);
         batch.draw(metalTexture, metalTextureX, yForIcons, widthForIcons, heightForIcons);
